@@ -20,38 +20,60 @@
     body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--body-bg); margin: 0; }
 
     #loginPage { height: 100vh; display: flex; align-items: center; justify-content: center; background: #ffffff; }
-    .login-box { background: #ffffff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; border: 1px solid #eee; }
-    .login-box h2 { font-weight: 700; color: #333; margin-bottom: 25px; }
+    .login-box { background: #ffffff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 90%; max-width: 400px; text-align: center; border: 1px solid #eee; }
+    .login-box h2 { font-weight: 700; color: #333; margin-bottom: 25px; font-size: 1.5rem; }
     .form-control { border-radius: 10px; padding: 12px; border: 1px solid #ddd; margin-bottom: 15px; }
     .btn-login { background: var(--accent); color: white; border-radius: 10px; padding: 12px; width: 100%; border: none; font-weight: 600; }
 
-    .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; color: white; z-index: 1000; box-shadow: 4px 0 10px rgba(0,0,0,0.1); }
+    /* স্লাইডবার মোবাইল রেসপন্সিভ */
+    .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; color: white; z-index: 1001; transition: 0.3s; left: 0; }
     .sidebar-menu a { padding: 14px 25px; display: flex; align-items: center; color: #94a3b8; text-decoration: none; cursor: pointer; transition: 0.3s; border-left: 4px solid transparent; }
     .sidebar-menu a:hover, .sidebar-menu a.active { background: var(--sidebar-hover); color: #fff; border-left: 4px solid var(--accent); }
     .sidebar-menu a i { margin-right: 12px; font-size: 18px; }
     
-    .main-content { margin-left: 260px; padding: 30px; }
+    .main-content { margin-left: 260px; padding: 20px; transition: 0.3s; }
     .hidden { display: none !important; }
     .card { border: none; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; overflow: hidden; }
     
-    .form-card { background: #fff; border-top: 5px solid var(--accent); }
-    .input-group-text { background: #f8fafc; border-right: none; color: #64748b; }
-    .entry-input { border-left: none; font-weight: 600; }
-    .entry-input:focus { box-shadow: none; border-color: #ddd; }
+    /* মোবাইল মেনু বাটন */
+    .mobile-header { display: none; background: #fff; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; justify-content: space-between; align-items: center; }
+    .menu-toggle { font-size: 24px; color: var(--sidebar-bg); cursor: pointer; }
 
-    .stat-card { padding: 20px; text-align: center; border-bottom: 4px solid var(--accent); }
-    .stat-card h5 { color: #64748b; font-size: 14px; }
-    .stat-card h3 { font-weight: 700; margin-top: 5px; }
-    .chart-box { background: white; padding: 20px; border-radius: 15px; margin-top: 20px; height: 400px; }
+    /* স্ট্যাট কার্ড মোবাইল অপ্টিমাইজেশন */
+    .stat-card { padding: 15px; text-align: center; border-bottom: 4px solid var(--accent); height: 100%; }
+    .stat-card h5 { color: #64748b; font-size: 13px; }
+    .stat-card h3 { font-weight: 700; margin-top: 5px; font-size: 1.2rem; }
+
+    @media (max-width: 991px) {
+      .sidebar { left: -260px; }
+      .sidebar.active { left: 0; }
+      .main-content { margin-left: 0; padding: 15px; }
+      .mobile-header { display: flex; }
+      .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+      .sidebar-overlay.active { display: block; }
+    }
+
+    .table-responsive { border-radius: 10px; }
+    .chart-box { height: 350px; }
+    .badge-pending { background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 6px; font-size: 12px; }
+    .badge-approved { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 6px; font-size: 12px; }
   </style>
 </head>
 <body>
 
+<div id="mobileHeader" class="mobile-header hidden">
+  <i class="fas fa-bars menu-toggle" onclick="toggleSidebar()"></i>
+  <span class="fw-bold text-dark">কর্ণফুলী টাইলস্ Admin</span>
+  <span id="userNameMobile" class="small fw-bold text-primary"></span>
+</div>
+
+<div id="overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <div id="loginPage">
   <div class="login-box">
     <i class="fas fa-user-shield fa-4x text-primary mb-3"></i>
-    <h2> নিউ কর্ণফুলী টাইলস্ এন্ড সেনিটারী </h2>
-     <h3>সিস্টেম লগইন</h3>
+    <h2 class="mb-1">নিউ কর্ণফুলী টাইলস্ এন্ড সেনিটারী</h2>
+    <p class="text-muted small mb-4">সিস্টেম লগইন</p>
     <input type="text" id="user" class="form-control" placeholder="ইউজার আইডি">
     <input type="password" id="pass" class="form-control" placeholder="পাসওয়ার্ড">
     <button onclick="login()" id="loginBtn" class="btn-login">প্রবেশ করুন</button>
@@ -60,53 +82,55 @@
 </div>
 
 <div id="dashboardSection" class="hidden">
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
     <div class="p-4 text-center border-bottom border-secondary mb-3">
-      <h4 class="fw-bold mb-0">TilePro <span class="text-primary">Admin</span></h4>
+      <h5 class="fw-bold mb-0 text-white">কর্ণফুলী টাইলস্ <span class="text-primary">Admin</span></h5>
+      <p id="userNameSidebar" class="text-info small mt-2 mb-0 fw-bold"></p>
     </div>
     <div class="sidebar-menu">
-      <a onclick="showPage('dailyPage')" id="linkDaily" class="active"><i class="fas fa-edit"></i>দৈনিক আয়-ব্যয় </a>
-      <a onclick="showPage('monthlyPage')" id="linkMonthly"><i class="fas fa-file-invoice-dollar"></i>মাসিক খরচ এন্ট্রি </a>
-      <a onclick="showPage('reportPage')" id="linkReport"><i class="fas fa-chart-pie"></i> মাসিক আয়-ব্যয় রিপোর্ট </a>
-      <a onclick="showPage('yearlyAnalysisPage')" id="linkYearlyAnalysis"><i class="fas fa-analytics"></i>বার্ষিক বিশ্লেষণ</a>
-      <a onclick="logout()" class="text-danger mt-5"><i class="fas fa-power-off"></i>লগআউট</a>
+      <a onclick="menuNav('dailyPage')" id="linkDaily" class="active"><i class="fas fa-edit"></i>দৈনিক আয়-ব্যয়</a>
+      <a onclick="menuNav('monthlyPage')" id="linkMonthly"><i class="fas fa-file-invoice-dollar"></i>মাসিক খরচ এন্ট্রি</a>
+      <a onclick="menuNav('reportPage')" id="linkReport"><i class="fas fa-chart-pie"></i>মাসিক রিপোর্ট</a>
+      <a onclick="menuNav('partnerWalletPage')" id="linkPartnerWallet"><i class="fas fa-wallet"></i>পার্টনার ব্যালেন্স</a>
+      <a onclick="menuNav('yearlyAnalysisPage')" id="linkYearlyAnalysis"><i class="fas fa-analytics"></i>বার্ষিক বিশ্লেষণ</a>
+      <a onclick="logout()" class="text-danger mt-4"><i class="fas fa-power-off"></i>লগআউট</a>
     </div>
   </div>
 
   <div class="main-content">
     <div id="dailyPage">
-      <h3 class="fw-bold mb-4 text-dark"><i class="fas fa-plus-circle text-primary me-2"></i>দৈনিক আয়-ব্যয় হিসাব এন্ট্রি</h3>
-      <div class="card form-card p-4" style="max-width: 700px;">
+      <h4 class="fw-bold mb-4 text-dark"><i class="fas fa-plus-circle text-primary me-2"></i>দৈনিক আয়-ব্যয় এন্ট্রি</h4>
+      <div class="card form-card p-4">
         <div class="row g-3">
-          <div class="col-md-12">
+          <div class="col-12">
             <label class="small fw-bold text-secondary">লেনদেনের তারিখ</label>
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input type="date" id="date" class="form-control entry-input">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 col-12">
             <label class="small fw-bold text-secondary">মোট বিক্রয় (৳)</label>
             <div class="input-group">
               <span class="input-group-text">৳</span>
               <input type="number" id="sales" class="form-control entry-input" placeholder="0.00">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 col-12">
             <label class="small fw-bold text-secondary">দৈনিক নিট লাভ (৳)</label>
             <div class="input-group">
               <span class="input-group-text">৳</span>
               <input type="number" id="profit" class="form-control entry-input" placeholder="0.00">
             </div>
           </div>
-          <div class="col-md-6">
-            <label class="small fw-bold text-secondary">চা-নাস্তা/অন্যান্য খরচ (৳)</label>
+          <div class="col-md-6 col-12">
+            <label class="small fw-bold text-secondary">চা-নাস্তা/অন্যান্য (৳)</label>
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-coffee"></i></span>
               <input type="number" id="expense" class="form-control entry-input" placeholder="0.00">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 col-12">
             <label class="small fw-bold text-secondary">লেবার বিল (৳)</label>
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-users"></i></span>
@@ -114,7 +138,7 @@
             </div>
           </div>
           <div class="col-12 mt-4">
-            <button onclick="saveData()" id="saveBtn" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+            <button onclick="saveData()" id="saveBtn" class="btn btn-primary w-100 py-3 fw-bold shadow-sm">
               <i class="fas fa-save me-2"></i>ডাটা সেভ করুন
             </button>
           </div>
@@ -123,58 +147,45 @@
     </div>
 
     <div id="monthlyPage" class="hidden">
-      <h3 class="fw-bold mb-4 text-danger"><i class="fas fa-wallet me-2"></i>মাসিক ফিক্সড খরচ এন্ট্রি</h3>
-      <div class="card p-4 form-card border-danger" style="max-width: 650px;">
-        <select id="mMonth" class="form-select mb-3 fw-bold bg-light">
-            <option value="January_2025">জানুয়ারি ২০২৫</option><option value="February_2025">ফেব্রুয়ারি ২০২৫</option>
-            <option value="March_2025">মার্চ ২০২৫</option><option value="April_2025">এপ্রিল ২০২৫</option>
-            <option value="May_2025">মে ২০২৫</option><option value="June_2025">জুন ২০২৫</option>
-            <option value="July_2025">জুলাই ২০২৫</option><option value="August_2025">আগস্ট ২০২৫</option>
-            <option value="September_2025">সেপ্টেম্বর ২০২৫</option><option value="October_2025">অক্টোবর ২০২৫</option>
-            <option value="November_2025">নভেম্বর ২০২৫</option><option value="December_2025">ডিসেম্বর ২০২৫</option>
-        </select>
+      <h4 class="fw-bold mb-4 text-danger"><i class="fas fa-wallet me-2"></i>মাসিক ফিক্সড খরচ এন্ট্রি</h4>
+      <div class="card p-4 form-card border-danger">
+        <select id="mMonth" class="form-select mb-3 fw-bold bg-light dynamic-month-list"></select>
         <div class="row g-2">
-          <div class="col-md-6"><input type="number" id="fShop" class="form-control" placeholder="দোকান ভাড়া"></div>
-          <div class="col-md-6"><input type="number" id="fGodown" class="form-control" placeholder="গোডাউন ভাড়া"></div>
-          <div class="col-md-6"><input type="number" id="fSalary" class="form-control" placeholder="ম্যানেজার বেতন"></div>
-          <div class="col-md-6"><input type="number" id="fElec" class="form-control" placeholder="বিদ্যুৎ বিল"></div>
-          <div class="col-md-6"><input type="number" id="fWifi" class="form-control" placeholder="ওয়াইফাই বিল"></div>
-          <div class="col-md-6"><input type="number" id="fReturn" class="form-control" placeholder="মাল ফেরত (৳)"></div>
+          <div class="col-md-6 col-12"><input type="number" id="fShop" class="form-control" placeholder="দোকান ভাড়া"></div>
+          <div class="col-md-6 col-12"><input type="number" id="fGodown" class="form-control" placeholder="গোডাউন ভাড়া"></div>
+          <div class="col-md-6 col-12"><input type="number" id="fSalary" class="form-control" placeholder="ম্যানেজার বেতন"></div>
+          <div class="col-md-6 col-12"><input type="number" id="fElec" class="form-control" placeholder="বিদ্যুৎ বিল"></div>
+          <div class="col-md-6 col-12"><input type="number" id="fWifi" class="form-control" placeholder="ওয়াইফাই বিল"></div>
+          <div class="col-md-6 col-12"><input type="number" id="fReturn" class="form-control" placeholder="মাল ফেরত (৳)"></div>
           <div class="col-12"><input type="number" id="fOther" class="form-control" placeholder="অতিরিক্ত খরচ"></div>
-          <button onclick="saveMonthly()" class="btn btn-danger w-100 mt-2 fw-bold shadow-sm">মাসিক হিসাব আপডেট করুন</button>
+          <button onclick="saveMonthly()" class="btn btn-danger w-100 mt-2 fw-bold py-2">মাসিক হিসাব আপডেট করুন</button>
         </div>
       </div>
     </div>
 
     <div id="reportPage" class="hidden">
-      <div class="d-flex justify-content-between mb-4">
-        <h3 class="fw-bold">মাসিক লাভ-ক্ষতি রিপোর্ট</h3>
-        <div>
-          <button id="editMonthlyBtn" onclick="goToEditMonthly()" class="btn btn-warning btn-sm px-3 fw-bold me-2 hidden">
-            <i class="fas fa-edit me-1"></i>Edit Monthly Expense
+      <div class="row mb-4 align-items-center g-2">
+        <div class="col">
+          <h4 class="fw-bold mb-0">রিপোর্ট</h4>
+        </div>
+        <div class="col-auto">
+          <button id="editMonthlyBtn" onclick="goToEditMonthly()" class="btn btn-warning btn-sm fw-bold hidden">
+            <i class="fas fa-edit"></i>
           </button>
-          <button onclick="downloadPDF()" class="btn btn-dark btn-sm px-4">PDF ডাউনলোড</button>
+          <button onclick="downloadPDF()" class="btn btn-dark btn-sm"><i class="fas fa-download"></i> PDF</button>
         </div>
       </div>
       <div class="card p-3 mb-4">
-          <label class="small fw-bold mb-2">মাস নির্বাচন করুন:</label>
-          <select id="reportMonth" class="form-select" style="max-width: 250px;" onchange="initDashboard()">
-            <option value="January_2025">জানুয়ারি ২০২৫</option><option value="February_2025">ফেব্রুয়ারি ২০২৫</option>
-            <option value="March_2025">মার্চ ২০২৫</option><option value="April_2025">এপ্রিল ২০২৫</option>
-            <option value="May_2025">মে ২০২৫</option><option value="June_2025">জুন ২০২৫</option>
-            <option value="July_2025">জুলাই ২০২৫</option><option value="August_2025">আগস্ট ২০২৫</option>
-            <option value="September_2025">সেপ্টেম্বর ২০২৫</option><option value="October_2025">অক্টোবর ২০২৫</option>
-            <option value="November_2025">নভেম্বর ২০২৫</option><option value="December_2025">ডিসেম্বর ২০২৫</option>
-          </select>
+          <label class="small fw-bold mb-2">মাস নির্বাচন:</label>
+          <select id="reportMonth" class="form-select dynamic-month-list" onchange="initDashboard()"></select>
       </div>
       <div id="printableArea">
-        <div class="row g-3 mb-4" id="statSummary"></div>
-        <div class="card p-4">
-          <h5 class="fw-bold border-bottom pb-2">লেনদেন তালিকা</h5>
+        <div class="row g-2 mb-4" id="statSummary"></div>
+        <div class="card">
           <div class="table-responsive">
-            <table class="table table-hover text-center align-middle">
+            <table class="table table-hover text-center align-middle mb-0" style="min-width: 600px;">
               <thead class="table-light">
-                <tr><th>তারিখ</th><th>বিক্রয়</th><th>লাভ</th><th>খরচ</th><th>লেবার</th><th>এডিট</th></tr>
+                <tr><th>তারিখ</th><th>বিক্রয়</th><th>লাভ</th><th>খরচ</th><th>লেবার</th><th>অ্যাকশন</th></tr>
               </thead>
               <tbody id="ledgerBody"></tbody>
             </table>
@@ -183,13 +194,57 @@
       </div>
     </div>
 
+    <div id="partnerWalletPage" class="hidden">
+        <h4 class="fw-bold mb-4"><i class="fas fa-wallet text-primary me-2"></i>পার্টনার ব্যালেন্স ও উত্তোলন</h4>
+        
+        <div class="card p-3 mb-4" id="partnerSelectArea">
+          <label class="small fw-bold mb-2">পার্টনার নির্বাচন করুন:</label>
+          <select id="walletUserSelector" class="form-select fw-bold" onchange="getWalletData()">
+            <option value="PARTNER1">ইমরান হোসেন</option>
+            <option value="PARTNER2">মোঃ সাইফুদ্দীন</option>
+            <option value="PARTNER3">মোঃ সাদ্দাম</option>
+          </select>
+        </div>
+
+        <div class="row g-3 mb-4" id="walletSummary">
+            <div class="col-6 col-md-4"><div class="card stat-card border-success"><h5>মোট অংশ</h5><h3 id="wTotalEarned">৳0</h3></div></div>
+            <div class="col-6 col-md-4"><div class="card stat-card border-danger"><h5>মোট উত্তোলন</h5><h3 id="wTotalWithdraw">৳0</h3></div></div>
+            <div class="col-12 col-md-4"><div class="card stat-card border-primary"><h5>বর্তমান ব্যালেন্স</h5><h3 id="wCurrentBalance">৳0</h3></div></div>
+        </div>
+        
+        <div id="withdrawInputArea" class="card p-4 mb-4 hidden">
+            <h5 class="fw-bold mb-3">টাকা উত্তোলনের অনুরোধ</h5>
+            <div class="row g-2">
+                <div class="col-8">
+                    <input type="number" id="withdrawAmount" class="form-control" placeholder="টাকার পরিমাণ লিখুন">
+                </div>
+                <div class="col-4">
+                    <button onclick="requestWithdraw()" class="btn btn-primary w-100">অনুরোধ</button>
+                </div>
+            </div>
+            <p class="text-muted small mt-2">*এডমিন এপ্রুভ করলে আপনার ব্যালেন্স থেকে টাকা কাটা হবে।</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-white fw-bold">উত্তোলন রেকর্ড ও এপ্রুভাল</div>
+            <div class="table-responsive">
+                <table class="table table-hover text-center align-middle mb-0">
+                    <thead class="table-light">
+                        <tr><th>তারিখ ও সময়</th><th>পার্টনার</th><th>পরিমাণ</th><th>অবস্থা</th><th id="adminActionHeader">অ্যাকশন</th></tr>
+                    </thead>
+                    <tbody id="withdrawTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <div id="yearlyAnalysisPage" class="hidden">
-      <h3 class="fw-bold mb-4">বার্ষিক লাভ-বিক্রয় বিশ্লেষণ</h3>
-      <div class="row g-3 mb-4">
-        <div class="col-md-6"><div class="card stat-card border-primary"><h5>সর্বোচ্চ বিক্রয় মাস</h5><h3 id="bestSalesMonth">-</h3></div></div>
-        <div class="col-md-6"><div class="card stat-card border-success"><h5>সর্বোচ্চ লাভের মাস</h5><h3 id="bestProfitMonth">-</h3></div></div>
+      <h4 class="fw-bold mb-4">বার্ষিক বিশ্লেষণ</h4>
+      <div class="row g-2 mb-4">
+        <div class="col-6"><div class="card stat-card border-primary"><h5>সেরা বিক্রয়</h5><h3 id="bestSalesMonth">-</h3></div></div>
+        <div class="col-6"><div class="card stat-card border-success"><h5>সেরা লাভ</h5><h3 id="bestProfitMonth">-</h3></div></div>
       </div>
-      <div class="chart-box card border-0">
+      <div class="chart-box card p-2">
         <canvas id="yearlyChart"></canvas>
       </div>
     </div>
@@ -200,17 +255,50 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOIjOpoErSoZpVqTnH9SyqtUdKPCa9Zn6KmfTDxJPU3JvMgW4aQtP7d-Kl3z0-B80E/exec";
 let userRole = "";
 
+const PARTNER_NAMES = {
+  "PARTNER1": "ইমরান হোসেন",
+  "PARTNER2": "মোঃ সাইফুদ্দীন",
+  "PARTNER3": "মোঃ সাদ্দাম",
+  "ADMIN": "এডমিন প্যানেল"
+};
+
+function generateYearOptions() {
+    const dropdowns = document.querySelectorAll('.dynamic-month-list');
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const currentYear = new Date().getFullYear();
+    const endYear = currentYear + 10;
+    
+    dropdowns.forEach(select => {
+        select.innerHTML = '';
+        for (let year = 2024; year <= endYear; year++) {
+            months.forEach((month, index) => {
+                const option = document.createElement('option');
+                const banglaMonth = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+                option.value = `${month}_${year}`;
+                option.text = `${banglaMonth[index]} ${year}`;
+                if(year === currentYear && index === new Date().getMonth()) option.selected = true;
+                select.appendChild(option);
+            });
+        }
+    });
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('overlay').classList.toggle('active');
+}
+
+function menuNav(pageId) {
+    showPage(pageId);
+    if(window.innerWidth < 992) toggleSidebar();
+}
+
 window.onload = function() {
+  generateYearOptions();
   const session = localStorage.getItem("tileProSession");
   if(session) {
     userRole = session;
-    document.getElementById('loginPage').classList.add('hidden');
-    document.getElementById('dashboardSection').classList.remove('hidden');
-    if(userRole === "PARTNER") {
-        document.getElementById('linkDaily').classList.add('hidden');
-        document.getElementById('linkMonthly').classList.add('hidden');
-    }
-    showPage('dailyPage');
+    loginSuccess();
   }
 }
 
@@ -219,26 +307,46 @@ function login() {
   const p = document.getElementById('pass').value;
   const btn = document.getElementById('loginBtn');
   btn.innerText = "চেক করা হচ্ছে...";
-  
   fetch(`${SCRIPT_URL}?action=login&user=${u}&pass=${p}`)
     .then(res => res.json()).then(res => {
       if(res.success) {
         userRole = res.role;
         localStorage.setItem("tileProSession", userRole);
-        document.getElementById('loginPage').classList.add('hidden');
-        document.getElementById('dashboardSection').classList.remove('hidden');
-        if(userRole === "PARTNER") {
-          document.getElementById('linkDaily').classList.add('hidden');
-          document.getElementById('linkMonthly').classList.add('hidden');
-          showPage('reportPage');
-        } else {
-          showPage('dailyPage');
-        }
+        loginSuccess();
       } else {
         document.getElementById('errMsg').innerText = "আইডি বা পাসওয়ার্ড ভুল!";
         btn.innerText = "প্রবেশ করুন";
       }
     });
+}
+
+function loginSuccess() {
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('dashboardSection').classList.remove('hidden');
+    document.getElementById('mobileHeader').classList.remove('hidden');
+    
+    // নাম প্রদর্শন
+    const name = PARTNER_NAMES[userRole] || "ব্যবহারকারী";
+    document.getElementById('userNameSidebar').innerText = name;
+    document.getElementById('userNameMobile').innerText = name;
+
+    if(userRole !== "ADMIN") {
+        document.getElementById('linkDaily').classList.add('hidden');
+        document.getElementById('linkMonthly').classList.add('hidden');
+        document.getElementById('withdrawInputArea').classList.remove('hidden');
+        document.getElementById('adminActionHeader').classList.add('hidden');
+        
+        const selector = document.getElementById('walletUserSelector');
+        selector.value = userRole; 
+        selector.disabled = true; 
+        
+        showPage('reportPage');
+    } else {
+        document.getElementById('withdrawInputArea').classList.add('hidden');
+        document.getElementById('adminActionHeader').classList.remove('hidden');
+        document.getElementById('walletUserSelector').disabled = false;
+        showPage('dailyPage');
+    }
 }
 
 function logout() {
@@ -247,19 +355,67 @@ function logout() {
 }
 
 function showPage(pageId) {
-  ['dailyPage', 'monthlyPage', 'reportPage', 'yearlyAnalysisPage'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  ['dailyPage', 'monthlyPage', 'reportPage', 'yearlyAnalysisPage', 'partnerWalletPage'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById(pageId).classList.remove('hidden');
   document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
-  
   let linkId = 'link' + pageId.charAt(0).toUpperCase() + pageId.slice(1);
   if(pageId === 'reportPage') linkId = 'linkReport';
   if(document.getElementById(linkId)) document.getElementById(linkId).classList.add('active');
 
   if(pageId === 'reportPage') initDashboard();
   if(pageId === 'yearlyAnalysisPage') initYearlyAnalysis();
+  if(pageId === 'partnerWalletPage') getWalletData();
 }
 
-// রিপোর্ট থেকে মাসিক খরচ এডিট পেজে যাওয়ার ফাংশন
+function getWalletData() {
+    const selectedUser = document.getElementById('walletUserSelector').value;
+    fetch(`${SCRIPT_URL}?action=getWallet&user=${selectedUser}`)
+    .then(res => res.json()).then(data => {
+        document.getElementById('wTotalEarned').innerText = "৳" + data.earned;
+        document.getElementById('wTotalWithdraw').innerText = "৳" + data.withdrawn;
+        document.getElementById('wCurrentBalance').innerText = "৳" + (data.earned - data.withdrawn);
+        
+        let html = "";
+        data.history.forEach((h, i) => {
+            const isPending = h.status === 'PENDING';
+            // পার্টনারের ভ্যালু থেকে নাম দেখানো
+            const displayName = PARTNER_NAMES[h.user] || h.user;
+            html += `<tr>
+                <td><small>${h.timestamp}</small></td>
+                <td>${displayName}</td>
+                <td class="fw-bold">৳${h.amount}</td>
+                <td><span class="${isPending ? 'badge-pending' : 'badge-approved'}">${isPending ? 'পেন্ডিং' : 'এপ্রুভড'}</span></td>
+                ${userRole === 'ADMIN' ? `<td>${isPending ? `<button class="btn btn-sm btn-success" onclick="approveWithdraw(${i})">এপ্রুভ</button>` : '<i class="fas fa-check-circle text-success"></i>'}</td>` : ''}
+            </tr>`;
+        });
+        document.getElementById('withdrawTableBody').innerHTML = html || '<tr><td colspan="5">কোন রেকর্ড নেই</td></tr>';
+    });
+}
+
+function requestWithdraw() {
+    const amount = document.getElementById('withdrawAmount').value;
+    if(!amount || amount <= 0) { alert("সঠিক পরিমাণ লিখুন"); return; }
+    fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "withdrawRequest", user: userRole, amount: amount })
+    }).then(() => {
+        alert("অনুরোধ পাঠানো হয়েছে।");
+        document.getElementById('withdrawAmount').value = '';
+        getWalletData();
+    });
+}
+
+function approveWithdraw(index) {
+    if(!confirm("আপনি কি এই উত্তোলন এপ্রুভ করতে চান? এপ্রুভ করলে পার্টনারের ব্যালেন্স থেকে টাকা কেটে নেওয়া হবে।")) return;
+    fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "approveWithdraw", index: index })
+    }).then(() => {
+        alert("সফলভাবে এপ্রুভ করা হয়েছে।");
+        getWalletData();
+    });
+}
+
 function goToEditMonthly() {
   const selectedMonth = document.getElementById('reportMonth').value;
   document.getElementById('mMonth').value = selectedMonth;
@@ -270,23 +426,18 @@ function initDashboard() {
   const m = document.getElementById('reportMonth').value;
   const tbody = document.getElementById('ledgerBody');
   const editMBtn = document.getElementById('editMonthlyBtn');
-  
-  // পার্টনার হলে এডিট বাটন হাইড থাকবে
-  if(userRole !== "PARTNER") editMBtn.classList.remove('hidden');
-
+  if(userRole === "ADMIN") editMBtn.classList.remove('hidden');
   tbody.innerHTML = '<tr><td colspan="6">লোড হচ্ছে...</td></tr>';
-
   fetch(`${SCRIPT_URL}?action=getSummary&month=${m}`)
     .then(res => res.json()).then(data => {
       const stats = `
-        <div class="col-md-2"><div class="card stat-card"><h5>বিক্রয়</h5><h3>৳${data.thisMonthSales}</h3></div></div>
-        <div class="col-md-2"><div class="card stat-card"><h5>লেবার</h5><h3>৳${data.totalLabor}</h3></div></div>
-        <div class="col-md-2"><div class="card stat-card"><h5>মাল ফেরত</h5><h3>৳${data.totalReturns}</h3></div></div>
-        <div class="col-md-2"><div class="card stat-card"><h5>স্থায়ী খরচ</h5><h3>৳${data.fixedTotal}</h3></div></div>
-        <div class="col-md-2"><div class="card stat-card text-success"><h5>নিট লাভ</h5><h3>৳${data.netProfit}</h3></div></div>
-        <div class="col-md-2"><div class="card stat-card text-primary"><h5>পার্টনার ভাগ</h5><h3>৳${data.partnerShare}</h3></div></div>`;
+        <div class="col-6 col-md-4 col-lg-2"><div class="card stat-card"><h5>বিক্রয়</h5><h3>৳${data.thisMonthSales}</h3></div></div>
+        <div class="col-6 col-md-4 col-lg-2"><div class="card stat-card"><h5>লেবার</h5><h3>৳${data.totalLabor}</h3></div></div>
+        <div class="col-6 col-md-4 col-lg-2"><div class="card stat-card"><h5>মাল ফেরত</h5><h3>৳${data.totalReturns}</h3></div></div>
+        <div class="col-6 col-md-4 col-lg-2"><div class="card stat-card"><h5>স্থায়ী খরচ</h5><h3>৳${data.fixedTotal}</h3></div></div>
+        <div class="col-6 col-md-4 col-lg-2"><div class="card stat-card text-success"><h5>নিট লাভ</h5><h3>৳${data.netProfit}</h3></div></div>
+        <div class="col-6 col-md-4 col-lg-2"><div class="card stat-card text-primary"><h5>পার্টনার ভাগ</h5><h3>৳${data.partnerShare}</h3></div></div>`;
       document.getElementById('statSummary').innerHTML = stats;
-      
       let html = "";
       data.rawRows.forEach((r, i) => {
         html += `<tr id="row-${i}">
@@ -311,15 +462,11 @@ function initYearlyAnalysis() {
             data: {
                 labels: data.labels,
                 datasets: [
-                    { label: 'বিক্রয় (৳)', data: data.sales, backgroundColor: '#3b82f6' },
-                    { label: 'নিট লাভ (৳)', data: data.profits, backgroundColor: '#10b981' }
+                    { label: 'বিক্রয়', data: data.sales, backgroundColor: '#3b82f6' },
+                    { label: 'নিট লাভ', data: data.profits, backgroundColor: '#10b981' }
                 ]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
-            }
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
         });
     });
 }
@@ -328,11 +475,11 @@ function editRow(index, date, sales, profit, exp, labor) {
   const row = document.getElementById(`row-${index}`);
   row.innerHTML = `
     <td>${date}</td>
-    <td><input type="number" id="edit-s-${index}" style="width:80px" value="${sales}"></td>
-    <td><input type="number" id="edit-p-${index}" style="width:80px" value="${profit}"></td>
-    <td><input type="number" id="edit-e-${index}" style="width:80px" value="${exp}"></td>
-    <td><input type="number" id="edit-l-${index}" style="width:80px" value="${labor}"></td>
-    <td><button class="btn btn-sm btn-success" onclick="updateRow(${index}, '${date}')">Save</button></td>`;
+    <td><input type="number" id="edit-s-${index}" style="width:70px" value="${sales}"></td>
+    <td><input type="number" id="edit-p-${index}" style="width:70px" value="${profit}"></td>
+    <td><input type="number" id="edit-e-${index}" style="width:70px" value="${exp}"></td>
+    <td><input type="number" id="edit-l-${index}" style="width:70px" value="${labor}"></td>
+    <td><button class="btn btn-sm btn-success" onclick="updateRow(${index}, '${date}')"><i class="fas fa-check"></i></button></td>`;
 }
 
 function updateRow(index, date) {
@@ -342,13 +489,17 @@ function updateRow(index, date) {
 
 function saveData() {
   const data = { action: "addEntry", date: document.getElementById('date').value, sales: document.getElementById('sales').value, dailyProfit: document.getElementById('profit').value, expense: document.getElementById('expense').value, labor: document.getElementById('labor').value, role: userRole };
+  if(!data.date) { alert("তারিখ দিন!"); return; }
+  document.getElementById('saveBtn').disabled = true;
+  document.getElementById('saveBtn').innerText = "সেভ হচ্ছে...";
   fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(data) }).then(() => { 
     alert("সেভ হয়েছে!"); 
-    // ক্লিয়ার ইনপুট
     document.getElementById('sales').value = '';
     document.getElementById('profit').value = '';
     document.getElementById('expense').value = '';
     document.getElementById('labor').value = '';
+    document.getElementById('saveBtn').disabled = false;
+    document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save me-2"></i>ডাটা সেভ করুন';
     initDashboard(); 
   });
 }
@@ -357,13 +508,14 @@ function saveMonthly() {
   const data = { action: "addFixedExpense", month: document.getElementById('mMonth').value, shopRent: document.getElementById('fShop').value, godownRent: document.getElementById('fGodown').value, salary: document.getElementById('fSalary').value, electric: document.getElementById('fElec').value, wifi: document.getElementById('fWifi').value, returns: document.getElementById('fReturn').value, others: document.getElementById('fOther').value };
   fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(data) }).then(() => {
     alert("মাসিক খরচ সেভ/আপডেট হয়েছে!");
-    showPage('reportPage'); // সেভ হওয়ার পর আবার রিপোর্টে নিয়ে যাবে
+    showPage('reportPage');
   });
 }
 
 function downloadPDF() {
   const element = document.getElementById('printableArea');
-  html2pdf().from(element).save('Monthly_Report.pdf');
+  const opt = { margin: 0.5, filename: 'Monthly_Report.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
+  html2pdf().set(opt).from(element).save();
 }
 </script>
 </body>
