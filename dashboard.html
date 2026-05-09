@@ -430,7 +430,7 @@
                     }
                 } catch(error) {
                     console.error("Upload error:", error);
-                    showToast("❌ আপলোড ব্যর্থ: " + error.message, "error");
+                    showToast("❌ আপলোড ব্যর্থ! ইন্টারনেট চেক করুন।", "error");
                 }
             };
             reader.readAsDataURL(file);
@@ -445,9 +445,13 @@
         }
         
         function showFullImage(src) {
+            if(!src || src === "" || src === "undefined") {
+                showToast("❌ এই পণ্যের কোন ছবি নেই!", "error");
+                return;
+            }
             let modal = document.createElement('div');
             modal.className = 'image-modal';
-            modal.innerHTML = `<img src="${src}" onerror="this.src='https://placehold.co/200x200?text=No+Image'">`;
+            modal.innerHTML = `<img src="${src}" onerror="this.src='https://placehold.co/400x400?text=No+Image'">`;
             modal.onclick = () => modal.remove();
             document.body.appendChild(modal);
         }
@@ -469,10 +473,21 @@
                 
                 if(data && data.success && data.data && data.data.length > 0) {
                     inventory = data.data.map((row, idx) => ({
-                        id: idx, code: row[0] || "", brand: row[1] || "", size: row[2] || "",
-                        category: row[3] || "", type: row[4] || "", grade: row[5] || "",
-                        name: row[6] || "", qty: parseInt(row[7]) || 0, image: row[8] || ""
+                        id: idx, 
+                        code: row[0] || "", 
+                        brand: row[1] || "", 
+                        size: row[2] || "",
+                        category: row[3] || "", 
+                        type: row[4] || "", 
+                        grade: row[5] || "",
+                        name: row[6] || "", 
+                        qty: parseInt(row[7]) || 0, 
+                        image: row[8] || ""
                     }));
+                    
+                    // ডিবাগ: ইমেজ URL কনসোলে দেখান
+                    console.log("📸 Loaded images:", inventory.filter(i => i.image).map(i => ({code: i.code, image: i.image})));
+                    
                     refreshAllUI();
                     updateMinusFilterOptions();
                     showToast(`✅ ${inventory.length}টি পণ্য লোড সফল!`, "success");
@@ -561,10 +576,25 @@
             }
         }
         
+        // ==================== escapeHtml ফাংশন ====================
+        function escapeHtml(str) {
+            if(!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if(m === '&') return '&amp;';
+                if(m === '<') return '&lt;';
+                if(m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
         // ==================== ইউআই ফাংশন ====================
         function refreshAllUI() {
-            updateDashboardStats(); updateDashboardChart(); updateDashboardAlerts(); 
-            updateQuickStockTable(); updateFullAlertList(); updateFullStockTable(); 
+            updateDashboardStats(); 
+            updateDashboardChart(); 
+            updateDashboardAlerts(); 
+            updateQuickStockTable(); 
+            updateFullAlertList(); 
+            updateFullStockTable(); 
             updateChartSections();
         }
         
@@ -585,16 +615,16 @@
         
         function updateDashboardAlerts() {
             let low = inventory.filter(i=>i.qty<=10);
-            document.getElementById('dashboardLowStockList').innerHTML = low.length? low.map(i=>`<div class="flex justify-between border-b pb-2"><span class="font-mono text-xs">${i.code}</span><span class="font-bold text-amber-600">${i.qty} পিস</span><span class="text-xs">${i.brand}</span></div>`).join('') : '<div class="text-emerald-600 text-center py-4">✅ সব স্টক স্বাভাবিক</div>';
+            document.getElementById('dashboardLowStockList').innerHTML = low.length? low.map(i=>`<div class="flex justify-between border-b pb-2"><span class="font-mono text-xs">${escapeHtml(i.code)}</span><span class="font-bold text-amber-600">${i.qty} পিস</span><span class="text-xs">${escapeHtml(i.brand)}</span></div>`).join('') : '<div class="text-emerald-600 text-center py-4">✅ সব স্টক স্বাভাবিক</div>';
         }
         
         function updateQuickStockTable() {
-            document.getElementById('quickStockTable').innerHTML = inventory.slice(0,8).map(i=>`<tr class="border-b"><td class="p-2">${i.image ? `<img src="${i.image}" class="w-8 h-8 rounded object-cover" onerror="this.src='https://placehold.co/40x40?text=No'">` : '<div class="w-8 h-8 bg-slate-100 rounded flex items-center justify-center"><i class="fas fa-image text-slate-400 text-xs"></i></div>'}</td><td class="p-2 font-mono text-xs">${i.code}</td><td class="text-xs">${i.brand}</td><td class="font-bold">${i.qty}</td></td>`).join('');
+            document.getElementById('quickStockTable').innerHTML = inventory.slice(0,8).map(i=>`<tr class="border-b"><td class="p-2">${i.image ? `<img src="${i.image}" class="w-8 h-8 rounded object-cover" onerror="this.src='https://placehold.co/40x40?text=No'">` : '<div class="w-8 h-8 bg-slate-100 rounded flex items-center justify-center"><i class="fas fa-image text-slate-400 text-xs"></i></div>'}</td><td class="p-2 font-mono text-xs">${escapeHtml(i.code)}</td><td class="text-xs">${escapeHtml(i.brand)}</td><td class="font-bold">${i.qty}</td></tr>`).join('');
         }
         
         function updateFullAlertList() {
             let low = inventory.filter(i=>i.qty<=10);
-            document.getElementById('fullAlertList').innerHTML = low.length? low.map(i=>`<div class="bg-amber-50 p-4 rounded-xl border border-amber-200 flex justify-between"><div class="flex gap-3"><img src="${i.image}" class="w-12 h-12 rounded object-cover" onerror="this.src='https://placehold.co/50x50?text=No'"><div><span class="font-bold">${i.code}</span><p class="text-xs text-slate-500">${i.brand}</p></div></div><div><span class="text-2xl font-black text-amber-600">${i.qty}</span><span class="text-xs"> পিস</span><button onclick="quickMinusFromAlert('${i.code}')" class="ml-3 bg-orange-500 text-white text-xs px-3 py-1.5 rounded-lg"><i class="fas fa-minus-circle"></i> মাইনাস</button></div></div>`).join('') : '<div class="text-emerald-600 text-center py-8">🎉 কোনো লো স্টক নেই!</div>';
+            document.getElementById('fullAlertList').innerHTML = low.length? low.map(i=>`<div class="bg-amber-50 p-4 rounded-xl border border-amber-200 flex justify-between"><div class="flex gap-3"><img src="${i.image || 'https://placehold.co/50x50?text=No'}" class="w-12 h-12 rounded object-cover" onerror="this.src='https://placehold.co/50x50?text=No'"><div><span class="font-bold">${escapeHtml(i.code)}</span><p class="text-xs text-slate-500">${escapeHtml(i.brand)}</p></div></div><div><span class="text-2xl font-black text-amber-600">${i.qty}</span><span class="text-xs"> পিস</span><button onclick="quickMinusFromAlert('${i.code}')" class="ml-3 bg-orange-500 text-white text-xs px-3 py-1.5 rounded-lg"><i class="fas fa-minus-circle"></i> মাইনাস</button></div></div>`).join('') : '<div class="text-emerald-600 text-center py-8">🎉 কোনো লো স্টক নেই!</div>';
         }
         
         function updateFullStockTable() {
@@ -604,8 +634,28 @@
             let catF = document.getElementById('filterCategoryAdv')?.value || "";
             let filtered = inventory.filter(i => (!search || i.code.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search)) && (!brandF || i.brand===brandF) && (!sizeF || i.size===sizeF) && (!catF || i.category===catF));
             let tbody = document.getElementById('fullStockTableBody');
-            if(!filtered.length) tbody.innerHTML='<td><td colspan="6" class="text-center py-8 text-slate-400">🔍 কোন পণ্য পাওয়া যায়নি</td></tr>';
-            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b"><td class="p-3"><img src="${item.image || 'https://placehold.co/50x50?text=No'}" class="product-thumb" onclick="showFullImage('${item.image}')" onerror="this.src='https://placehold.co/50x50?text=No'"><\/td><td class="p-3 font-mono text-xs font-bold text-emerald-600">${item.code}<\/td><td class="p-3"><span class="font-semibold">${item.brand}</span><div class="text-[10px] text-slate-400">${item.size}</div><\/td><td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100">${item.type}</span><\/td><td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}<\/td><td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg"><i class="fas fa-cart-minus"></i> মাইনাস</button><\/td></tr>`).join('');
+            if(!filtered.length) {
+                tbody.innerHTML='<tr><td colspan="6" class="text-center py-8 text-slate-400">🔍 কোন পণ্য পাওয়া যায়নি</td></tr>';
+            } else {
+                tbody.innerHTML = filtered.map(item => {
+                    // ⭐ ইমেজ URL সঠিক কিনা চেক করুন
+                    let imgSrc = item.image && item.image !== "" && item.image !== "undefined" ? item.image : 'https://placehold.co/50x50?text=No+Image';
+                    
+                    return `<tr class="border-b">
+                        <td class="p-3">
+                            <img src="${imgSrc}" 
+                                 class="product-thumb" 
+                                 onclick="showFullImage('${imgSrc}')" 
+                                 onerror="this.onerror=null; this.src='https://placehold.co/50x50?text=No+Image'; console.log('Failed to load:', '${imgSrc}')">
+                          </td>
+                        <td class="p-3 font-mono text-xs font-bold text-emerald-600">${escapeHtml(item.code)}</td>
+                        <td class="p-3"><span class="font-semibold">${escapeHtml(item.brand)}</span><div class="text-[10px] text-slate-400">${escapeHtml(item.size)}</div></td>
+                        <td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100">${item.type}</span></td>
+                        <td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}</td>
+                        <td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg"><i class="fas fa-cart-minus"></i> মাইনাস</button></td>
+                    </tr>`;
+                }).join('');
+            }
         }
         
         function updateChartSections() {
@@ -649,9 +699,9 @@
         function renderMinusSearchResults() {
             let filtered = getFilteredForMinus();
             if(filtered.length === 0) { minusResults.innerHTML = '<div class="p-3 text-slate-400">❌ কোন পণ্য পাওয়া যায়নি</div>'; minusResults.classList.remove('hidden'); return; }
-            minusResults.innerHTML = filtered.map(i=> `<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b flex justify-between" data-code="${i.code}"><div class="flex gap-2"><img src="${i.image || 'https://placehold.co/30x30?text=No'}" class="w-8 h-8 rounded object-cover"><span class="font-mono font-bold text-emerald-600">${i.code}</span></div><span>স্টক: <strong>${i.qty}</strong></span></div>`).join('');
+            minusResults.innerHTML = filtered.map(i=> `<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b flex justify-between" data-code="${i.code}"><div class="flex gap-2"><img src="${i.image || 'https://placehold.co/30x30?text=No'}" class="w-8 h-8 rounded object-cover"><span class="font-mono font-bold text-emerald-600">${escapeHtml(i.code)}</span></div><span>স্টক: <strong>${i.qty}</strong></span></div>`).join('');
             minusResults.classList.remove('hidden');
-            document.querySelectorAll('#minusSearchResults div[data-code]').forEach(el=>{ el.addEventListener('click',()=>{ let code=el.getAttribute('data-code'); let prod=inventory.find(p=>p.code===code); if(prod){ selectedMinusProduct=prod; minusSearch.value=prod.code; minusPreview.innerHTML=`✅ নির্বাচিত: ${prod.brand} (${prod.code}) | স্টক: ${prod.qty}`; minusPreview.classList.remove('hidden'); minusResults.classList.add('hidden'); } }); });
+            document.querySelectorAll('#minusSearchResults div[data-code]').forEach(el=>{ el.addEventListener('click',()=>{ let code=el.getAttribute('data-code'); let prod=inventory.find(p=>p.code===code); if(prod){ selectedMinusProduct=prod; minusSearch.value=prod.code; minusPreview.innerHTML=`✅ নির্বাচিত: ${escapeHtml(prod.brand)} (${prod.code}) | স্টক: ${prod.qty}`; minusPreview.classList.remove('hidden'); minusResults.classList.add('hidden'); } }); });
         }
         
         if(minusSearch) {
@@ -688,83 +738,37 @@
         }
         document.querySelectorAll('.nav-item-light').forEach(nav=>nav.addEventListener('click',()=>switchMenu(nav.getAttribute('data-menu'))));
         
-        // ==================== লগইন সিস্টেম (আপডেটেড) ====================
+        // ==================== লগইন সিস্টেম ====================
         const DEFAULT_PASSWORD = "admin123";
         const SESSION_KEY = "tiles_app_session";
         
-        // আপডেটেড লগইন ফাংশন - কনসোল লগ সহ
         function verifyLogin() { 
             let pass = document.getElementById('loginPassword').value;
-            console.log("🔐 লগইন চেষ্টা - দেওয়া পাসওয়ার্ড:", pass);
-            console.log("🔐 সঠিক পাসওয়ার্ড:", DEFAULT_PASSWORD);
-            
             if(pass === DEFAULT_PASSWORD) { 
-                console.log("✅ পাসওয়ার্ড মিলেছে!");
                 localStorage.setItem(SESSION_KEY, "authenticated");
                 document.getElementById('loginPage').style.display = 'none'; 
                 document.getElementById('mainApp').style.display = 'block'; 
-                if(typeof loadFromSheet === 'function') loadFromSheet(); 
-                if(document.getElementById('rememberPassword')?.checked) {
-                    localStorage.setItem('tiles_remember', 'true');
-                }
-                showToast("✅ লগইন সফল! স্বাগতম।", "success");
+                loadFromSheet(); 
+                showToast("✅ লগইন সফল!", "success");
             } else { 
-                console.log("❌ পাসওয়ার্ড মিলেনি!");
-                alert('❌ ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।\n\nপাসওয়ার্ড: admin123'); 
+                alert('❌ ভুল পাসওয়ার্ড!\nপাসওয়ার্ড: admin123'); 
             } 
         }
         
-        function showPasswordHint() { 
-            alert('🔑 ডিফল্ট পাসওয়ার্ড: admin123\n\nআপনি চাইলে এই পাসওয়ার্ড HTML এডিট করে পরিবর্তন করতে পারেন।'); 
-        }
-        
-        function logout() { 
-            localStorage.removeItem(SESSION_KEY);
-            document.getElementById('mainApp').style.display = 'none'; 
-            document.getElementById('loginPage').style.display = 'flex';
-            document.getElementById('loginPassword').value = '';
-            showToast("🔓 লগআউট সম্পন্ন হয়েছে", "info");
-        }
-        
-        // আপডেটেড চেক সেশন ফাংশন - কনসোল লগ সহ
+        function showPasswordHint() { alert('🔑 পাসওয়ার্ড: admin123'); }
+        function logout() { localStorage.removeItem(SESSION_KEY); document.getElementById('mainApp').style.display='none'; document.getElementById('loginPage').style.display='flex'; document.getElementById('loginPassword').value = ''; }
         function checkSession() { 
-            const session = localStorage.getItem(SESSION_KEY);
-            console.log("🔍 সেশন চেক - বর্তমান সেশন:", session);
-            
-            if(session === "authenticated") { 
-                console.log("✅ সেশন পাওয়া গেছে, অটো-লগইন হচ্ছে");
-                document.getElementById('loginPage').style.display = 'none'; 
-                document.getElementById('mainApp').style.display = 'block'; 
-                if(typeof loadFromSheet === 'function') loadFromSheet();
+            if(localStorage.getItem(SESSION_KEY) === "authenticated") { 
+                document.getElementById('loginPage').style.display='none'; 
+                document.getElementById('mainApp').style.display='block'; 
+                loadFromSheet();
                 return true;
             }
-            console.log("❌ সেশন পাওয়া যায়নি, লগইন পেজ দেখানো হচ্ছে");
             return false;
         }
         
-        // ফোর্স লগইন ফাংশন (যদি লগইন সমস্যা হয় তাহলে কনসোলে forceLogin() টাইপ করুন)
-        window.forceLogin = function() {
-            localStorage.setItem(SESSION_KEY, "authenticated");
-            console.log("⚠️ ফোর্স লগইন সক্রিয় করা হয়েছে");
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            if(typeof loadFromSheet === 'function') loadFromSheet();
-            showToast("🔓 ফোর্স লগইন সফল!", "success");
-        };
-        
-        // লগইন পেজ ক্লিয়ার করার ফাংশন (কনসোলে loginClear() টাইপ করুন)
-        window.loginClear = function() {
-            localStorage.removeItem(SESSION_KEY);
-            document.getElementById('loginPage').style.display = 'flex';
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('loginPassword').value = '';
-            console.log("🔄 লগইন সেশন ক্লিয়ার করা হয়েছে");
-            showToast("লগইন সেশন ক্লিয়ার করা হয়েছে", "info");
-        };
-        
         document.getElementById('date-display').innerText = new Date().toLocaleDateString('bn-BD', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
         
-        // পেজ লোড হলে সেশন চেক করুন
         if(!checkSession()) { 
             document.getElementById('loginPage').style.display = 'flex'; 
             document.getElementById('mainApp').style.display = 'none'; 
@@ -785,7 +789,6 @@
         
         console.log("🎉 অ্যাপ্লিকেশন লোড হয়েছে!");
         console.log("🔑 পাসওয়ার্ড:", DEFAULT_PASSWORD);
-        console.log("💡 কনসোলে 'forceLogin()' টাইপ করে সরাসরি লগইন করতে পারেন");
     </script>
 </body>
 </html>
