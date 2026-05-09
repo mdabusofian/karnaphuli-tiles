@@ -3,30 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title> নিউ কর্ণফুলী টাইলস | ইনভেন্টরি</title>
+    <title>নিউ কর্ণফুলী টাইলস | ইনভেন্টরি</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Solaiman Lipi Font - Multiple Sources for Mobile Support -->
     <style>
-        /* Solaiman Lipi Font with Fallbacks */
-        @font-face {
-            font-family: 'SolaimanLipi';
-            src: url('https://raw.githubusercontent.com/me-shaon/bangla-font/master/SolaimanLipi/SolaimanLipi.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-        
-        @font-face {
-            font-family: 'SolaimanLipi';
-            src: url('https://fonts.cdnfonts.com/s/15285/SolaimanLipi.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-        
+        /* System Font Stack - Works on all devices */
         * {
-            font-family: 'SolaimanLipi', 'Solaiman Lipi', 'Hind Siliguri', 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'Hind Siliguri', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
+        }
+        
+        /* Bengali Font Support */
+        @font-face {
+            font-family: 'Hind Siliguri';
+            src: local('Hind Siliguri'), local('Noto Sans Bengali');
+            font-display: swap;
         }
         
         body {
@@ -202,7 +194,13 @@
         }
         .refresh-btn:hover {
             background: #e2e8f0;
-            transform: rotate(180deg);
+        }
+        .refresh-btn.rotating i {
+            animation: rotate 0.5s ease;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -246,7 +244,7 @@
                         <i class="fas fa-cubes text-white text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-slate-800">নিউ কর্ণফুলী টাইলস </h1>
+                        <h1 class="text-xl font-bold text-slate-800">নিউ কর্ণফুলী টাইলস</h1>
                         <p class="text-emerald-600 text-[10px] font-medium">ইনভেন্টরি ম্যানেজমেন্ট</p>
                     </div>
                 </div>
@@ -305,7 +303,6 @@
                 <div class="card-soft p-6">
                     <h2 class="text-2xl font-bold text-slate-800 mb-4"><i class="fas fa-minus-circle text-orange-500 mr-2"></i> দ্রুত স্টক মাইনাস</h2>
                     
-                    <!-- Advanced Filters for Stock Minus -->
                     <div class="bg-slate-50 rounded-xl p-4 mb-4">
                         <h4 class="font-semibold text-slate-700 text-sm mb-3"><i class="fas fa-filter mr-1 text-emerald-500"></i> ফিল্টার করে পণ্য খুঁজুন</h4>
                         <div class="filter-group" style="display: flex; flex-wrap: wrap; gap: 12px;">
@@ -315,7 +312,6 @@
                         </div>
                     </div>
                     
-                    <!-- Search Input -->
                     <div class="relative mb-4">
                         <i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i>
                         <input id="stockMinusSearch" placeholder="প্রোডাক্ট কোড, নাম বা ব্র্যান্ড লিখুন..." class="form-input pl-11">
@@ -325,7 +321,7 @@
                     <div id="selectedMinusPreview" class="bg-emerald-50 p-3 rounded-xl mb-4 hidden text-slate-700 text-sm"></div>
                     <div class="flex gap-3"><input id="minusQty" type="number" value="1" class="form-input w-28 text-center"><button id="confirmMinusBtn" class="btn-warning text-white font-bold px-6 py-3 rounded-xl flex-1 transition-all"><i class="fas fa-trash-alt mr-2"></i> স্টক মাইনাস করুন</button></div>
                 </div>
-                <div class="mt-4 card-soft p-4"><h3 class="font-bold text-slate-700 text-sm mb-2">দ্রুত ভিউ: বর্তমান স্টক</h3><div class="overflow-x-auto max-h-52 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-slate-100"><tr class="text-slate-600"><th class="p-2 text-left">কোড</th><th class="p-2 text-left">ব্র্যান্ড</th><th class="p-2 text-left">সাইজ</th><th class="p-2 text-left">স্টক</th></tr></thead><tbody id="quickStockTable"></tbody></table></div></div>
+                <div class="mt-4 card-soft p-4"><h3 class="font-bold text-slate-700 text-sm mb-2">দ্রুত ভিউ: বর্তমান স্টক</h3><div class="overflow-x-auto max-h-52 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-slate-100"><tr class="text-slate-600"><th class="p-2 text-left">কোড</th><th class="p-2 text-left">ব্র্যান্ড</th><th class="p-2 text-left">সাইজ</th><th class="p-2 text-left">স্টক</th></table></thead><tbody id="quickStockTable"></tbody></table></div></div>
             </div>
 
             <!-- ALERT SECTION -->
@@ -336,10 +332,10 @@
             <!-- ADVANCED FILTER + STOCK LIST -->
             <div id="stockListSection" class="hidden fade-in">
                 <div class="card-soft p-5 mb-4">
-                    <h3 class="font-bold text-slate-700 mb-3"><i class="fas fa-filter text-emerald-500 mr-2"></i>  ফিল্টার অপশন</h3>
+                    <h3 class="font-bold text-slate-700 mb-3"><i class="fas fa-filter text-emerald-500 mr-2"></i> ফিল্টার অপশন</h3>
                     <div class="filter-group" style="display: flex; flex-wrap: wrap; gap: 12px;">
                         <div style="flex: 1; min-width: 140px;"><input id="filterSearch" placeholder="কোড/নাম/ব্র্যান্ড" class="form-input text-sm py-2"></div>
-                        <div style="flex: 1; min-width: 140px;"><select id="filterBrandAdv" class="form-select text-sm py-2"><option value=""> সকল ব্র্যান্ড</option></select></div>
+                        <div style="flex: 1; min-width: 140px;"><select id="filterBrandAdv" class="form-select text-sm py-2"><option value="">সকল ব্র্যান্ড</option></select></div>
                         <div style="flex: 1; min-width: 140px;"><select id="filterSizeAdv" class="form-select text-sm py-2"><option value="">সকল সাইজ</option></select></div>
                         <div style="flex: 1; min-width: 140px;"><select id="filterCategoryAdv" class="form-select text-sm py-2"><option value="">সকল ক্যাটাগরি</option></select></div>
                     </div>
@@ -371,12 +367,13 @@
 
     <script>
         // ==================== GOOGLE SHEETS CONFIG ====================
-        // IMPORTANT: Replace with your actual Google Apps Script Web App URL
+        // আপনার Google Apps Script Web App URL এখানে বসান
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1381qFXiRP03IxWtju0p3kyYkK23HWn7BtiE_aR4KHx7Oxho7grCkb3IukyLsAbCbBQ/exec";
         
         let inventory = [];
         let charts = {};
         let selectedMinusProduct = null;
+        let isLoading = false;
         
         // Toast Notification
         function showToast(message, type = "info") {
@@ -385,36 +382,35 @@
             toast.style.background = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#1e293b';
             toast.innerHTML = message;
             document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
+            setTimeout(() => toast.remove(), 2500);
         }
         
         // Manual Refresh Function
         async function manualRefresh() {
+            const refreshBtn = document.querySelector('.refresh-btn');
+            refreshBtn.classList.add('rotating');
             showToast("ডাটা রিফ্রেশ করা হচ্ছে...", "info");
             await loadFromSheet();
+            setTimeout(() => refreshBtn.classList.remove('rotating'), 500);
         }
         
-        // Load from Google Sheet with better error handling
+        // Load from Google Sheet
         async function loadFromSheet() {
+            if(isLoading) return;
+            isLoading = true;
+            
             try {
-                showToast("ডাটা লোড হচ্ছে...", "info");
-                
-                // Using fetch with proper mode
                 const response = await fetch(`${SCRIPT_URL}?action=getData&t=${Date.now()}`, {
                     method: 'GET',
                     mode: 'cors',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    headers: { 'Accept': 'application/json' }
                 });
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const data = await response.json();
                 
-                if(data && data.success && data.data) {
+                if(data && data.success && data.data && data.data.length > 0) {
                     inventory = data.data.map((row, idx) => ({
                         id: idx,
                         code: row[0] || "",
@@ -430,31 +426,17 @@
                     updateMinusFilterOptions();
                     showToast(`✅ ${inventory.length}টি পণ্য লোড সফল!`, "success");
                 } else {
-                    // If no data, load sample data
-                    loadSampleData();
-                    showToast("📋 স্যাম্পল ডাটা লোড করা হয়েছে", "info");
+                    inventory = [];
+                    refreshAllUI();
+                    showToast("📋 কোন পণ্য নেই। নতুন পণ্য যোগ করুন।", "info");
                 }
             } catch(e) { 
                 console.error("Load error:", e); 
-                showToast("⚠️ গুগল শিট সংযোগ ব্যর্থ! স্যাম্পল ডাটা ব্যবহার হচ্ছে", "error");
-                loadSampleData();
-            }
-        }
-        
-        // Sample Data (Fallback if Google Sheet connection fails)
-        function loadSampleData() {
-            if(inventory.length === 0) {
-                inventory = [
-                    { id:1, brand:"RAK Ceramics", size:"12x24 Inch", category:"Floor", name:"Glossy White", code:"RAK-1124W", type:"Light", grade:"A Grade", qty:45 },
-                    { id:2, brand:"Fresh Ceramics", size:"16x16 Inch", category:"Floor", name:"Wooden Brown", code:"FRESH-1616", type:"Deep", grade:"B Grade", qty:8 },
-                    { id:3, brand:"X Ceramics", size:"12x12 Inch", category:"Wall", name:"Marble Art", code:"X-MAR1212", type:"HL", grade:"A Grade", qty:120 },
-                    { id:4, brand:"Mir Ceramics", size:"8x12 Inch", category:"Wall", name:"Subway", code:"MIR-812", type:"General", grade:"A Grade", qty:75 },
-                    { id:5, brand:"DBL Ceramics", size:"24x24 Inch", category:"Both", name:"Statuario", code:"DBL-STA24", type:"Light", grade:"B Grade", qty:3 },
-                    { id:6, brand:"Akij Ceramics", size:"24x48 Inch", category:"Floor", name:"Vitrified", code:"AKIJ-2448", type:"Deep", grade:"A Grade", qty:22 },
-                    { id:7, brand:"Sheltech Ceramics", size:"32x32 Inch", category:"Floor", name:"Grand", code:"SHEL-3232", type:"HL", grade:"A Grade", qty:14 }
-                ];
+                showToast("⚠️ গুগল শিট সংযোগ ব্যর্থ! চেক করুন URL ঠিক আছে কিনা।", "error");
+                inventory = [];
                 refreshAllUI();
-                updateMinusFilterOptions();
+            } finally {
+                isLoading = false;
             }
         }
         
@@ -476,22 +458,31 @@
                 qty: parseInt(document.getElementById('stockPcs').value) || 0
             };
             
-            // Add to local inventory first
-            inventory.push({ id: Date.now(), ...product });
-            refreshAllUI();
-            updateMinusFilterOptions();
+            showToast("পণ্য যোগ করা হচ্ছে...", "info");
             
-            // Try to save to Google Sheet
             try {
-                await fetch(SCRIPT_URL, { 
+                // Try to save to Google Sheet via POST
+                const response = await fetch(SCRIPT_URL, { 
                     method: 'POST', 
-                    mode: 'no-cors', 
+                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify({ action: 'addProduct', product: product }) 
                 });
-                showToast("✅ পণ্য যোগ করা হয়েছে!", "success");
+                
+                if(response.ok) {
+                    showToast("✅ পণ্য গুগল শিটে যোগ হয়েছে!", "success");
+                    // Reload data from sheet
+                    await loadFromSheet();
+                } else {
+                    throw new Error("Server error");
+                }
             } catch(e) { 
-                showToast("✅ পণ্য লোকালি যোগ হয়েছে (গুগল শিট সংযোগ নেই)", "info");
+                console.error("Add error:", e);
+                showToast("⚠️ গুগল শিটে যোগ করতে ব্যর্থ! URL চেক করুন।", "error");
+                // Still add to local for demo
+                inventory.push({ id: Date.now(), ...product });
+                refreshAllUI();
+                updateMinusFilterOptions();
             }
             
             document.getElementById('prodCode').value = ''; 
@@ -501,22 +492,27 @@
         
         // Update Stock
         async function updateStockInSheet(code, newQty) {
-            // Update local inventory
-            let product = inventory.find(p => p.code === code);
-            if(product) product.qty = newQty;
-            refreshAllUI();
-            
-            // Try to update Google Sheet
             try {
-                await fetch(SCRIPT_URL, { 
+                const response = await fetch(SCRIPT_URL, { 
                     method: 'POST', 
-                    mode: 'no-cors', 
+                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify({ action: 'updateStock', code: code, qty: newQty }) 
                 });
-                showToast("✅ স্টক আপডেট হয়েছে!", "success");
+                
+                if(response.ok) {
+                    showToast("✅ স্টক আপডেট হয়েছে!", "success");
+                    await loadFromSheet(); // Reload fresh data
+                } else {
+                    throw new Error("Update failed");
+                }
             } catch(e) { 
-                showToast("✅ স্টক লোকালি আপডেট হয়েছে", "info");
+                console.error("Update error:", e);
+                showToast("⚠️ স্টক আপডেট ব্যর্থ!", "error");
+                // Update local as fallback
+                let product = inventory.find(p => p.code === code);
+                if(product) product.qty = newQty;
+                refreshAllUI();
             }
         }
         
@@ -524,17 +520,32 @@
         function updateMinusFilterOptions() {
             let brands = [...new Set(inventory.map(i=>i.brand))];
             let sizes = [...new Set(inventory.map(i=>i.size))];
+            
             let brandSelect = document.getElementById('minusFilterBrand');
             let sizeSelect = document.getElementById('minusFilterSize');
-            if(brandSelect) { let curr = brandSelect.value; brandSelect.innerHTML = '<option value="">সব ব্র্যান্ড</option>' + brands.map(b=>`<option value="${b}">${b}</option>`).join(''); if(curr && brands.includes(curr)) brandSelect.value = curr; }
-            if(sizeSelect) { let curr = sizeSelect.value; sizeSelect.innerHTML = '<option value="">সব সাইজ</option>' + sizes.map(s=>`<option value="${s}">${s}</option>`).join(''); if(curr && sizes.includes(curr)) sizeSelect.value = curr; }
-            
-            // Also update brand filter in stock list
             let brandFilter = document.getElementById('filterBrandAdv');
-            if(brandFilter) { let curr = brandFilter.value; brandFilter.innerHTML = '<option value="">📌 সকল ব্র্যান্ড</option>' + brands.map(b=>`<option value="${b}">${b}</option>`).join(''); if(curr && brands.includes(curr)) brandFilter.value = curr; }
-            
             let sizeFilter = document.getElementById('filterSizeAdv');
-            if(sizeFilter) { let curr = sizeFilter.value; sizeFilter.innerHTML = '<option value="">📏 সকল সাইজ</option>' + sizes.map(s=>`<option value="${s}">${s}</option>`).join(''); if(curr && sizes.includes(curr)) sizeFilter.value = curr; }
+            
+            if(brandSelect) { 
+                let curr = brandSelect.value; 
+                brandSelect.innerHTML = '<option value="">সব ব্র্যান্ড</option>' + brands.map(b=>`<option value="${b}">${b}</option>`).join(''); 
+                if(curr && brands.includes(curr)) brandSelect.value = curr; 
+            }
+            if(sizeSelect) { 
+                let curr = sizeSelect.value; 
+                sizeSelect.innerHTML = '<option value="">সব সাইজ</option>' + sizes.map(s=>`<option value="${s}">${s}</option>`).join(''); 
+                if(curr && sizes.includes(curr)) sizeSelect.value = curr; 
+            }
+            if(brandFilter) { 
+                let curr = brandFilter.value; 
+                brandFilter.innerHTML = '<option value="">সকল ব্র্যান্ড</option>' + brands.map(b=>`<option value="${b}">${b}</option>`).join(''); 
+                if(curr && brands.includes(curr)) brandFilter.value = curr; 
+            }
+            if(sizeFilter) { 
+                let curr = sizeFilter.value; 
+                sizeFilter.innerHTML = '<option value="">সকল সাইজ</option>' + sizes.map(s=>`<option value="${s}">${s}</option>`).join(''); 
+                if(curr && sizes.includes(curr)) sizeFilter.value = curr; 
+            }
         }
         
         // Get filtered products for minus section
@@ -601,14 +612,17 @@
             let filtered = inventory.filter(i => (!search || i.code.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search) || i.name.toLowerCase().includes(search)) && (!brandF || i.brand===brandF) && (!sizeF || i.size===sizeF) && (!catF || i.category===catF));
             let tbody = document.getElementById('fullStockTableBody');
             if(!filtered.length) tbody.innerHTML='<tr><td colspan="5" class="text-center py-8 text-slate-400">🔍 কোন পণ্য পাওয়া যায়নি</td></tr>';
-            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b border-slate-100"><td class="p-3 font-mono text-xs font-bold text-emerald-600">${item.code}</td><td class="p-3"><span class="font-semibold text-slate-800">${item.brand}</span><div class="text-[10px] text-slate-400">${item.size}</div></tr><td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">${item.type}</span></td><td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}</td><td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg transition"><i class="fas fa-cart-minus mr-1"></i> মাইনাস</button></td></tr>`).join('');
+            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b border-slate-100"><td class="p-3 font-mono text-xs font-bold text-emerald-600">${item.code}</td><td class="p-3"><span class="font-semibold text-slate-800">${item.brand}</span><div class="text-[10px] text-slate-400">${item.size}</div></td><td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">${item.type}</span></td><td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}</td><td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg transition"><i class="fas fa-cart-minus mr-1"></i> মাইনাস</button></table></tr>`).join('');
         }
         
         function updateChartSections() {
             let typeMap = { Light:0, Deep:0, HL:0, General:0 };
             let brandStock = {};
             inventory.forEach(i=>{ typeMap[i.type]++; brandStock[i.brand] = (brandStock[i.brand]||0)+i.qty; });
-            if(charts.fullType) charts.fullType.destroy(); if(charts.brandStock) charts.brandStock.destroy(); if(charts.line) charts.line.destroy();
+            if(charts.fullType) charts.fullType.destroy(); 
+            if(charts.brandStock) charts.brandStock.destroy(); 
+            if(charts.line) charts.line.destroy();
+            
             charts.fullType = new Chart(document.getElementById('fullTypeChart'), { type:'pie', data:{ labels:['Light','Deep','HL','General'], datasets:[{ data:[typeMap.Light,typeMap.Deep,typeMap.HL,typeMap.General], backgroundColor:['#10b981','#3b82f6','#8b5cf6','#94a3b8'] }] }, options:{ responsive:true } });
             charts.brandStock = new Chart(document.getElementById('brandStockChart'), { type:'bar', data:{ labels:Object.keys(brandStock), datasets:[{ label:'মোট স্টক (পিস)', data:Object.values(brandStock), backgroundColor:'#10b981' }] }, options:{ responsive:true, indexAxis:'y' } });
             charts.line = new Chart(document.getElementById('stockLineChart'), { type:'line', data:{ labels:inventory.slice(0,15).map(i=>i.code), datasets:[{ label:'স্টক পরিমাণ', data:inventory.slice(0,15).map(i=>i.qty), borderColor:'#10b981', tension:0.3, fill:true, backgroundColor:'rgba(16,185,129,0.1)' }] }, options:{ responsive:true } });
@@ -630,7 +644,19 @@
             }
             minusResults.innerHTML = filtered.map(i=> `<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b border-slate-100 flex justify-between items-center search-result-item" data-code="${i.code}"><span class="font-mono text-emerald-600 font-bold">${i.code}</span><span class="text-slate-500">${i.brand} | ${i.size} | স্টক: <strong>${i.qty}</strong></span></div>`).join('');
             minusResults.classList.remove('hidden');
-            document.querySelectorAll('#minusSearchResults div[data-code]').forEach(el=>{ el.addEventListener('click',()=>{ let code=el.getAttribute('data-code'); let prod=inventory.find(p=>p.code===code); if(prod){ selectedMinusProduct=prod; minusSearch.value=prod.code; minusPreview.innerHTML=`✅ নির্বাচিত: <strong>${prod.brand}</strong> (${prod.code}) | সাইজ: ${prod.size} | বর্তমান স্টক: <span class="font-bold text-emerald-600">${prod.qty}</span> পিস`; minusPreview.classList.remove('hidden'); minusResults.classList.add('hidden'); } }); });
+            document.querySelectorAll('#minusSearchResults div[data-code]').forEach(el=>{ 
+                el.addEventListener('click',()=>{ 
+                    let code = el.getAttribute('data-code'); 
+                    let prod = inventory.find(p=>p.code===code); 
+                    if(prod){ 
+                        selectedMinusProduct = prod; 
+                        minusSearch.value = prod.code; 
+                        minusPreview.innerHTML = `✅ নির্বাচিত: <strong>${prod.brand}</strong> (${prod.code}) | সাইজ: ${prod.size} | বর্তমান স্টক: <span class="font-bold text-emerald-600">${prod.qty}</span> পিস`; 
+                        minusPreview.classList.remove('hidden'); 
+                        minusResults.classList.add('hidden'); 
+                    } 
+                }); 
+            });
         }
         
         if(minusSearch) {
@@ -655,7 +681,7 @@
         function quickMinusFromAlert(code) { 
             let prod = inventory.find(i=>i.code===code); 
             if(prod){ 
-                let q=prompt(`"${code}" - কত পিস মাইনাস করবেন?\nবর্তমান স্টক: ${prod.qty}`,"1"); 
+                let q = prompt(`"${code}" - কত পিস মাইনাস করবেন?\nবর্তমান স্টক: ${prod.qty}`,"1"); 
                 if(q && !isNaN(parseInt(q)) && parseInt(q)>0 && parseInt(q)<=prod.qty){ 
                     updateStockInSheet(code, prod.qty-parseInt(q)); 
                 } 
@@ -673,7 +699,10 @@
         
         // Navigation
         function switchMenu(menuId) {
-            ['dashboard','addProduct','stockMinus','alert','stockList','charts'].forEach(m => { let el = document.getElementById(`${m}Section`); if(el) el.classList.add('hidden'); });
+            ['dashboard','addProduct','stockMinus','alert','stockList','charts'].forEach(m => { 
+                let el = document.getElementById(`${m}Section`); 
+                if(el) el.classList.add('hidden'); 
+            });
             document.getElementById(`${menuId}Section`).classList.remove('hidden');
             document.querySelectorAll('.nav-item-light').forEach(n=>n.classList.remove('active'));
             let activeNav = Array.from(document.querySelectorAll('.nav-item-light')).find(n=>n.getAttribute('data-menu')===menuId);
@@ -691,14 +720,10 @@
         function verifyLogin() { 
             let pass = document.getElementById('loginPassword').value; 
             if(pass === DEFAULT_PASSWORD) { 
-                // Save session to localStorage (persists through page refresh)
                 localStorage.setItem(SESSION_KEY, "authenticated");
-                localStorage.setItem('tiles_user', 'admin');
-                
                 document.getElementById('loginPage').style.display='none'; 
                 document.getElementById('mainApp').style.display='block'; 
                 loadFromSheet(); 
-                
                 if(document.getElementById('rememberPassword').checked) {
                     localStorage.setItem('tiles_remember', 'true');
                 }
@@ -711,13 +736,11 @@
         
         function logout() { 
             localStorage.removeItem(SESSION_KEY);
-            localStorage.removeItem('tiles_user');
             document.getElementById('mainApp').style.display='none'; 
             document.getElementById('loginPage').style.display='flex';
             document.getElementById('loginPassword').value = '';
         }
         
-        // Check existing session on page load (prevents logout on refresh)
         function checkSession() {
             if(localStorage.getItem(SESSION_KEY) === "authenticated") { 
                 document.getElementById('loginPage').style.display='none'; 
@@ -730,7 +753,7 @@
         
         document.getElementById('date-display').innerText = new Date().toLocaleDateString('bn-BD', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
         
-        // Initialize - Check session first
+        // Initialize
         if(!checkSession()) {
             document.getElementById('loginPage').style.display='flex';
             document.getElementById('mainApp').style.display='none';
