@@ -9,15 +9,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* ফন্ট সেটিংস */
         @font-face {
             font-family: 'SolaimanLipi';
             src: url('https://raw.githubusercontent.com/me-shaon/bangla-font/master/SolaimanLipi/SolaimanLipi.ttf') format('truetype');
             font-display: swap;
         }
-        * {
-            font-family: 'SolaimanLipi', 'Segoe UI', 'Hind Siliguri', system-ui, sans-serif;
-        }
+        * { font-family: 'SolaimanLipi', 'Segoe UI', system-ui, sans-serif; }
         
         body {
             background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
@@ -33,6 +30,8 @@
             border: 1px solid rgba(16,185,129,0.15);
             transition: all 0.3s ease;
         }
+        .card-soft:hover { transform: translateY(-2px); }
+        
         .stat-card {
             background: white;
             border-radius: 20px;
@@ -46,7 +45,6 @@
             background: rgba(255,255,255,0.98);
             backdrop-filter: blur(16px);
             border-top: 1px solid rgba(16,185,129,0.2);
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
         }
         .nav-item-light {
             transition: all 0.2s;
@@ -66,7 +64,6 @@
         .form-input, .form-select {
             background: #fafcff;
             border: 1.5px solid #e2e8f0;
-            color: #1e293b;
             border-radius: 16px;
             padding: 12px 16px;
             font-size: 15px;
@@ -85,30 +82,18 @@
             display: block;
         }
         
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-        @media (max-width: 640px) {
-            .form-grid { gap: 12px; }
-            .form-input, .form-select { padding: 10px 14px; font-size: 14px; }
-        }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        @media (max-width: 640px) { .form-grid { gap: 12px; } .form-input, .form-select { padding: 10px 14px; font-size: 14px; } }
         
         .btn-primary { background: linear-gradient(135deg, #10b981, #059669); transition: all 0.2s; }
         .btn-primary:hover { transform: scale(1.01); box-shadow: 0 6px 15px rgba(16,185,129,0.3); }
         .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
         
-        .table-custom {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-        }
+        .table-custom { background: white; border-radius: 20px; overflow: hidden; }
         .table-custom thead { background: #f1f5f9; }
         .table-custom th { padding: 14px 12px; font-size: 12px; font-weight: 700; color: #334155; }
         .table-custom td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
         
-        /* ইমেজ স্টাইল */
         .product-thumb {
             width: 45px;
             height: 45px;
@@ -118,7 +103,7 @@
             border: 1px solid #e2e8f0;
             transition: all 0.2s;
         }
-        .product-thumb:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .product-thumb:hover { transform: scale(1.05); }
         
         .image-preview {
             width: 100px;
@@ -126,7 +111,6 @@
             object-fit: cover;
             border-radius: 16px;
             border: 2px solid #10b981;
-            background: #f1f5f9;
         }
         
         .image-upload-area {
@@ -153,11 +137,7 @@
             justify-content: center;
             cursor: pointer;
         }
-        .image-modal img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 16px;
-        }
+        .image-modal img { max-width: 90%; max-height: 90%; border-radius: 16px; }
         
         .scrollbar-custom::-webkit-scrollbar { width: 5px; height: 5px; }
         .scrollbar-custom::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
@@ -268,7 +248,7 @@
                         <i class="far fa-calendar-alt text-slate-500 text-xs"></i>
                         <span id="date-display" class="text-xs text-slate-600 font-medium"></span>
                     </div>
-                    <div class="refresh-btn" onclick="manualRefresh()" title="ডাটা রিফ্রেশ করুন">
+                    <div class="refresh-btn" onclick="manualRefresh()">
                         <i class="fas fa-sync-alt text-slate-600"></i> <span class="hidden sm:inline text-slate-600">রিফ্রেশ</span>
                     </div>
                     <button onclick="logout()" class="bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1.5 rounded-lg text-sm transition font-medium">
@@ -279,8 +259,7 @@
         </header>
 
         <div class="container mx-auto px-3 py-5 pb-24 max-w-7xl">
-            
-            <!-- DASHBOARD SECTION -->
+            <!-- DASHBOARD -->
             <div id="dashboardSection" class="fade-in">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                     <div class="stat-card p-4 border-l-emerald-500"><div class="flex justify-between"><i class="fas fa-boxes text-emerald-500 text-xl"></i><span class="text-[9px] bg-emerald-100 text-emerald-700 px-2 rounded-full">মোট</span></div><p class="text-2xl font-black text-slate-800 mt-1" id="dashTotalItems">0</p><p class="text-[10px] text-slate-500">পণ্যের ধরণ</p></div>
@@ -292,16 +271,15 @@
                     <div class="card-soft p-4"><h3 class="font-bold text-slate-700 text-base mb-3"><i class="fas fa-chart-pie text-emerald-500 mr-2"></i> টাইলস টাইপ ডিস্ট্রিবিউশন</h3><canvas id="dashboardChart" height="200"></canvas></div>
                     <div class="card-soft p-4"><h3 class="font-bold text-slate-700 text-base mb-3"><i class="fas fa-bell text-amber-500 mr-2"></i> স্টক সতর্কতা (≤১০ পিস)</h3><div id="dashboardLowStockList" class="space-y-2 max-h-56 overflow-y-auto scrollbar-custom"></div></div>
                 </div>
-                <div class="mt-4 card-soft p-3 text-center bg-gradient-to-r from-emerald-50 to-teal-50"><p class="text-slate-600 text-sm"><i class="fas fa-cloud-upload-alt text-emerald-500 mr-2"></i> ডাটাবেস: Google Sheets | লাইভ ইমেজ সাপোর্ট</p></div>
             </div>
 
-            <!-- ADD PRODUCT SECTION WITH IMAGE UPLOAD -->
+            <!-- ADD PRODUCT -->
             <div id="addProductSection" class="hidden fade-in">
                 <div class="card-soft p-6 max-w-4xl mx-auto">
                     <h2 class="text-2xl font-bold text-slate-800 mb-5"><i class="fas fa-plus-circle text-emerald-500 mr-2"></i>নতুন পণ্য নিবন্ধন</h2>
                     <div class="form-grid">
-                        <div><label>ব্র্যান্ড *</label><select id="brandSelect" class="form-select"><option value="">নির্বাচন করুন</option><option>Fresh Ceramics</option><option>X Ceramics</option><option>X Monalisa</option><option>CBC Tiles</option><option>Mir Ceramics</option><option>DBL Ceramics</option><option>Akij Ceramics</option><option>RAK Ceramics</option><option>Sheltech Ceramics</option><option>Great Wall Ceramic</option><option>BHL Ceramic</option><option>BCL Ceramic</option><option>Fu-Wang Ceramic</option><option>Sapphaire Ceramics</option></select></div>
-                        <div><label>সাইজ</label><select id="sizeSelect" class="form-select"><option>8x12 Inch</option><option>12"x12"</option><option>12"x18"</option><option>12"x24" (30x60cm)</option><option>16"x16"</option><option>24"x24"</option><option>32"x32"</option><option>24"x48"</option><option>8"x48"</option><option>6"x24"</option></select></div>
+                        <div><label>ব্র্যান্ড *</label><select id="brandSelect" class="form-select"><option value="">নির্বাচন করুন</option><option>Fresh Ceramics</option><option>X Ceramics</option><option>X Monalisa</option><option>CBC Tiles</option><option>Mir Ceramics</option><option>DBL Ceramics</option><option>Akij Ceramics</option><option>RAK Ceramics</option><option>Sheltech Ceramics</option><option>Great Wall Ceramic</option></select></div>
+                        <div><label>সাইজ</label><select id="sizeSelect" class="form-select"><option>8x12 Inch</option><option>12"x12"</option><option>12"x18"</option><option>12"x24" (30x60cm)</option><option>16"x16"</option><option>24"x24"</option><option>32"x32"</option><option>24"x48"</option></select></div>
                         <div><label>গ্রেড</label><select id="gradeSelect" class="form-select"><option>A Grade</option><option>B Grade</option></select></div>
                         <div><label>ক্যাটাগরি</label><select id="categorySelect" class="form-select"><option>Floor</option><option>Wall</option><option>Both</option></select></div>
                         <div><label>টাইলস টাইপ</label><select id="tileTypeSelect" class="form-select"><option>General</option><option>Light</option><option>Deep</option><option>HL</option></select></div>
@@ -309,7 +287,6 @@
                         <div><label>প্রোডাক্ট নাম</label><input id="prodName" placeholder="পণ্যের নাম" class="form-input"></div>
                         <div><label>স্টক পরিমাণ (পিস)</label><input id="stockPcs" type="number" value="0" class="form-input font-bold"></div>
                         
-                        <!-- ইমেজ আপলোড সেকশন -->
                         <div class="col-span-2">
                             <label><i class="fas fa-image text-emerald-500 mr-1"></i> পণ্যের ছবি</label>
                             <div class="image-upload-area" onclick="document.getElementById('prodImageFile').click()">
@@ -330,63 +307,60 @@
                             <input type="hidden" id="prodImageUrl" value="">
                         </div>
                     </div>
-                    <button onclick="addProductToSheet()" class="w-full mt-6 btn-primary text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-cloud-upload-alt mr-2"></i> পণ্য এড করুন</button>
+                    <button onclick="addProductToSheet()" class="w-full mt-6 btn-primary text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-cloud-upload-alt mr-2"></i> পণ্য সংরক্ষণ করুন</button>
                 </div>
             </div>
 
-            <!-- STOCK MINUS SECTION -->
+            <!-- STOCK MINUS -->
             <div id="stockMinusSection" class="hidden fade-in">
                 <div class="card-soft p-6">
                     <h2 class="text-2xl font-bold text-slate-800 mb-4"><i class="fas fa-minus-circle text-orange-500 mr-2"></i> দ্রুত স্টক মাইনাস</h2>
-                    
                     <div class="bg-slate-50 rounded-xl p-4 mb-4">
-                        <h4 class="font-semibold text-slate-700 text-sm mb-3"><i class="fas fa-filter mr-1 text-emerald-500"></i> ফিল্টার করে পণ্য খুঁজুন</h4>
-                        <div class="filter-group" style="display: flex; flex-wrap: wrap; gap: 12px;">
+                        <h4 class="font-semibold text-slate-700 text-sm mb-3"><i class="fas fa-filter mr-1 text-emerald-500"></i> ফিল্টার</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
                             <div style="flex: 1; min-width: 140px;"><label class="text-[10px] mb-1">ব্র্যান্ড</label><select id="minusFilterBrand" class="form-select text-sm py-2"><option value="">সব ব্র্যান্ড</option></select></div>
                             <div style="flex: 1; min-width: 140px;"><label class="text-[10px] mb-1">সাইজ</label><select id="minusFilterSize" class="form-select text-sm py-2"><option value="">সব সাইজ</option></select></div>
                             <div style="flex: 1; min-width: 140px;"><label class="text-[10px] mb-1">টাইপ</label><select id="minusFilterType" class="form-select text-sm py-2"><option value="">সব টাইপ</option><option>Light</option><option>Deep</option><option>HL</option><option>General</option></select></div>
                         </div>
                     </div>
-                    
                     <div class="relative mb-4">
                         <i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i>
                         <input id="stockMinusSearch" placeholder="প্রোডাক্ট কোড, নাম বা ব্র্যান্ড লিখুন..." class="form-input pl-11">
                         <div id="minusSearchResults" class="absolute z-20 w-full mt-1 rounded-xl shadow-xl border hidden max-h-60 overflow-y-auto bg-white"></div>
                     </div>
-                    
                     <div id="selectedMinusPreview" class="bg-emerald-50 p-3 rounded-xl mb-4 hidden text-slate-700 text-sm"></div>
-                    <div class="flex gap-3"><input id="minusQty" type="number" value="1" class="form-input w-28 text-center"><button id="confirmMinusBtn" class="btn-warning text-white font-bold px-6 py-3 rounded-xl flex-1 transition-all"><i class="fas fa-trash-alt mr-2"></i> স্টক মাইনাস করুন</button></div>
+                    <div class="flex gap-3"><input id="minusQty" type="number" value="1" class="form-input w-28 text-center"><button id="confirmMinusBtn" class="btn-warning text-white font-bold px-6 py-3 rounded-xl flex-1"><i class="fas fa-trash-alt mr-2"></i> স্টক মাইনাস</button></div>
                 </div>
-                <div class="mt-4 card-soft p-4"><h3 class="font-bold text-slate-700 text-sm mb-2">দ্রুত ভিউ: বর্তমান স্টক</h3><div class="overflow-x-auto max-h-52 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-slate-100"><tr class="text-slate-600"><th class="p-2 text-left">ছবি</th><th class="p-2 text-left">কোড</th><th class="p-2 text-left">ব্র্যান্ড</th><th class="p-2 text-left">স্টক</th></tr></thead><tbody id="quickStockTable"></tbody></table></div></div>
+                <div class="mt-4 card-soft p-4"><h3 class="font-bold text-slate-700 text-sm mb-2">দ্রুত ভিউ</h3><div class="overflow-x-auto max-h-52 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-slate-100"><tr><th class="p-2">ছবি</th><th>কোড</th><th>ব্র্যান্ড</th><th>স্টক</th></tr></thead><tbody id="quickStockTable"></tbody></table></div></div>
             </div>
 
-            <!-- ALERT SECTION -->
+            <!-- ALERT -->
             <div id="alertSection" class="hidden fade-in">
-                <div class="card-soft p-6"><h2 class="text-2xl font-bold text-amber-600 mb-4"><i class="fas fa-bell mr-2"></i> লো স্টক এলার্ট (≤১০ পিস)</h2><div id="fullAlertList" class="space-y-3 max-h-96 overflow-y-auto"></div></div>
+                <div class="card-soft p-6"><h2 class="text-2xl font-bold text-amber-600 mb-4"><i class="fas fa-bell mr-2"></i> লো স্টক এলার্ট (≤১০)</h2><div id="fullAlertList" class="space-y-3 max-h-96 overflow-y-auto"></div></div>
             </div>
 
-            <!-- ADVANCED FILTER + STOCK LIST WITH IMAGES -->
+            <!-- STOCK LIST -->
             <div id="stockListSection" class="hidden fade-in">
                 <div class="card-soft p-5 mb-4">
-                    <h3 class="font-bold text-slate-700 mb-3"><i class="fas fa-filter text-emerald-500 mr-2"></i> ফিল্টার অপশন</h3>
-                    <div class="filter-group" style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <h3 class="font-bold text-slate-700 mb-3"><i class="fas fa-filter text-emerald-500 mr-2"></i> ফিল্টার</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
                         <div style="flex: 1; min-width: 140px;"><input id="filterSearch" placeholder="কোড/নাম/ব্র্যান্ড" class="form-input text-sm py-2"></div>
                         <div style="flex: 1; min-width: 140px;"><select id="filterBrandAdv" class="form-select text-sm py-2"><option value="">সকল ব্র্যান্ড</option></select></div>
                         <div style="flex: 1; min-width: 140px;"><select id="filterSizeAdv" class="form-select text-sm py-2"><option value="">সকল সাইজ</option></select></div>
                         <div style="flex: 1; min-width: 140px;"><select id="filterCategoryAdv" class="form-select text-sm py-2"><option value="">সকল ক্যাটাগরি</option></select></div>
                     </div>
-                    <div class="flex gap-2 mt-3"><button onclick="applyFilters()" class="btn-primary text-white px-5 py-2 rounded-xl text-sm font-medium"><i class="fas fa-search mr-1"></i> ফিল্টার</button><button onclick="resetAllFilters()" class="bg-slate-200 hover:bg-slate-300 px-5 py-2 rounded-xl text-sm font-medium transition"><i class="fas fa-undo-alt mr-1"></i> রিসেট</button></div>
+                    <div class="flex gap-2 mt-3"><button onclick="applyFilters()" class="btn-primary text-white px-5 py-2 rounded-xl text-sm"><i class="fas fa-search mr-1"></i> ফিল্টার</button><button onclick="resetAllFilters()" class="bg-slate-200 hover:bg-slate-300 px-5 py-2 rounded-xl text-sm"><i class="fas fa-undo-alt mr-1"></i> রিসেট</button></div>
                 </div>
-                <div class="table-custom shadow"><div class="bg-slate-100 px-4 py-3 font-bold text-slate-700">সম্পূর্ণ ইনভেন্টরি লিস্ট</div><div class="overflow-x-auto max-h-[450px] overflow-y-auto"><table class="w-full text-sm"><thead class="bg-slate-50 sticky top-0"><tr><th class="p-3 text-left">ছবি</th><th class="p-3 text-left">কোড</th><th class="p-3 text-left">ব্র্যান্ড/সাইজ</th><th class="p-3 text-left">টাইপ</th><th class="p-3 text-left">স্টক</th><th class="p-3 text-center">অ্যাকশন</th></tr></thead><tbody id="fullStockTableBody"></tbody></table></div></div>
+                <div class="table-custom shadow"><div class="bg-slate-100 px-4 py-3 font-bold text-slate-700">সম্পূর্ণ ইনভেন্টরি</div><div class="overflow-x-auto max-h-[450px] overflow-y-auto"><table class="w-full text-sm"><thead class="bg-slate-50 sticky top-0"><tr><th class="p-3">ছবি</th><th>কোড</th><th>ব্র্যান্ড/সাইজ</th><th>টাইপ</th><th>স্টক</th><th class="text-center">অ্যাকশন</th></tr></thead><tbody id="fullStockTableBody"></tbody></table></div></div>
             </div>
 
-            <!-- CHARTS SECTION -->
+            <!-- CHARTS -->
             <div id="chartsSection" class="hidden fade-in">
                 <div class="grid md:grid-cols-2 gap-4"><div class="card-soft p-4"><canvas id="fullTypeChart" height="200"></canvas></div><div class="card-soft p-4"><canvas id="brandStockChart" height="200"></canvas></div><div class="card-soft p-4 md:col-span-2"><canvas id="stockLineChart" height="160"></canvas></div></div>
             </div>
         </div>
 
-        <!-- BOTTOM NAVIGATION -->
+        <!-- BOTTOM NAV -->
         <div class="fixed bottom-0 left-0 right-0 bottom-nav-light py-2 z-50">
             <div class="container mx-auto px-2">
                 <div class="flex justify-around items-center">
@@ -402,8 +376,8 @@
     </div>
 
     <script>
-        // ==================== CONFIG ====================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1381qFXiRP03IxWtju0p3kyYkK23HWn7BtiE_aR4KHx7Oxho7grCkb3IukyLsAbCbBQ/exec"; // ⚠️ আপনার URL দিন
+        // ==================== আপনার Apps Script URL এখানে বসান ====================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYIfrrrxhl0X0geSzr59h_U1ENZQgtBru5pCezEVP1s3ztRN9Fs9VeU5-BksFlruyt/exec";
         
         let inventory = [];
         let charts = {};
@@ -419,49 +393,45 @@
             setTimeout(() => toast.remove(), 2500);
         }
         
-        // ==================== IMAGE UPLOAD TO DRIVE ====================
+        // ==================== ইমেজ আপলোড ====================
         async function uploadImageToDrive(event) {
             const file = event.target.files[0];
-            if(!file) return;
+            if(!file) { showToast("দয়া করে একটি ছবি সিলেক্ট করুন", "error"); return; }
+            if(file.size > 2 * 1024 * 1024) { showToast("ছবির সাইজ 2MB এর কম হতে হবে!", "error"); return; }
             
-            if(file.size > 2 * 1024 * 1024) {
-                alert("ছবির সাইজ 2MB এর কম হতে হবে!");
-                return;
-            }
-            
-            showToast("ছবি আপলোড হচ্ছে...", "info");
+            showToast("ছবি আপলোড হচ্ছে...⏳", "info");
             
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const base64 = e.target.result;
                 
                 try {
-                    const params = new URLSearchParams();
-                    params.append('action', 'uploadImage');
-                    params.append('imageData', base64);
-                    params.append('fileName', Date.now() + '_' + file.name);
+                    const formData = new URLSearchParams();
+                    formData.append('action', 'uploadImage');
+                    formData.append('imageData', base64);
+                    formData.append('fileName', Date.now() + '_' + file.name);
                     
                     const response = await fetch(SCRIPT_URL, { 
                         method: 'POST', 
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: params.toString()
+                        body: formData.toString(),
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                     });
                     
-                    // নোট: no-cors মোডে রেসপন্স পাইনি, তাই আমরা অনুমান করছি সফল
-                    // আসল URL পেতে অন্য এন্ডপয়েন্ট প্রয়োজন
+                    const result = await response.json();
+                    console.log("Upload response:", result);
                     
-                    // টেম্পরারি স্টোরেজে রাখছি
-                    currentUploadedImageUrl = base64; // ফলব্যাক হিসেবে বেস৬৪
-                    
-                    document.getElementById('imagePreview').src = base64;
-                    document.getElementById('imagePreviewArea').classList.remove('hidden');
-                    document.getElementById('prodImageUrl').value = base64;
-                    showToast("✅ ছবি সিলেক্ট হয়েছে!", "success");
-                    
+                    if(result.success && result.imageUrl) {
+                        currentUploadedImageUrl = result.imageUrl;
+                        document.getElementById('imagePreview').src = result.imageUrl;
+                        document.getElementById('imagePreviewArea').classList.remove('hidden');
+                        document.getElementById('prodImageUrl').value = result.imageUrl;
+                        showToast("✅ ছবি আপলোড সফল!", "success");
+                    } else {
+                        throw new Error(result.error || "Upload failed");
+                    }
                 } catch(error) {
                     console.error("Upload error:", error);
-                    showToast("⚠️ আপলোড ব্যর্থ!", "error");
+                    showToast("❌ আপলোড ব্যর্থ: " + error.message, "error");
                 }
             };
             reader.readAsDataURL(file);
@@ -483,7 +453,7 @@
             document.body.appendChild(modal);
         }
         
-        // ==================== DATA FUNCTIONS ====================
+        // ==================== ডাটা ফাংশন ====================
         async function manualRefresh() {
             const refreshBtn = document.querySelector('.refresh-btn');
             refreshBtn.classList.add('rotating');
@@ -494,7 +464,7 @@
         
         async function loadFromSheet() {
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getData&t=${Date.now()}`, { method: 'GET', mode: 'cors' });
+                const response = await fetch(`${SCRIPT_URL}?action=getData&t=${Date.now()}`, { method: 'GET' });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 
@@ -514,7 +484,7 @@
                 }
             } catch(e) { 
                 console.error("Load error:", e); 
-                showToast("⚠️ ডাটাবেজ সংযোগ ব্যর্থ!", "error");
+                showToast("⚠️ ডাটাবেজ সংযোগ ব্যর্থ! URL চেক করুন।", "error");
             }
         }
         
@@ -541,15 +511,24 @@
             showToast("পণ্য যোগ করা হচ্ছে...", "info");
             
             try {
-                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: params.toString() });
-                showToast("✅ পণ্য যোগ হয়েছে!", "success");
+                const response = await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: params.toString(),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
                 
-                document.getElementById('prodCode').value = ''; 
-                document.getElementById('prodName').value = ''; 
-                document.getElementById('stockPcs').value = '0';
-                clearUploadedImage();
-                setTimeout(() => loadFromSheet(), 1000);
+                const result = await response.json();
                 
+                if(result.success) {
+                    showToast("✅ পণ্য যোগ হয়েছে!", "success");
+                    document.getElementById('prodCode').value = ''; 
+                    document.getElementById('prodName').value = ''; 
+                    document.getElementById('stockPcs').value = '0';
+                    clearUploadedImage();
+                    setTimeout(() => loadFromSheet(), 1000);
+                } else {
+                    throw new Error(result.error || "Add failed");
+                }
             } catch(e) { 
                 console.error("Add error:", e);
                 showToast("⚠️ পণ্য এড ব্যর্থ!", "error");
@@ -562,16 +541,28 @@
                 params.append('action', 'updateStock');
                 params.append('code', code);
                 params.append('qty', newQty);
-                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: params.toString() });
-                showToast("✅ স্টক আপডেট হয়েছে!", "success");
-                setTimeout(() => loadFromSheet(), 500);
+                
+                const response = await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: params.toString(),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
+                
+                const result = await response.json();
+                
+                if(result.success) {
+                    showToast("✅ স্টক আপডেট হয়েছে!", "success");
+                    setTimeout(() => loadFromSheet(), 500);
+                } else {
+                    throw new Error(result.error || "Update failed");
+                }
             } catch(e) { 
                 console.error("Update error:", e);
                 showToast("⚠️ স্টক আপডেট ব্যর্থ!", "error");
             }
         }
         
-        // ==================== UI FUNCTIONS ====================
+        // ==================== ইউআই ফাংশন ====================
         function refreshAllUI() {
             updateDashboardStats(); updateDashboardChart(); updateDashboardAlerts(); 
             updateQuickStockTable(); updateFullAlertList(); updateFullStockTable(); 
@@ -595,16 +586,16 @@
         
         function updateDashboardAlerts() {
             let low = inventory.filter(i=>i.qty<=10);
-            document.getElementById('dashboardLowStockList').innerHTML = low.length? low.map(i=>`<div class="flex justify-between border-b border-slate-100 pb-2 text-slate-700"><span class="font-mono text-xs">${i.code}</span><span class="font-bold text-amber-600">${i.qty} পিস</span><span class="text-xs">${i.brand}</span></div>`).join('') : '<div class="text-emerald-600 text-sm text-center py-4">✅ সব স্টক স্বাভাবিক</div>';
+            document.getElementById('dashboardLowStockList').innerHTML = low.length? low.map(i=>`<div class="flex justify-between border-b pb-2"><span class="font-mono text-xs">${i.code}</span><span class="font-bold text-amber-600">${i.qty} পিস</span><span class="text-xs">${i.brand}</span></div>`).join('') : '<div class="text-emerald-600 text-center py-4">✅ সব স্টক স্বাভাবিক</div>';
         }
         
         function updateQuickStockTable() {
-            document.getElementById('quickStockTable').innerHTML = inventory.slice(0,8).map(i=>`<tr class="border-b border-slate-100"><td class="p-2">${i.image ? `<img src="${i.image}" class="w-8 h-8 rounded object-cover" onerror="this.src='https://placehold.co/40x40?text=No'">` : '<div class="w-8 h-8 bg-slate-100 rounded flex items-center justify-center"><i class="fas fa-image text-slate-400 text-xs"></i></div>'}</td><td class="p-2 font-mono text-xs text-slate-600">${i.code}</td><td class="text-xs text-slate-600">${i.brand}</td><td class="font-bold text-slate-800">${i.qty}</td></tr>`).join('');
+            document.getElementById('quickStockTable').innerHTML = inventory.slice(0,8).map(i=>`<tr class="border-b"><td class="p-2">${i.image ? `<img src="${i.image}" class="w-8 h-8 rounded object-cover" onerror="this.src='https://placehold.co/40x40?text=No'">` : '<div class="w-8 h-8 bg-slate-100 rounded flex items-center justify-center"><i class="fas fa-image text-slate-400 text-xs"></i></div>'}</td><td class="p-2 font-mono text-xs">${i.code}</td><td class="text-xs">${i.brand}</td><td class="font-bold">${i.qty}</td></td>`).join('');
         }
         
         function updateFullAlertList() {
             let low = inventory.filter(i=>i.qty<=10);
-            document.getElementById('fullAlertList').innerHTML = low.length? low.map(i=>`<div class="bg-amber-50 p-4 rounded-xl border border-amber-200 flex justify-between items-center"><div class="flex items-center gap-3"><img src="${i.image}" class="w-12 h-12 rounded object-cover" onerror="this.src='https://placehold.co/50x50?text=No'"><div><span class="font-bold text-slate-800">${i.code}</span><p class="text-xs text-slate-500">${i.brand} | ${i.size}</p></div></div><div><span class="text-2xl font-black text-amber-600">${i.qty}</span><span class="text-xs"> পিস</span><button onclick="quickMinusFromAlert('${i.code}')" class="ml-3 bg-orange-500 text-white text-xs px-3 py-1.5 rounded-lg"><i class="fas fa-minus-circle"></i> মাইনাস</button></div></div>`).join('') : '<div class="text-emerald-600 text-center py-8">🎉 কোনো লো স্টক নেই!</div>';
+            document.getElementById('fullAlertList').innerHTML = low.length? low.map(i=>`<div class="bg-amber-50 p-4 rounded-xl border border-amber-200 flex justify-between"><div class="flex gap-3"><img src="${i.image}" class="w-12 h-12 rounded object-cover" onerror="this.src='https://placehold.co/50x50?text=No'"><div><span class="font-bold">${i.code}</span><p class="text-xs text-slate-500">${i.brand}</p></div></div><div><span class="text-2xl font-black text-amber-600">${i.qty}</span><span class="text-xs"> পিস</span><button onclick="quickMinusFromAlert('${i.code}')" class="ml-3 bg-orange-500 text-white text-xs px-3 py-1.5 rounded-lg"><i class="fas fa-minus-circle"></i> মাইনাস</button></div></div>`).join('') : '<div class="text-emerald-600 text-center py-8">🎉 কোনো লো স্টক নেই!</div>';
         }
         
         function updateFullStockTable() {
@@ -614,8 +605,8 @@
             let catF = document.getElementById('filterCategoryAdv')?.value || "";
             let filtered = inventory.filter(i => (!search || i.code.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search)) && (!brandF || i.brand===brandF) && (!sizeF || i.size===sizeF) && (!catF || i.category===catF));
             let tbody = document.getElementById('fullStockTableBody');
-            if(!filtered.length) tbody.innerHTML='<tr><td colspan="6" class="text-center py-8 text-slate-400">🔍 কোন পণ্য পাওয়া যায়নি</td></tr>';
-            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b border-slate-100"><td class="p-3"><img src="${item.image || 'https://placehold.co/50x50?text=No'}" class="product-thumb" onclick="showFullImage('${item.image}')" onerror="this.src='https://placehold.co/50x50?text=No'"></td><td class="p-3 font-mono text-xs font-bold text-emerald-600">${item.code}</td><td class="p-3"><span class="font-semibold text-slate-800">${item.brand}</span><div class="text-[10px] text-slate-400">${item.size}</div></td><td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100">${item.type}</span></td><td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}</td><td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg"><i class="fas fa-cart-minus"></i> মাইনাস</button></td></tr>`).join('');
+            if(!filtered.length) tbody.innerHTML='<tr><td colspan="6" class="text-center py-8 text-slate-400">🔍 কোন পণ্য পাওয়া যায়নি</td></tr>'；
+            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b"><td class="p-3"><img src="${item.image || 'https://placehold.co/50x50?text=No'}" class="product-thumb" onclick="showFullImage('${item.image}')" onerror="this.src='https://placehold.co/50x50?text=No'"></td><td class="p-3 font-mono text-xs font-bold text-emerald-600">${item.code}</td><td class="p-3"><span class="font-semibold">${item.brand}</span><div class="text-[10px] text-slate-400">${item.size}</div></td><td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100">${item.type}</span></td><td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}</td><td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg"><i class="fas fa-cart-minus"></i> মাইনাস</button></td></tr>`).join('');
         }
         
         function updateChartSections() {
@@ -624,7 +615,7 @@
             inventory.forEach(i=>{ typeMap[i.type]++; brandStock[i.brand] = (brandStock[i.brand]||0)+i.qty; });
             if(charts.fullType) charts.fullType.destroy(); if(charts.brandStock) charts.brandStock.destroy(); if(charts.line) charts.line.destroy();
             charts.fullType = new Chart(document.getElementById('fullTypeChart'), { type:'pie', data:{ labels:['Light','Deep','HL','General'], datasets:[{ data:[typeMap.Light,typeMap.Deep,typeMap.HL,typeMap.General], backgroundColor:['#10b981','#3b82f6','#8b5cf6','#94a3b8'] }] }, options:{ responsive:true } });
-            charts.brandStock = new Chart(document.getElementById('brandStockChart'), { type:'bar', data:{ labels:Object.keys(brandStock), datasets:[{ label:'স্টক', data:Object.values(brandStock), backgroundColor:'#10b981' }] }, options:{ responsive:true, indexAxis:'y' } });
+            charts.brandStock = new Chart(document.getElementById('brandStockChart'), { type:'bar', data:{ labels:Object.keys(brandStock), datasets:[{ label:'মোট স্টক', data:Object.values(brandStock), backgroundColor:'#10b981' }] }, options:{ responsive:true, indexAxis:'y' } });
             charts.line = new Chart(document.getElementById('stockLineChart'), { type:'line', data:{ labels:inventory.slice(0,15).map(i=>i.code), datasets:[{ label:'স্টক', data:inventory.slice(0,15).map(i=>i.qty), borderColor:'#10b981', tension:0.3, fill:true }] }, options:{ responsive:true } });
         }
         
@@ -659,7 +650,7 @@
         function renderMinusSearchResults() {
             let filtered = getFilteredForMinus();
             if(filtered.length === 0) { minusResults.innerHTML = '<div class="p-3 text-slate-400">❌ কোন পণ্য পাওয়া যায়নি</div>'; minusResults.classList.remove('hidden'); return; }
-            minusResults.innerHTML = filtered.map(i=> `<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b border-slate-100 flex justify-between items-center" data-code="${i.code}"><div class="flex items-center gap-2"><img src="${i.image || 'https://placehold.co/30x30?text=No'}" class="w-8 h-8 rounded object-cover" onerror="this.src='https://placehold.co/30x30?text=No'"><span class="font-mono text-emerald-600 font-bold">${i.code}</span></div><span class="text-slate-500">স্টক: <strong>${i.qty}</strong></span></div>`).join('');
+            minusResults.innerHTML = filtered.map(i=> `<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b flex justify-between" data-code="${i.code}"><div class="flex gap-2"><img src="${i.image || 'https://placehold.co/30x30?text=No'}" class="w-8 h-8 rounded object-cover"><span class="font-mono font-bold text-emerald-600">${i.code}</span></div><span>স্টক: <strong>${i.qty}</strong></span></div>`).join('');
             minusResults.classList.remove('hidden');
             document.querySelectorAll('#minusSearchResults div[data-code]').forEach(el=>{ el.addEventListener('click',()=>{ let code=el.getAttribute('data-code'); let prod=inventory.find(p=>p.code===code); if(prod){ selectedMinusProduct=prod; minusSearch.value=prod.code; minusPreview.innerHTML=`✅ নির্বাচিত: ${prod.brand} (${prod.code}) | স্টক: ${prod.qty}`; minusPreview.classList.remove('hidden'); minusResults.classList.add('hidden'); } }); });
         }
@@ -676,7 +667,7 @@
                 if(selectedMinusProduct.qty < qty){ alert(`স্টক কম! বর্তমানে ${selectedMinusProduct.qty} পিস`); return; }
                 await updateStockInSheet(selectedMinusProduct.code, selectedMinusProduct.qty - qty);
                 renderMinusSearchResults();
-                minusPreview.innerHTML = `✅ সফল! বাকি স্টক: ${selectedMinusProduct.qty - qty}`;
+                minusPreview.innerHTML = `✅ সফল! বাকি: ${selectedMinusProduct.qty - qty}`;
                 setTimeout(()=>{ minusPreview.classList.add('hidden'); selectedMinusProduct=null; minusSearch.value=''; }, 2000);
             });
         }
@@ -701,8 +692,8 @@
         // Auth
         const DEFAULT_PASSWORD = "admin123";
         const SESSION_KEY = "tiles_app_session";
-        function verifyLogin() { let pass = document.getElementById('loginPassword').value; if(pass === DEFAULT_PASSWORD) { localStorage.setItem(SESSION_KEY, "authenticated"); document.getElementById('loginPage').style.display='none'; document.getElementById('mainApp').style.display='block'; loadFromSheet(); if(document.getElementById('rememberPassword').checked) localStorage.setItem('tiles_remember', 'true'); } else { alert('❌ ভুল পাসওয়ার্ড!'); } }
-        function showPasswordHint() { alert('🔑 পাসওয়ার্ড: admin123'); }
+        function verifyLogin() { let pass = document.getElementById('loginPassword').value; if(pass === DEFAULT_PASSWORD) { localStorage.setItem(SESSION_KEY, "authenticated"); document.getElementById('loginPage').style.display='none'; document.getElementById('mainApp').style.display='block'; loadFromSheet(); if(document.getElementById('rememberPassword').checked) localStorage.setItem('tiles_remember', 'true'); } else { alert('❌ ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।'); } }
+        function showPasswordHint() { alert('🔑 ডিফল্ট পাসওয়ার্ড: admin123'); }
         function logout() { localStorage.removeItem(SESSION_KEY); document.getElementById('mainApp').style.display='none'; document.getElementById('loginPage').style.display='flex'; document.getElementById('loginPassword').value = ''; }
         function checkSession() { if(localStorage.getItem(SESSION_KEY) === "authenticated") { document.getElementById('loginPage').style.display='none'; document.getElementById('mainApp').style.display='block'; loadFromSheet(); return true; } return false; }
         
@@ -713,6 +704,7 @@
         window.manualRefresh = manualRefresh; window.addProductToSheet = addProductToSheet; window.quickMinusFromAlert = quickMinusFromAlert;
         window.quickSellFromAnywhere = quickSellFromAnywhere; window.applyFilters = applyFilters; window.resetAllFilters = resetAllFilters;
         window.verifyLogin = verifyLogin; window.showPasswordHint = showPasswordHint; window.logout = logout; window.showFullImage = showFullImage;
+        window.uploadImageToDrive = uploadImageToDrive; window.clearUploadedImage = clearUploadedImage;
     </script>
 </body>
 </html>
