@@ -374,8 +374,7 @@
             </div>
         </div>
     </div>
-
-    <script>
+<script>
         // ==================== আপনার Apps Script URL এখানে বসান ====================
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYIfrrrxhl0X0geSzr59h_U1ENZQgtBru5pCezEVP1s3ztRN9Fs9VeU5-BksFlruyt/exec";
         
@@ -605,8 +604,8 @@
             let catF = document.getElementById('filterCategoryAdv')?.value || "";
             let filtered = inventory.filter(i => (!search || i.code.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search)) && (!brandF || i.brand===brandF) && (!sizeF || i.size===sizeF) && (!catF || i.category===catF));
             let tbody = document.getElementById('fullStockTableBody');
-            if(!filtered.length) tbody.innerHTML='<tr><td colspan="6" class="text-center py-8 text-slate-400">🔍 কোন পণ্য পাওয়া যায়নি</td></tr>'；
-            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b"><td class="p-3"><img src="${item.image || 'https://placehold.co/50x50?text=No'}" class="product-thumb" onclick="showFullImage('${item.image}')" onerror="this.src='https://placehold.co/50x50?text=No'"></td><td class="p-3 font-mono text-xs font-bold text-emerald-600">${item.code}</td><td class="p-3"><span class="font-semibold">${item.brand}</span><div class="text-[10px] text-slate-400">${item.size}</div></td><td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100">${item.type}</span></td><td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}</td><td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg"><i class="fas fa-cart-minus"></i> মাইনাস</button></td></tr>`).join('');
+            if(!filtered.length) tbody.innerHTML='<td><td colspan="6" class="text-center py-8 text-slate-400">🔍 কোন পণ্য পাওয়া যায়নি</td></tr>';
+            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b"><td class="p-3"><img src="${item.image || 'https://placehold.co/50x50?text=No'}" class="product-thumb" onclick="showFullImage('${item.image}')" onerror="this.src='https://placehold.co/50x50?text=No'"><\/td><td class="p-3 font-mono text-xs font-bold text-emerald-600">${item.code}<\/td><td class="p-3"><span class="font-semibold">${item.brand}</span><div class="text-[10px] text-slate-400">${item.size}</div><\/td><td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100">${item.type}</span><\/td><td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}<\/td><td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg"><i class="fas fa-cart-minus"></i> মাইনাস</button><\/td></tr>`).join('');
         }
         
         function updateChartSections() {
@@ -689,22 +688,104 @@
         }
         document.querySelectorAll('.nav-item-light').forEach(nav=>nav.addEventListener('click',()=>switchMenu(nav.getAttribute('data-menu'))));
         
-        // Auth
+        // ==================== লগইন সিস্টেম (আপডেটেড) ====================
         const DEFAULT_PASSWORD = "admin123";
         const SESSION_KEY = "tiles_app_session";
-        function verifyLogin() { let pass = document.getElementById('loginPassword').value; if(pass === DEFAULT_PASSWORD) { localStorage.setItem(SESSION_KEY, "authenticated"); document.getElementById('loginPage').style.display='none'; document.getElementById('mainApp').style.display='block'; loadFromSheet(); if(document.getElementById('rememberPassword').checked) localStorage.setItem('tiles_remember', 'true'); } else { alert('❌ ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।'); } }
-        function showPasswordHint() { alert('🔑 ডিফল্ট পাসওয়ার্ড: admin123'); }
-        function logout() { localStorage.removeItem(SESSION_KEY); document.getElementById('mainApp').style.display='none'; document.getElementById('loginPage').style.display='flex'; document.getElementById('loginPassword').value = ''; }
-        function checkSession() { if(localStorage.getItem(SESSION_KEY) === "authenticated") { document.getElementById('loginPage').style.display='none'; document.getElementById('mainApp').style.display='block'; loadFromSheet(); return true; } return false; }
+        
+        // আপডেটেড লগইন ফাংশন - কনসোল লগ সহ
+        function verifyLogin() { 
+            let pass = document.getElementById('loginPassword').value;
+            console.log("🔐 লগইন চেষ্টা - দেওয়া পাসওয়ার্ড:", pass);
+            console.log("🔐 সঠিক পাসওয়ার্ড:", DEFAULT_PASSWORD);
+            
+            if(pass === DEFAULT_PASSWORD) { 
+                console.log("✅ পাসওয়ার্ড মিলেছে!");
+                localStorage.setItem(SESSION_KEY, "authenticated");
+                document.getElementById('loginPage').style.display = 'none'; 
+                document.getElementById('mainApp').style.display = 'block'; 
+                if(typeof loadFromSheet === 'function') loadFromSheet(); 
+                if(document.getElementById('rememberPassword')?.checked) {
+                    localStorage.setItem('tiles_remember', 'true');
+                }
+                showToast("✅ লগইন সফল! স্বাগতম।", "success");
+            } else { 
+                console.log("❌ পাসওয়ার্ড মিলেনি!");
+                alert('❌ ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।\n\nপাসওয়ার্ড: admin123'); 
+            } 
+        }
+        
+        function showPasswordHint() { 
+            alert('🔑 ডিফল্ট পাসওয়ার্ড: admin123\n\nআপনি চাইলে এই পাসওয়ার্ড HTML এডিট করে পরিবর্তন করতে পারেন।'); 
+        }
+        
+        function logout() { 
+            localStorage.removeItem(SESSION_KEY);
+            document.getElementById('mainApp').style.display = 'none'; 
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('loginPassword').value = '';
+            showToast("🔓 লগআউট সম্পন্ন হয়েছে", "info");
+        }
+        
+        // আপডেটেড চেক সেশন ফাংশন - কনসোল লগ সহ
+        function checkSession() { 
+            const session = localStorage.getItem(SESSION_KEY);
+            console.log("🔍 সেশন চেক - বর্তমান সেশন:", session);
+            
+            if(session === "authenticated") { 
+                console.log("✅ সেশন পাওয়া গেছে, অটো-লগইন হচ্ছে");
+                document.getElementById('loginPage').style.display = 'none'; 
+                document.getElementById('mainApp').style.display = 'block'; 
+                if(typeof loadFromSheet === 'function') loadFromSheet();
+                return true;
+            }
+            console.log("❌ সেশন পাওয়া যায়নি, লগইন পেজ দেখানো হচ্ছে");
+            return false;
+        }
+        
+        // ফোর্স লগইন ফাংশন (যদি লগইন সমস্যা হয় তাহলে কনসোলে forceLogin() টাইপ করুন)
+        window.forceLogin = function() {
+            localStorage.setItem(SESSION_KEY, "authenticated");
+            console.log("⚠️ ফোর্স লগইন সক্রিয় করা হয়েছে");
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            if(typeof loadFromSheet === 'function') loadFromSheet();
+            showToast("🔓 ফোর্স লগইন সফল!", "success");
+        };
+        
+        // লগইন পেজ ক্লিয়ার করার ফাংশন (কনসোলে loginClear() টাইপ করুন)
+        window.loginClear = function() {
+            localStorage.removeItem(SESSION_KEY);
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('loginPassword').value = '';
+            console.log("🔄 লগইন সেশন ক্লিয়ার করা হয়েছে");
+            showToast("লগইন সেশন ক্লিয়ার করা হয়েছে", "info");
+        };
         
         document.getElementById('date-display').innerText = new Date().toLocaleDateString('bn-BD', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
         
-        if(!checkSession()) { document.getElementById('loginPage').style.display='flex'; document.getElementById('mainApp').style.display='none'; }
+        // পেজ লোড হলে সেশন চেক করুন
+        if(!checkSession()) { 
+            document.getElementById('loginPage').style.display = 'flex'; 
+            document.getElementById('mainApp').style.display = 'none'; 
+        }
         
-        window.manualRefresh = manualRefresh; window.addProductToSheet = addProductToSheet; window.quickMinusFromAlert = quickMinusFromAlert;
-        window.quickSellFromAnywhere = quickSellFromAnywhere; window.applyFilters = applyFilters; window.resetAllFilters = resetAllFilters;
-        window.verifyLogin = verifyLogin; window.showPasswordHint = showPasswordHint; window.logout = logout; window.showFullImage = showFullImage;
-        window.uploadImageToDrive = uploadImageToDrive; window.clearUploadedImage = clearUploadedImage;
+        window.manualRefresh = manualRefresh; 
+        window.addProductToSheet = addProductToSheet; 
+        window.quickMinusFromAlert = quickMinusFromAlert;
+        window.quickSellFromAnywhere = quickSellFromAnywhere; 
+        window.applyFilters = applyFilters; 
+        window.resetAllFilters = resetAllFilters;
+        window.verifyLogin = verifyLogin; 
+        window.showPasswordHint = showPasswordHint; 
+        window.logout = logout; 
+        window.showFullImage = showFullImage;
+        window.uploadImageToDrive = uploadImageToDrive; 
+        window.clearUploadedImage = clearUploadedImage;
+        
+        console.log("🎉 অ্যাপ্লিকেশন লোড হয়েছে!");
+        console.log("🔑 পাসওয়ার্ড:", DEFAULT_PASSWORD);
+        console.log("💡 কনসোলে 'forceLogin()' টাইপ করে সরাসরি লগইন করতে পারেন");
     </script>
 </body>
 </html>
