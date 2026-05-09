@@ -8,52 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-        <style>
-        /* ==================== বাংলা ফন্ট সেটআপ (মোবাইল সাপোর্ট) ==================== */
-        
-        /* সোলাইমান লিপি - SolaimanLipi */
-        @font-face {
-            font-family: 'SolaimanLipi';
-            src: url('https://raw.githubusercontent.com/me-shaon/bangla-font/master/SolaimanLipi/SolaimanLipi.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-        
-        /* কালপুরুষ - Kalpurush */
-        @font-face {
-            font-family: 'Kalpurush';
-            src: url('https://raw.githubusercontent.com/me-shaon/bangla-font/master/Kalpurush/kalpurush.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-        
-        /* নিকস - Nikosh */
-        @font-face {
-            font-family: 'Nikosh';
-            src: url('https://raw.githubusercontent.com/me-shaon/bangla-font/master/Nikosh/Nikosh.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-        
-        /* ব্যাকআপ ফন্ট */
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
-        
-        /* গ্লোবাল ফন্ট সেটিংস */
+           <style>
+        /* System Font Stack - Works on all devices */
         * {
-            font-family: 'SolaimanLipi', 'Kalpurush', 'Nikosh', 'Hind Siliguri', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', system-ui, sans-serif !important;
-        }
-        
-        /* সব এলিমেন্টে ফন্ট নিশ্চিত করতে */
-        body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, div, label, th, td, .form-input, .form-select, .nav-item-light span {
-            font-family: 'SolaimanLipi', 'Kalpurush', 'Nikosh', 'Hind Siliguri', 'Segoe UI', sans-serif !important;
-        }
-        
-        /* শুধুমাত্র কোড/সংখ্যার জন্য */
-        .font-mono, .product-code, code {
-            font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+            font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'Hind Siliguri', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
         }
         
         body {
@@ -213,7 +171,7 @@
         .refresh-btn:hover { background: #e2e8f0; }
         .refresh-btn.rotating i { animation: rotate 0.5s ease; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-     </style>
+    </style>
 </head>
 <body>
 
