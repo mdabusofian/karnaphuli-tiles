@@ -363,7 +363,7 @@
         // Google Sheet থেকে ডাটা লোড
         async function loadFromSheet() {
             try {
-                showToast("গুগল শিট থেকে ডাটা আনছে...", "info");
+                showToast("ডাটা লোড হচ্ছে...", "info");
                 
                 const response = await fetch(`${SCRIPT_URL}?action=getData&t=${Date.now()}`, {
                     method: 'GET',
@@ -398,11 +398,11 @@
                 } else {
                     inventory = [];
                     refreshAllUI();
-                    showToast("📋 গুগল শিটে কোন ডাটা নেই। নতুন পণ্য যোগ করুন।", "info");
+                    showToast("📋 স্টকে ডাটা নেই। নতুন পণ্য যোগ করুন।", "info");
                 }
             } catch(e) { 
                 console.error("Load error:", e); 
-                showToast("⚠️ গুগল শিট সংযোগ ব্যর্থ! URL চেক করুন।", "error");
+                showToast("⚠️ ডাটাবেজ সংযোগ ব্যর্থ! URL চেক করুন।", "error");
             }
         }
         
@@ -441,7 +441,7 @@
                     body: params.toString()
                 });
                 
-                showToast("✅ পণ্য গুগল শিটে যোগ হয়েছে!", "success");
+                showToast("✅ পণ্য স্টকে যোগ হয়েছে!", "success");
                 
                 // ফর্ম ক্লিয়ার
                 document.getElementById('prodCode').value = ''; 
@@ -453,7 +453,7 @@
                 
             } catch(e) { 
                 console.error("Add error:", e);
-                showToast("⚠️ গুগল শিটে যোগ করতে ব্যর্থ! URL চেক করুন।", "error");
+                showToast("⚠️ পণ্য এড ব্যর্থ  হয়েছে! URL চেক করুন।", "error");
             }
         }
         
