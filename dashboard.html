@@ -3,147 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>টাইলস প্রো | ক্লাউড ইনভেন্টরি</title>
+    <title>কর্ণফলী টাইলস্ই নভেন্টরি</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Solaiman Lipi & Modern Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Solaiman Lipi Font - Mobile Support -->
     <style>
-        @import url('https://fonts.cdnfonts.com/css/solaiman-lipi');
-        * {
-            font-family: 'Solaiman Lipi', 'Inter', 'Hind Siliguri', 'Segoe UI', system-ui, sans-serif;
+        @font-face {
+            font-family: 'SolaimanLipi';
+            src: url('https://fonts.cdnfonts.com/s/15285/SolaimanLipi.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
         }
+        @import url('https://fonts.cdnfonts.com/css/solaiman-lipi');
+        
+        * {
+            font-family: 'SolaimanLipi', 'Solaiman Lipi', 'Inter', 'Hind Siliguri', 'Segoe UI', system-ui, sans-serif;
+        }
+        
         body {
-            background: linear-gradient(145deg, #0f172a 0%, #1e1b4b 100%);
+            background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
             min-height: 100vh;
             padding-bottom: 90px;
         }
-        /* Glass Morphism Effect */
-        .glass-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.2);
+        
+        /* Card Styles */
+        .card-soft {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(4px);
             border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+            border: 1px solid rgba(16,185,129,0.15);
             transition: all 0.3s ease;
         }
-        .glass-card:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-4px);
+        .card-soft:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
         }
-        .stats-glass {
-            background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.2));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.15);
+        
+        /* Stats Cards */
+        .stat-card {
+            background: white;
             border-radius: 20px;
-        }
-        .nav-modern {
-            background: rgba(15,23,42,0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(99,102,241,0.4);
-        }
-        .nav-item {
+            border-left: 6px solid;
             transition: all 0.2s;
-            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        
+        /* Bottom Navigation */
+        .bottom-nav-light {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(16,185,129,0.2);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+        }
+        .nav-item-light {
+            transition: all 0.2s;
+            border-radius: 20px;
             padding: 8px 0;
+            color: #475569;
         }
-        .nav-item.active {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            box-shadow: 0 4px 15px rgba(79,70,229,0.4);
+        .nav-item-light.active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
         }
-        .btn-gradient {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        .nav-item-light i { font-size: 1.25rem; }
+        .nav-item-light span { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+        
+        /* Form Input Styles - Better Alignment & Padding */
+        .form-input, .form-select {
+            background: #fafcff;
+            border: 1.5px solid #e2e8f0;
+            color: #1e293b;
+            border-radius: 16px;
+            padding: 12px 16px;
+            font-size: 15px;
             transition: all 0.2s;
+            width: 100%;
+            line-height: 1.5;
         }
-        .btn-gradient:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 20px rgba(79,70,229,0.4);
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+            background: white;
         }
-        .table-glass {
-            background: rgba(255,255,255,0.05);
+        .form-input::placeholder {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 6px;
+            display: block;
+            letter-spacing: 0.3px;
+        }
+        
+        /* Grid Form Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 640px) {
+            .form-grid { gap: 12px; }
+            .form-input, .form-select { padding: 10px 14px; font-size: 14px; }
+        }
+        
+        /* Button Styles */
+        .btn-primary { background: linear-gradient(135deg, #10b981, #059669); transition: all 0.2s; }
+        .btn-primary:hover { transform: scale(1.01); box-shadow: 0 6px 15px rgba(16,185,129,0.3); }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .btn-warning:hover { transform: scale(1.01); box-shadow: 0 6px 15px rgba(245,158,11,0.3); }
+        
+        /* Table Styles */
+        .table-custom {
+            background: white;
             border-radius: 20px;
             overflow: hidden;
         }
-        .table-glass th {
-            background: rgba(79,70,229,0.3);
-            backdrop-filter: blur(8px);
+        .table-custom thead { background: #f1f5f9; }
+        .table-custom th { padding: 14px 12px; font-size: 12px; font-weight: 700; color: #334155; }
+        .table-custom td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        
+        /* Search Result Dropdown */
+        .search-result-item {
+            transition: all 0.15s;
+            cursor: pointer;
         }
-        .scrollbar-custom::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+        .search-result-item:hover {
+            background: #ecfdf5;
         }
-        .scrollbar-custom::-webkit-scrollbar-track {
-            background: #334155;
-            border-radius: 10px;
+        
+        /* Scrollbar */
+        .scrollbar-custom::-webkit-scrollbar { width: 5px; height: 5px; }
+        .scrollbar-custom::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
+        .scrollbar-custom::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+        
+        .fade-in { animation: fadeSlide 0.25s ease-out; }
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Filter Section */
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
         }
-        .scrollbar-custom::-webkit-scrollbar-thumb {
-            background: #818cf8;
-            border-radius: 10px;
+        .filter-item {
+            flex: 1;
+            min-width: 140px;
         }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(15px); }
+        
+        /* Login Page */
+        .login-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card-light {
+            background: rgba(255,255,255,0.98);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            padding: 2rem;
+            max-width: 420px;
+            width: 100%;
+            animation: fadeInUp 0.5s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in {
-            animation: fadeSlide 0.3s ease-out;
-        }
-        input, select, textarea {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            border-radius: 14px;
-            padding: 10px 14px;
-        }
-        input:focus, select:focus {
-            outline: none;
-            border-color: #818cf8;
-            background: rgba(255,255,255,0.15);
-        }
-        input::placeholder {
-            color: rgba(255,255,255,0.5);
-        }
-        label {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            color: #a5b4fc;
-        }
-        .login-box {
-            background: rgba(15,23,42,0.8);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(99,102,241,0.5);
-        }
-        @media (max-width: 640px) {
-            body { padding-bottom: 75px; }
-            .nav-item span { font-size: 9px; }
-            .nav-item i { font-size: 1.1rem; }
-            .stats-glass p { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
 
     <!-- LOGIN PAGE -->
-    <div id="loginPage" class="min-h-screen flex items-center justify-center px-4" style="display: flex;">
-        <div class="login-box rounded-3xl shadow-2xl p-8 max-w-md w-full animate-fadeIn">
-            <div class="text-center mb-8">
-                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+    <div id="loginPage" class="login-container" style="display: flex;">
+        <div class="login-card-light">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                     <i class="fas fa-cubes text-3xl text-white"></i>
                 </div>
-                <h1 class="text-3xl font-bold text-white">টাইলস স্টক প্রো</h1>
-                <p class="text-indigo-300 text-sm mt-2">ক্লাউড বেসড ইনভেন্টরি</p>
+                <h1 class="text-3xl font-bold text-slate-800">টাইলস স্টক প্রো</h1>
+                <p class="text-slate-500 text-sm mt-2"> নিউ কর্ণফুলী টাইলস্ স্টক ম্যানেজমেন্ট </p>
             </div>
             <div class="space-y-5">
                 <div>
-                    <label class="block text-indigo-300 text-sm font-medium mb-2"><i class="fas fa-lock mr-2"></i>পাসওয়ার্ড</label>
-                    <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড লিখুন" class="w-full">
+                    <label class="text-slate-600 text-sm font-medium mb-1 block"><i class="fas fa-lock mr-2 text-emerald-500"></i>পাসওয়ার্ড দিন</label>
+                    <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড লিখুন" class="form-input">
                 </div>
                 <div class="flex items-center justify-between">
-                    <label class="flex items-center gap-2 text-indigo-300 text-sm"><input type="checkbox" id="rememberPassword" class="w-4 h-4 rounded"> মনে রাখুন</label>
-                    <button onclick="showPasswordHint()" class="text-indigo-400 text-sm hover:text-white"><i class="fas fa-question-circle"></i> সাহায্য</button>
+                    <label class="flex items-center gap-2 text-slate-600 text-sm cursor-pointer">
+                        <input type="checkbox" id="rememberPassword" class="w-4 h-4 rounded border-slate-300 text-emerald-500"> <span>পাসওয়ার্ড মনে রাখুন</span>
+                    </label>
+                    <button onclick="showPasswordHint()" class="text-emerald-600 text-sm hover:text-emerald-700 transition"><i class="fas fa-question-circle"></i> সাহায্য</button>
                 </div>
-                <button onclick="verifyLogin()" class="w-full btn-gradient text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-sign-in-alt"></i> লগইন করুন</button>
-                <p class="text-center text-indigo-400 text-xs mt-4">ডিফল্ট পাসওয়ার্ড: <span class="text-indigo-200 font-mono">admin123</span></p>
+                <button onclick="verifyLogin()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-base shadow-md hover:shadow-lg">
+                    <i class="fas fa-sign-in-alt"></i> লগইন করুন
+                </button>
             </div>
         </div>
     </div>
@@ -151,97 +214,143 @@
     <!-- MAIN APP -->
     <div id="mainApp" style="display: none;">
         <!-- Header -->
-        <header class="sticky top-0 z-40 glass-card rounded-none rounded-b-2xl mx-3 mt-2">
+        <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-200">
             <div class="container mx-auto px-4 py-3 flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-xl"><i class="fas fa-cubes text-white text-xl"></i></div>
-                    <div><h1 class="text-xl font-bold text-white">টাইলস প্রো</h1><p class="text-indigo-300 text-[10px]">ক্লাউড ইনভেন্টরি</p></div>
+                    <div class="bg-gradient-to-br from-emerald-500 to-teal-600 p-2 rounded-xl shadow">
+                        <i class="fas fa-cubes text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-800"> নিউ কর্ণফুলী টাইলস্ </h1>
+                        <p class="text-emerald-600 text-[10px] font-medium"> ইনভেন্টরি ম্যানেজমেন্ট</p>
+                    </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <div class="bg-white/10 px-3 py-1.5 rounded-full flex items-center gap-2"><i class="far fa-calendar-alt text-indigo-300 text-xs"></i><span id="date-display" class="text-xs text-white"></span></div>
-                    <button onclick="logout()" class="bg-red-500/30 hover:bg-red-500/50 px-3 py-1.5 rounded-lg text-sm text-white transition"><i class="fas fa-sign-out-alt"></i></button>
+                    <div class="bg-slate-100 px-3 py-1.5 rounded-full flex items-center gap-2">
+                        <i class="far fa-calendar-alt text-slate-500 text-xs"></i>
+                        <span id="date-display" class="text-xs text-slate-600 font-medium"></span>
+                    </div>
+                    <button onclick="logout()" class="bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1.5 rounded-lg text-sm transition font-medium">
+                        <i class="fas fa-sign-out-alt"></i> <span class="hidden sm:inline">লগআউট</span>
+                    </button>
                 </div>
             </div>
         </header>
 
         <div class="container mx-auto px-3 py-5 pb-24 max-w-7xl">
-            <!-- DASHBOARD -->
+            
+            <!-- DASHBOARD SECTION -->
             <div id="dashboardSection" class="fade-in">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                    <div class="stats-glass p-3"><div class="flex justify-between"><i class="fas fa-boxes text-indigo-400 text-xl"></i><span class="text-[9px] bg-white/20 px-2 rounded-full">মোট</span></div><p class="text-2xl font-black text-white mt-1" id="dashTotalItems">0</p><p class="text-[9px] text-indigo-300">পণ্যের সংখ্যা</p></div>
-                    <div class="stats-glass p-3"><i class="fas fa-pallet text-emerald-400 text-xl"></i><p class="text-2xl font-black text-white mt-1" id="dashTotalStock">0</p><p class="text-[9px] text-indigo-300">মোট স্টক (পিস)</p></div>
-                    <div class="stats-glass p-3"><i class="fas fa-exclamation-triangle text-amber-400 text-xl"></i><p class="text-2xl font-black text-white mt-1" id="dashLowStock">0</p><p class="text-[9px] text-indigo-300">লো স্টক এলার্ট</p></div>
-                    <div class="stats-glass p-3"><i class="fas fa-chart-line text-sky-400 text-xl"></i><p class="text-2xl font-black text-white mt-1" id="dashBrands">0</p><p class="text-[9px] text-indigo-300">এক্টিভ ব্র্যান্ড</p></div>
+                    <div class="stat-card p-4 border-l-emerald-500"><div class="flex justify-between"><i class="fas fa-boxes text-emerald-500 text-xl"></i><span class="text-[9px] bg-emerald-100 text-emerald-700 px-2 rounded-full">মোট</span></div><p class="text-2xl font-black text-slate-800 mt-1" id="dashTotalItems">0</p><p class="text-[10px] text-slate-500">পণ্যের ধরণ</p></div>
+                    <div class="stat-card p-4 border-l-teal-500"><i class="fas fa-pallet text-teal-500 text-xl"></i><p class="text-2xl font-black text-slate-800 mt-1" id="dashTotalStock">0</p><p class="text-[10px] text-slate-500">মোট স্টক (পিস)</p></div>
+                    <div class="stat-card p-4 border-l-amber-500"><i class="fas fa-exclamation-triangle text-amber-500 text-xl"></i><p class="text-2xl font-black text-slate-800 mt-1" id="dashLowStock">0</p><p class="text-[10px] text-slate-500">লো স্টক (≤১০)</p></div>
+                    <div class="stat-card p-4 border-l-sky-500"><i class="fas fa-chart-line text-sky-500 text-xl"></i><p class="text-2xl font-black text-slate-800 mt-1" id="dashBrands">0</p><p class="text-[10px] text-slate-500">এক্টিভ ব্র্যান্ড</p></div>
                 </div>
-                <div class="grid md:grid-cols-2 gap-4"><div class="glass-card p-4"><h3 class="font-bold text-white text-sm mb-2"><i class="fas fa-chart-pie text-indigo-400"></i> টাইপ ডিস্ট্রিবিউশন</h3><canvas id="dashboardChart" height="180"></canvas></div><div class="glass-card p-4"><h3 class="font-bold text-white text-sm mb-2"><i class="fas fa-bell text-amber-400"></i> স্টক সতর্কতা (≤১০)</h3><div id="dashboardLowStockList" class="space-y-2 max-h-56 overflow-y-auto scrollbar-custom"></div></div></div>
-                <div class="mt-4 glass-card p-3 text-center"><p class="text-indigo-300 text-sm"><i class="fas fa-cloud-upload-alt"></i> ডাটাবেস: Google Sheets | রিয়েল-টাইম সিঙ্ক</p></div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="card-soft p-4"><h3 class="font-bold text-slate-700 text-base mb-3"><i class="fas fa-chart-pie text-emerald-500 mr-2"></i> টাইলস টাইপ ডিস্ট্রিবিউশন</h3><canvas id="dashboardChart" height="200"></canvas></div>
+                    <div class="card-soft p-4"><h3 class="font-bold text-slate-700 text-base mb-3"><i class="fas fa-bell text-amber-500 mr-2"></i> স্টক সতর্কতা (≤১০ পিস)</h3><div id="dashboardLowStockList" class="space-y-2 max-h-56 overflow-y-auto scrollbar-custom"></div></div>
+                </div>
+                <div class="mt-4 card-soft p-3 text-center bg-gradient-to-r from-emerald-50 to-teal-50"><p class="text-slate-600 text-sm"><i class="fas fa-cloud-upload-alt text-emerald-500 mr-2"></i> ডাটাবেস: Google Sheets | রিয়েল-টাইম সিঙ্ক</p></div>
             </div>
 
-            <!-- ADD PRODUCT -->
+            <!-- ADD PRODUCT SECTION - Improved Form Alignment -->
             <div id="addProductSection" class="hidden fade-in">
-                <div class="glass-card p-5 max-w-3xl mx-auto">
-                    <h2 class="text-2xl font-bold text-white mb-4"><i class="fas fa-plus-circle text-indigo-400 mr-2"></i>নতুন পণ্য যোগ</h2>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div><label>ব্র্যান্ড *</label><select id="brandSelect" class="w-full"><option value="">নির্বাচন</option><option>Fresh Ceramics</option><option>X Ceramics</option><option>X Monalisa</option><option>CBC Tiles</option><option>Mir Ceramics</option><option>DBL Ceramics</option><option>Akij Ceramics</option><option>RAK Ceramics</option><option>Sheltech Ceramics</option><option>Great Wall Ceramic</option><option>BHL Ceramic</option><option>BCL Ceramic</option><option>Fu-Wang Ceramic</option><option>Sapphaire Ceramics</option></select></div>
-                        <div><label>সাইজ</label><select id="sizeSelect" class="w-full"><option>8x12 Inch</option><option>12"x12"</option><option>12"x18"</option><option>12"x24" (30x60cm)</option><option>16"x16"</option><option>24"x24"</option><option>32"x32"</option><option>24"x48"</option><option>8"x48"</option><option>6"x24"</option></select></div>
-                        <div><label>গ্রেড</label><select id="gradeSelect" class="w-full"><option>A Grade</option><option>B Grade</option></select></div>
-                        <div><label>ক্যাটাগরি</label><select id="categorySelect" class="w-full"><option>Floor</option><option>Wall</option><option>Both</option></select></div>
-                        <div><label>টাইলস টাইপ</label><select id="tileTypeSelect" class="w-full"><option>General</option><option>Light</option><option>Deep</option><option>HL</option></select></div>
-                        <div><label>প্রোডাক্ট কোড *</label><input id="prodCode" placeholder="অনন্য কোড"></div>
-                        <div><label>প্রোডাক্ট নাম</label><input id="prodName" placeholder="পণ্যের নাম"></div>
-                        <div><label>স্টক পরিমাণ (পিস)</label><input id="stockPcs" type="number" value="0"></div>
+                <div class="card-soft p-6 max-w-4xl mx-auto">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-5"><i class="fas fa-plus-circle text-emerald-500 mr-2"></i>নতুন প্রোডাক্ট যুক্ত করুন </h2>
+                    <div class="form-grid">
+                        <div><label>ব্র্যান্ড *</label><select id="brandSelect" class="form-select"><option value="">নির্বাচন করুন</option><option>Fresh Ceramics</option><option>X Ceramics</option><option>X Monalisa</option><option>CBC Tiles</option><option>Mir Ceramics</option><option>DBL Ceramics</option><option>Akij Ceramics</option><option>RAK Ceramics</option><option>Sheltech Ceramics</option><option>Great Wall Ceramic</option><option>BHL Ceramic</option><option>BCL Ceramic</option><option>Fu-Wang Ceramic</option><option>Sapphaire Ceramics</option></select></div>
+                        <div><label>সাইজ</label><select id="sizeSelect" class="form-select"><option>8x12 Inch</option><option>12"x12"</option><option>12"x18"</option><option>12"x24" (30x60cm)</option><option>16"x16"</option><option>24"x24"</option><option>32"x32"</option><option>24"x48"</option><option>8"x48"</option><option>6"x24"</option></select></div>
+                        <div><label>গ্রেড</label><select id="gradeSelect" class="form-select"><option>A Grade</option><option>B Grade</option></select></div>
+                        <div><label>ক্যাটাগরি</label><select id="categorySelect" class="form-select"><option>Floor</option><option>Wall</option><option>Both</option></select></div>
+                        <div><label>টাইলস টাইপ</label><select id="tileTypeSelect" class="form-select"><option>General</option><option>Light</option><option>Deep</option><option>HL</option></select></div>
+                        <div><label>প্রোডাক্ট কোড *</label><input id="prodCode" placeholder="যেমন: FRESH-001" class="form-input"></div>
+                        <div><label>প্রোডাক্ট নাম</label><input id="prodName" placeholder="পণ্যের নাম" class="form-input"></div>
+                        <div><label>স্টক পরিমাণ (পিস)</label><input id="stockPcs" type="number" value="0" class="form-input font-bold"></div>
                     </div>
-                    <button onclick="addProductToSheet()" class="w-full mt-5 btn-gradient text-white font-bold py-3 rounded-xl"><i class="fas fa-cloud-upload-alt mr-2"></i> গুগল শিটে সংরক্ষণ</button>
+                    <button onclick="addProductToSheet()" class="w-full mt-6 btn-primary text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-cloud-upload-alt mr-2"></i> গুগল শিটে সংরক্ষণ করুন</button>
                 </div>
             </div>
 
-            <!-- STOCK MINUS WITH SEARCH FILTER -->
+            <!-- STOCK MINUS SECTION - WITH ADVANCED FILTERS -->
             <div id="stockMinusSection" class="hidden fade-in">
-                <div class="glass-card p-5">
-                    <h2 class="text-2xl font-bold text-white mb-3"><i class="fas fa-minus-circle text-orange-400"></i> স্টক মাইনাস (দ্রুত সার্চ)</h2>
-                    <div class="relative mb-4"><i class="fas fa-search absolute left-3 top-3.5 text-indigo-300"></i><input id="stockMinusSearch" placeholder="প্রোডাক্ট কোড, নাম বা ব্র্যান্ড লিখুন..." class="w-full pl-9 pr-3 py-3"><div id="minusSearchResults" class="absolute z-20 w-full mt-1 rounded-xl shadow-xl hidden max-h-60 overflow-y-auto glass-card"></div></div>
-                    <div id="selectedMinusPreview" class="bg-white/10 p-3 rounded-xl mb-4 hidden text-white text-sm"></div>
-                    <div class="flex gap-3"><input id="minusQty" type="number" value="1" class="w-28 text-center"><button id="confirmMinusBtn" class="btn-gradient text-white font-bold px-6 py-3 rounded-xl flex-1"><i class="fas fa-trash-alt mr-2"></i> মাইনাস করুন</button></div>
+                <div class="card-soft p-6">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4"><i class="fas fa-minus-circle text-orange-500 mr-2"></i> দ্রুত স্টক মাইনাস</h2>
+                    
+                    <!-- Advanced Filters for Stock Minus -->
+                    <div class="bg-slate-50 rounded-xl p-4 mb-4">
+                        <h4 class="font-semibold text-slate-700 text-sm mb-3"><i class="fas fa-filter mr-1 text-emerald-500"></i> ফিল্টার করে পণ্য খুঁজুন</h4>
+                        <div class="filter-group">
+                            <div class="filter-item"><label class="text-[10px] mb-1">ব্র্যান্ড</label><select id="minusFilterBrand" class="form-select text-sm py-2"><option value="">সব ব্র্যান্ড</option></select></div>
+                            <div class="filter-item"><label class="text-[10px] mb-1">সাইজ</label><select id="minusFilterSize" class="form-select text-sm py-2"><option value="">সব সাইজ</option></select></div>
+                            <div class="filter-item"><label class="text-[10px] mb-1">টাইপ</label><select id="minusFilterType" class="form-select text-sm py-2"><option value="">সব টাইপ</option><option>Light</option><option>Deep</option><option>HL</option><option>General</option></select></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Search Input -->
+                    <div class="relative mb-4">
+                        <i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i>
+                        <input id="stockMinusSearch" placeholder="প্রোডাক্ট কোড, নাম বা ব্র্যান্ড লিখুন..." class="form-input pl-11">
+                        <div id="minusSearchResults" class="absolute z-20 w-full mt-1 rounded-xl shadow-xl border hidden max-h-60 overflow-y-auto bg-white"></div>
+                    </div>
+                    
+                    <div id="selectedMinusPreview" class="bg-emerald-50 p-3 rounded-xl mb-4 hidden text-slate-700 text-sm"></div>
+                    <div class="flex gap-3"><input id="minusQty" type="number" value="1" class="form-input w-28 text-center"><button id="confirmMinusBtn" class="btn-warning text-white font-bold px-6 py-3 rounded-xl flex-1 transition-all"><i class="fas fa-trash-alt mr-2"></i> স্টক মাইনাস করুন</button></div>
                 </div>
-                <div class="mt-4 glass-card p-4"><h3 class="font-bold text-white text-sm mb-2">দ্রুত ভিউ: বর্তমান স্টক</h3><div class="overflow-x-auto max-h-52 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-white/10"><tr class="text-indigo-300"><th class="p-2">কোড</th><th>ব্র্যান্ড</th><th>স্টক</th></tr></thead><tbody id="quickStockTable"></tbody></table></div></div>
+                <div class="mt-4 card-soft p-4"><h3 class="font-bold text-slate-700 text-sm mb-2">দ্রুত ভিউ: বর্তমান স্টক</h3><div class="overflow-x-auto max-h-52 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-slate-100"><tr class="text-slate-600"><th class="p-2 text-left">কোড</th><th class="p-2 text-left">ব্র্যান্ড</th><th class="p-2 text-left">সাইজ</th><th class="p-2 text-left">স্টক</th></tr></thead><tbody id="quickStockTable"></tbody></table></div></div>
             </div>
 
-            <!-- ALERTS -->
-            <div id="alertSection" class="hidden fade-in"><div class="glass-card p-5"><h2 class="text-2xl font-bold text-amber-400 mb-4"><i class="fas fa-bell"></i> লো স্টক এলার্ট (≤১০ পিস)</h2><div id="fullAlertList" class="space-y-3 max-h-96 overflow-y-auto"></div></div></div>
+            <!-- ALERT SECTION -->
+            <div id="alertSection" class="hidden fade-in">
+                <div class="card-soft p-6"><h2 class="text-2xl font-bold text-amber-600 mb-4"><i class="fas fa-bell mr-2"></i> লো স্টক এলার্ট (≤১০ পিস)</h2><div id="fullAlertList" class="space-y-3 max-h-96 overflow-y-auto"></div></div>
+            </div>
 
             <!-- ADVANCED FILTER + STOCK LIST -->
             <div id="stockListSection" class="hidden fade-in">
-                <div class="glass-card p-4 mb-4">
-                    <h3 class="text-white font-bold mb-3"><i class="fas fa-filter"></i> উন্নত ফিল্টার</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <input id="filterSearch" placeholder="🔍 কোড/নাম/ব্র্যান্ড" class="text-sm">
-                        <select id="filterBrandAdv" class="text-sm"><option value="">📌 সকল ব্র্যান্ড</option></select>
-                        <select id="filterSizeAdv" class="text-sm"><option value="">📏 সকল সাইজ</option></select>
-                        <select id="filterCategoryAdv" class="text-sm"><option value="">🏷️ সকল ক্যাটাগরি</option></select>
+                <div class="card-soft p-5 mb-4">
+                    <h3 class="font-bold text-slate-700 mb-3"><i class="fas fa-filter text-emerald-500 mr-2"></i>  ফিল্টার অপশন</h3>
+                    <div class="filter-group">
+                        <div class="filter-item"><input id="filterSearch" placeholder="🔍 কোড/নাম/ব্র্যান্ড" class="form-input text-sm py-2"></div>
+                        <div class="filter-item"><select id="filterBrandAdv" class="form-select text-sm py-2"><option value="">📌 সকল ব্র্যান্ড</option></select></div>
+                        <div class="filter-item"><select id="filterSizeAdv" class="form-select text-sm py-2"><option value="">📏 সকল সাইজ</option></select></div>
+                        <div class="filter-item"><select id="filterCategoryAdv" class="form-select text-sm py-2"><option value="">🏷️ সকল ক্যাটাগরি</option></select></div>
                     </div>
-                    <div class="flex gap-2 mt-3"><button onclick="applyFilters()" class="btn-gradient px-4 py-2 rounded-xl text-sm"><i class="fas fa-search"></i> ফিল্টার করুন</button><button onclick="resetAllFilters()" class="bg-white/10 px-4 py-2 rounded-xl text-sm"><i class="fas fa-undo-alt"></i> রিসেট</button></div>
+                    <div class="flex gap-2 mt-3"><button onclick="applyFilters()" class="btn-primary text-white px-5 py-2 rounded-xl text-sm font-medium"><i class="fas fa-search mr-1"></i> ফিল্টার করুন</button><button onclick="resetAllFilters()" class="bg-slate-200 hover:bg-slate-300 px-5 py-2 rounded-xl text-sm font-medium transition"><i class="fas fa-undo-alt mr-1"></i> রিসেট</button></div>
                 </div>
-                <div class="glass-card overflow-hidden"><div class="bg-white/10 px-4 py-3 font-bold text-white">সম্পূর্ণ ইনভেন্টরি লিস্ট</div><div class="overflow-x-auto max-h-[450px] overflow-y-auto"><table class="w-full text-sm"><thead class="bg-white/10 sticky top-0"><tr class="text-indigo-300"><th class="p-3">কোড</th><th class="p-3">ব্র্যান্ড/সাইজ</th><th class="p-3">টাইপ</th><th class="p-3">স্টক</th><th class="p-3 text-center">অ্যাকশন</th></tr></thead><tbody id="fullStockTableBody"></tbody></table></div></div>
+                <div class="table-custom shadow"><div class="bg-slate-100 px-4 py-3 font-bold text-slate-700">সম্পূর্ণ ইনভেন্টরি লিস্ট</div><div class="overflow-x-auto max-h-[450px] overflow-y-auto"><table class="w-full text-sm"><thead class="bg-slate-50 sticky top-0"><tr><th class="p-3 text-left">কোড</th><th class="p-3 text-left">ব্র্যান্ড/সাইজ</th><th class="p-3 text-left">টাইপ</th><th class="p-3 text-left">স্টক</th><th class="p-3 text-center">অ্যাকশন</th></td></thead><tbody id="fullStockTableBody"></tbody></table></div></div>
             </div>
 
-            <!-- CHARTS -->
-            <div id="chartsSection" class="hidden fade-in"><div class="grid md:grid-cols-2 gap-4"><div class="glass-card p-4"><canvas id="fullTypeChart" height="200"></canvas></div><div class="glass-card p-4"><canvas id="brandStockChart" height="200"></canvas></div><div class="glass-card p-4 md:col-span-2"><canvas id="stockLineChart" height="160"></canvas></div></div></div>
+            <!-- CHARTS SECTION -->
+            <div id="chartsSection" class="hidden fade-in">
+                <div class="grid md:grid-cols-2 gap-4"><div class="card-soft p-4"><canvas id="fullTypeChart" height="200"></canvas></div><div class="card-soft p-4"><canvas id="brandStockChart" height="200"></canvas></div><div class="card-soft p-4 md:col-span-2"><canvas id="stockLineChart" height="160"></canvas></div></div>
+            </div>
         </div>
 
-        <!-- BOTTOM NAV -->
-        <div class="fixed bottom-0 left-0 right-0 nav-modern py-2 z-50"><div class="container mx-auto px-2"><div class="flex justify-around items-center"><div class="nav-item active text-center flex-1" data-menu="dashboard"><i class="fas fa-chart-line text-white text-lg"></i><span class="text-white text-[10px] block">ড্যাশ</span></div><div class="nav-item text-center flex-1" data-menu="addProduct"><i class="fas fa-plus-circle text-white text-lg"></i><span class="text-white text-[10px] block">যোগ</span></div><div class="nav-item text-center flex-1" data-menu="stockMinus"><i class="fas fa-minus-circle text-white text-lg"></i><span class="text-white text-[10px] block">মাইনাস</span></div><div class="nav-item text-center flex-1" data-menu="alerts"><i class="fas fa-bell text-white text-lg"></i><span class="text-white text-[10px] block">এলার্ট</span></div><div class="nav-item text-center flex-1" data-menu="stockList"><i class="fas fa-list text-white text-lg"></i><span class="text-white text-[10px] block">স্টক</span></div><div class="nav-item text-center flex-1" data-menu="charts"><i class="fas fa-chart-pie text-white text-lg"></i><span class="text-white text-[10px] block">চার্ট</span></div></div></div></div>
+        <!-- BOTTOM NAVIGATION -->
+        <div class="fixed bottom-0 left-0 right-0 bottom-nav-light py-2 z-50">
+            <div class="container mx-auto px-2">
+                <div class="flex justify-around items-center">
+                    <div class="nav-item-light active flex-1 text-center" data-menu="dashboard"><i class="fas fa-chart-line"></i><span>ড্যাশবোর্ড</span></div>
+                    <div class="nav-item-light flex-1 text-center" data-menu="addProduct"><i class="fas fa-plus-circle"></i><span>পণ্য যোগ</span></div>
+                    <div class="nav-item-light flex-1 text-center" data-menu="stockMinus"><i class="fas fa-minus-circle"></i><span>স্টক মাইনাস</span></div>
+                    <div class="nav-item-light flex-1 text-center" data-menu="alerts"><i class="fas fa-bell"></i><span>এলার্ট</span></div>
+                    <div class="nav-item-light flex-1 text-center" data-menu="stockList"><i class="fas fa-list"></i><span>স্টক তালিকা</span></div>
+                    <div class="nav-item-light flex-1 text-center" data-menu="charts"><i class="fas fa-chart-pie"></i><span>চার্ট</span></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // ==================== GOOGLE SHEETS CONFIG ====================
-        // ⚠️ IMPORTANT: Replace with your Google Apps Script Web App URL after deployment
+        // GOOGLE SHEETS CONFIG
         const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
         
         let inventory = [];
         let charts = {};
         let selectedMinusProduct = null;
+        let currentMinusFilteredList = [];
         
-        // ==================== LOAD DATA FROM GOOGLE SHEET ====================
+        // Load from Google Sheet
         async function loadFromSheet() {
             try {
                 showToast("ডাটা লোড হচ্ছে...", "info");
@@ -260,55 +369,67 @@
                         qty: parseInt(row[7]) || 0
                     }));
                     refreshAllUI();
-                    showToast("ডাটা লোড সফল!", "success");
+                    updateMinusFilterOptions();
+                    showToast("✅ ডাটা লোড সফল!", "success");
                 }
-            } catch(e) { console.error(e); showToast("ডাটা লোড ব্যর্থ!", "error"); }
+            } catch(e) { console.error(e); showToast("❌ ডাটা লোড ব্যর্থ!", "error"); }
         }
         
-        // ==================== ADD TO SHEET ====================
+        // Add Product
         async function addProductToSheet() {
             let brand = document.getElementById('brandSelect').value;
             let code = document.getElementById('prodCode').value.trim();
             if(!brand || !code) { alert("ব্র্যান্ড এবং কোড দিন!"); return; }
+            if(inventory.some(i=>i.code===code)) { alert("এই কোড আগে থেকেই আছে!"); return; }
             let product = {
-                code: code,
-                brand: brand,
-                size: document.getElementById('sizeSelect').value,
-                category: document.getElementById('categorySelect').value,
-                type: document.getElementById('tileTypeSelect').value,
-                grade: document.getElementById('gradeSelect').value,
-                name: document.getElementById('prodName').value.trim() || "স্ট্যান্ডার্ড",
+                code: code, brand: brand, size: document.getElementById('sizeSelect').value,
+                category: document.getElementById('categorySelect').value, type: document.getElementById('tileTypeSelect').value,
+                grade: document.getElementById('gradeSelect').value, name: document.getElementById('prodName').value.trim() || "স্ট্যান্ডার্ড",
                 qty: parseInt(document.getElementById('stockPcs').value) || 0
             };
             try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'addProduct', product: product })
-                });
-                showToast("পণ্য যোগ করা হয়েছে!", "success");
-                document.getElementById('prodCode').value = '';
-                document.getElementById('prodName').value = '';
-                document.getElementById('stockPcs').value = '0';
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'addProduct', product: product }) });
+                showToast("✅ পণ্য যোগ করা হয়েছে!", "success");
+                document.getElementById('prodCode').value = ''; document.getElementById('prodName').value = ''; document.getElementById('stockPcs').value = '0';
                 setTimeout(() => loadFromSheet(), 1000);
             } catch(e) { alert("যোগ করতে ব্যর্থ!"); }
         }
         
-        // ==================== UPDATE STOCK IN SHEET ====================
+        // Update Stock
         async function updateStockInSheet(code, newQty) {
             try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'updateStock', code: code, qty: newQty })
-                });
-                showToast("স্টক আপডেট হয়েছে!", "success");
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'updateStock', code: code, qty: newQty }) });
+                showToast("✅ স্টক আপডেট হয়েছে!", "success");
             } catch(e) { console.error(e); }
         }
         
-        // ==================== UI RENDER FUNCTIONS ====================
+        // Update Minus Filter Options
+        function updateMinusFilterOptions() {
+            let brands = [...new Set(inventory.map(i=>i.brand))];
+            let sizes = [...new Set(inventory.map(i=>i.size))];
+            let brandSelect = document.getElementById('minusFilterBrand');
+            let sizeSelect = document.getElementById('minusFilterSize');
+            if(brandSelect) { let curr = brandSelect.value; brandSelect.innerHTML = '<option value="">সব ব্র্যান্ড</option>' + brands.map(b=>`<option value="${b}">${b}</option>`).join(''); if(curr && brands.includes(curr)) brandSelect.value = curr; }
+            if(sizeSelect) { let curr = sizeSelect.value; sizeSelect.innerHTML = '<option value="">সব সাইজ</option>' + sizes.map(s=>`<option value="${s}">${s}</option>`).join(''); if(curr && sizes.includes(curr)) sizeSelect.value = curr; }
+        }
+        
+        // Get filtered products for minus section
+        function getFilteredForMinus() {
+            let brand = document.getElementById('minusFilterBrand')?.value || "";
+            let size = document.getElementById('minusFilterSize')?.value || "";
+            let type = document.getElementById('minusFilterType')?.value || "";
+            let search = document.getElementById('stockMinusSearch')?.value.toLowerCase() || "";
+            
+            return inventory.filter(i => {
+                let matchBrand = !brand || i.brand === brand;
+                let matchSize = !size || i.size === size;
+                let matchType = !type || i.type === type;
+                let matchSearch = !search || i.code.toLowerCase().includes(search) || i.name.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search);
+                return matchBrand && matchSize && matchType && matchSearch;
+            });
+        }
+        
+        // UI Functions
         function refreshAllUI() {
             updateDashboardStats(); updateDashboardChart(); updateDashboardAlerts(); 
             updateQuickStockTable(); updateFullAlertList(); updateFullStockTable(); 
@@ -327,21 +448,21 @@
             let counts = { Light:0, Deep:0, HL:0, General:0 };
             inventory.forEach(i=>{ if(counts[i.type]!==undefined) counts[i.type]++; });
             if(charts.dashboard) charts.dashboard.destroy();
-            charts.dashboard = new Chart(ctx, { type:'doughnut', data:{ labels:['Light','Deep','HL','General'], datasets:[{ data:[counts.Light,counts.Deep,counts.HL,counts.General], backgroundColor:['#fbbf24','#38bdf8','#a78bfa','#94a3b8'] }] }, options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ color:'white', font:{size:10} } } } } });
+            charts.dashboard = new Chart(ctx, { type:'doughnut', data:{ labels:['Light ✨','Deep 🌊','HL 🔥','General'], datasets:[{ data:[counts.Light,counts.Deep,counts.HL,counts.General], backgroundColor:['#10b981','#3b82f6','#8b5cf6','#94a3b8'] }] }, options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{ size:11 } } } } } });
         }
         
         function updateDashboardAlerts() {
             let low = inventory.filter(i=>i.qty<=10);
-            document.getElementById('dashboardLowStockList').innerHTML = low.length? low.map(i=>`<div class="flex justify-between border-b border-white/10 pb-1 text-white text-xs"><span>📦 ${i.code}</span><span class="font-bold text-amber-400">${i.qty} পিস</span><span>${i.brand}</span></div>`).join('') : '<div class="text-emerald-400 text-sm">✅ সব স্টক স্বাভাবিক</div>';
+            document.getElementById('dashboardLowStockList').innerHTML = low.length? low.map(i=>`<div class="flex justify-between border-b border-slate-100 pb-2 text-slate-700"><span class="font-mono text-xs">${i.code}</span><span class="font-bold text-amber-600">${i.qty} পিস</span><span class="text-xs">${i.brand}</span></div>`).join('') : '<div class="text-emerald-600 text-sm text-center py-4">✅ সব স্টক স্বাভাবিক</div>';
         }
         
         function updateQuickStockTable() {
-            document.getElementById('quickStockTable').innerHTML = inventory.slice(0,10).map(i=>`<tr class="border-b border-white/10"><td class="p-2 font-mono text-xs text-white">${i.code}</td><td class="text-xs text-indigo-300">${i.brand}</td><td class="font-bold text-white text-sm">${i.qty}</td></tr>`).join('');
+            document.getElementById('quickStockTable').innerHTML = inventory.slice(0,10).map(i=>`<tr class="border-b border-slate-100"><td class="p-2 font-mono text-xs text-slate-600">${i.code}</td><td class="text-xs text-slate-600">${i.brand}</td><td class="text-xs text-slate-500">${i.size}</td><td class="font-bold text-slate-800">${i.qty}</td></tr>`).join('');
         }
         
         function updateFullAlertList() {
             let low = inventory.filter(i=>i.qty<=10);
-            document.getElementById('fullAlertList').innerHTML = low.length? low.map(i=>`<div class="bg-amber-500/20 p-3 rounded-xl border border-amber-500/30 flex justify-between items-center"><div><span class="font-bold text-white">${i.code}</span><p class="text-xs text-indigo-300">${i.brand}</p></div><div><span class="text-xl font-black text-amber-400">${i.qty}</span><button onclick="quickMinusFromAlert('${i.code}')" class="ml-3 btn-gradient text-white text-xs px-3 py-1 rounded-lg">মাইনাস</button></div></div>`).join('') : '<div class="text-emerald-400 text-center">কোন লো স্টক নেই</div>';
+            document.getElementById('fullAlertList').innerHTML = low.length? low.map(i=>`<div class="bg-amber-50 p-4 rounded-xl border border-amber-200 flex justify-between items-center"><div><span class="font-bold text-slate-800">${i.code}</span><p class="text-xs text-slate-500">${i.brand} | ${i.size}</p></div><div><span class="text-2xl font-black text-amber-600">${i.qty}</span><span class="text-xs text-slate-500"> পিস</span><button onclick="quickMinusFromAlert('${i.code}')" class="ml-3 bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1.5 rounded-lg transition"><i class="fas fa-minus-circle"></i> মাইনাস</button></div></div>`).join('') : '<div class="text-emerald-600 text-center py-8">🎉 কোনো লো স্টক আইটেম নেই!</div>';
         }
         
         function updateFullStockTable() {
@@ -351,8 +472,8 @@
             let catF = document.getElementById('filterCategoryAdv')?.value || "";
             let filtered = inventory.filter(i => (!search || i.code.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search) || i.name.toLowerCase().includes(search)) && (!brandF || i.brand===brandF) && (!sizeF || i.size===sizeF) && (!catF || i.category===catF));
             let tbody = document.getElementById('fullStockTableBody');
-            if(!filtered.length) tbody.innerHTML='<tr><td colspan="5" class="text-center py-6 text-indigo-300">কোন পণ্য নেই</td></tr>';
-            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b border-white/10"><td class="p-2 font-mono text-xs text-indigo-300">${item.code}</td><td class="p-2"><span class="font-semibold text-white text-xs">${item.brand}</span><div class="text-[9px] text-indigo-400">${item.size}</div></td><td class="p-2"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/10 text-white">${item.type}</span></td><td class="p-2 font-bold text-white text-sm">${item.qty}</td><td class="p-2 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-500/30 hover:bg-orange-500/50 text-white text-[10px] px-2 py-1 rounded-lg"><i class="fas fa-cart-minus"></i> মাইনাস</button></td></tr>`).join('');
+            if(!filtered.length) tbody.innerHTML='<tr><td colspan="5" class="text-center py-8 text-slate-400">🔍 কোন পণ্য পাওয়া যায়নি</td></tr>';
+            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b border-slate-100"><td class="p-3 font-mono text-xs font-bold text-emerald-600">${item.code}</td><td class="p-3"><span class="font-semibold text-slate-800">${item.brand}</span><div class="text-[10px] text-slate-400">${item.size}</div></td><td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">${item.type}</span></td><td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}</td><td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg transition"><i class="fas fa-cart-minus mr-1"></i> মাইনাস</button></td></tr>`).join('');
         }
         
         function updateFilterOptions() {
@@ -369,65 +490,75 @@
             let brandStock = {};
             inventory.forEach(i=>{ typeMap[i.type]++; brandStock[i.brand] = (brandStock[i.brand]||0)+i.qty; });
             if(charts.fullType) charts.fullType.destroy(); if(charts.brandStock) charts.brandStock.destroy(); if(charts.line) charts.line.destroy();
-            charts.fullType = new Chart(document.getElementById('fullTypeChart'), { type:'pie', data:{ labels:['Light','Deep','HL','General'], datasets:[{ data:[typeMap.Light,typeMap.Deep,typeMap.HL,typeMap.General], backgroundColor:['#facc15','#38bdf8','#c084fc','#94a3b8'] }] }, options:{ responsive:true, plugins:{ legend:{ labels:{ color:'white' } } } } });
-            charts.brandStock = new Chart(document.getElementById('brandStockChart'), { type:'bar', data:{ labels:Object.keys(brandStock), datasets:[{ label:'স্টক', data:Object.values(brandStock), backgroundColor:'#818cf8' }] }, options:{ responsive:true, indexAxis:'y', plugins:{ legend:{ labels:{ color:'white' } } } } });
-            charts.line = new Chart(document.getElementById('stockLineChart'), { type:'line', data:{ labels:inventory.slice(0,15).map(i=>i.code), datasets:[{ label:'স্টক পরিমাণ', data:inventory.slice(0,15).map(i=>i.qty), borderColor:'#a78bfa', tension:0.3, fill:true, backgroundColor:'rgba(167,139,250,0.1)' }] }, options:{ responsive:true, plugins:{ legend:{ labels:{ color:'white' } } } } });
+            charts.fullType = new Chart(document.getElementById('fullTypeChart'), { type:'pie', data:{ labels:['Light','Deep','HL','General'], datasets:[{ data:[typeMap.Light,typeMap.Deep,typeMap.HL,typeMap.General], backgroundColor:['#10b981','#3b82f6','#8b5cf6','#94a3b8'] }] }, options:{ responsive:true } });
+            charts.brandStock = new Chart(document.getElementById('brandStockChart'), { type:'bar', data:{ labels:Object.keys(brandStock), datasets:[{ label:'মোট স্টক (পিস)', data:Object.values(brandStock), backgroundColor:'#10b981' }] }, options:{ responsive:true, indexAxis:'y' } });
+            charts.line = new Chart(document.getElementById('stockLineChart'), { type:'line', data:{ labels:inventory.slice(0,15).map(i=>i.code), datasets:[{ label:'স্টক পরিমাণ', data:inventory.slice(0,15).map(i=>i.qty), borderColor:'#10b981', tension:0.3, fill:true, backgroundColor:'rgba(16,185,129,0.1)' }] }, options:{ responsive:true } });
         }
         
-        // STOCK MINUS with instant search
+        // Stock Minus with Filters
         const minusSearch = document.getElementById('stockMinusSearch');
         const minusResults = document.getElementById('minusSearchResults');
         const minusPreview = document.getElementById('selectedMinusPreview');
         const minusQty = document.getElementById('minusQty');
         const confirmMinus = document.getElementById('confirmMinusBtn');
         
-        if(minusSearch) {
-            minusSearch.addEventListener('input', (e) => {
-                let val = e.target.value.trim().toLowerCase();
-                if(!val) { minusResults.classList.add('hidden'); selectedMinusProduct=null; minusPreview.classList.add('hidden'); return; }
-                let matches = inventory.filter(i=> i.code.toLowerCase().includes(val) || i.name.toLowerCase().includes(val) || i.brand.toLowerCase().includes(val)).slice(0,8);
-                if(matches.length===0) { minusResults.innerHTML='<div class="p-3 text-indigo-300">কোন পণ্য পাওয়া যায়নি</div>'; minusResults.classList.remove('hidden'); return; }
-                minusResults.innerHTML = matches.map(i=> `<div class="p-3 hover:bg-white/10 cursor-pointer border-b border-white/10 flex justify-between" data-code="${i.code}"><span class="font-mono text-white">${i.code}</span><span class="text-indigo-300">স্টক: ${i.qty}</span></div>`).join('');
+        function renderMinusSearchResults() {
+            let filtered = getFilteredForMinus();
+            if(filtered.length === 0) {
+                minusResults.innerHTML = '<div class="p-3 text-slate-400">❌ কোন পণ্য পাওয়া যায়নি</div>';
                 minusResults.classList.remove('hidden');
-                document.querySelectorAll('#minusSearchResults div[data-code]').forEach(el=>{ el.addEventListener('click',()=>{ let code=el.getAttribute('data-code'); let prod=inventory.find(p=>p.code===code); if(prod){ selectedMinusProduct=prod; minusSearch.value=prod.code; minusPreview.innerHTML=`✅ নির্বাচিত: ${prod.brand} (${prod.code}) | বর্তমান স্টক: <strong>${prod.qty}</strong> পিস`; minusPreview.classList.remove('hidden'); minusResults.classList.add('hidden'); } }); });
-            });
+                return;
+            }
+            minusResults.innerHTML = filtered.map(i=> `<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b border-slate-100 flex justify-between items-center search-result-item" data-code="${i.code}"><span class="font-mono text-emerald-600 font-bold">${i.code}</span><span class="text-slate-500">${i.brand} | ${i.size} | স্টক: <strong>${i.qty}</strong></span></div>`).join('');
+            minusResults.classList.remove('hidden');
+            document.querySelectorAll('#minusSearchResults div[data-code]').forEach(el=>{ el.addEventListener('click',()=>{ let code=el.getAttribute('data-code'); let prod=inventory.find(p=>p.code===code); if(prod){ selectedMinusProduct=prod; minusSearch.value=prod.code; minusPreview.innerHTML=`✅ নির্বাচিত: <strong>${prod.brand}</strong> (${prod.code}) | সাইজ: ${prod.size} | বর্তমান স্টক: <span class="font-bold text-emerald-600">${prod.qty}</span> পিস`; minusPreview.classList.remove('hidden'); minusResults.classList.add('hidden'); } }); });
+        }
+        
+        if(minusSearch) {
+            minusSearch.addEventListener('input', () => renderMinusSearchResults());
+            document.getElementById('minusFilterBrand')?.addEventListener('change', () => renderMinusSearchResults());
+            document.getElementById('minusFilterSize')?.addEventListener('change', () => renderMinusSearchResults());
+            document.getElementById('minusFilterType')?.addEventListener('change', () => renderMinusSearchResults());
+            
             confirmMinus.addEventListener('click', async () => {
-                if(!selectedMinusProduct){ alert("পণ্য সিলেক্ট করুন"); return; }
+                if(!selectedMinusProduct){ alert("দয়া করে একটি পণ্য সিলেক্ট করুন"); return; }
                 let qty = parseInt(minusQty.value);
                 if(isNaN(qty)||qty<=0) qty=1;
-                if(selectedMinusProduct.qty < qty){ alert(`স্টক কম! বর্তমান: ${selectedMinusProduct.qty}`); return; }
+                if(selectedMinusProduct.qty < qty){ alert(`স্টক কম! বর্তমানে ${selectedMinusProduct.qty} পিস আছে`); return; }
                 let newQty = selectedMinusProduct.qty - qty;
-                selectedMinusProduct.qty = newQty;
                 await updateStockInSheet(selectedMinusProduct.code, newQty);
                 await loadFromSheet();
-                minusPreview.innerHTML = `✅ সফল! বাকি স্টক: ${newQty}`;
-                setTimeout(()=>{ minusPreview.classList.add('hidden'); selectedMinusProduct=null; minusSearch.value=''; }, 1500);
+                minusPreview.innerHTML = `✅ সফল! ${qty} পিস মাইনাস হয়েছে। বাকি স্টক: <strong>${newQty}</strong> পিস`;
+                setTimeout(()=>{ minusPreview.classList.add('hidden'); selectedMinusProduct=null; minusSearch.value=''; }, 2000);
+                renderMinusSearchResults();
             });
         }
         
-        function quickMinusFromAlert(code) { let prod = inventory.find(i=>i.code===code); if(prod){ let q=prompt(`"${code}" কত পিস কাটবেন? (স্টক:${prod.qty})`,"1"); if(q && !isNaN(parseInt(q)) && parseInt(q)>0 && parseInt(q)<=prod.qty){ let newQty = prod.qty - parseInt(q); updateStockInSheet(code, newQty).then(()=>loadFromSheet()); } } }
+        function quickMinusFromAlert(code) { let prod = inventory.find(i=>i.code===code); if(prod){ let q=prompt(`"${code}" - কত পিস মাইনাস করবেন?\nবর্তমান স্টক: ${prod.qty}`,"1"); if(q && !isNaN(parseInt(q)) && parseInt(q)>0 && parseInt(q)<=prod.qty){ updateStockInSheet(code, prod.qty-parseInt(q)).then(()=>loadFromSheet()); } } }
         function quickSellFromAnywhere(code) { quickMinusFromAlert(code); }
         function applyFilters() { updateFullStockTable(); }
         function resetAllFilters() { document.getElementById('filterSearch').value=''; document.getElementById('filterBrandAdv').value=''; document.getElementById('filterSizeAdv').value=''; document.getElementById('filterCategoryAdv').value=''; updateFullStockTable(); }
-        function showToast(msg, type) { /* simple alert for now */ console.log(msg); }
+        function showToast(msg, type) { console.log(msg); }
         
         // Navigation
         function switchMenu(menuId) {
             ['dashboard','addProduct','stockMinus','alert','stockList','charts'].forEach(m => { let el = document.getElementById(`${m}Section`); if(el) el.classList.add('hidden'); });
             document.getElementById(`${menuId}Section`).classList.remove('hidden');
-            document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-            let activeNav = Array.from(document.querySelectorAll('.nav-item')).find(n=>n.getAttribute('data-menu')===menuId);
+            document.querySelectorAll('.nav-item-light').forEach(n=>n.classList.remove('active'));
+            let activeNav = Array.from(document.querySelectorAll('.nav-item-light')).find(n=>n.getAttribute('data-menu')===menuId);
             if(activeNav) activeNav.classList.add('active');
             if(menuId === 'stockList') { updateFilterOptions(); updateFullStockTable(); }
             if(menuId === 'charts') updateChartSections();
+            if(menuId === 'stockMinus') { updateMinusFilterOptions(); renderMinusSearchResults(); }
         }
-        document.querySelectorAll('.nav-item').forEach(nav=>nav.addEventListener('click',()=>switchMenu(nav.getAttribute('data-menu'))));
+        document.querySelectorAll('.nav-item-light').forEach(nav=>nav.addEventListener('click',()=>switchMenu(nav.getAttribute('data-menu'))));
         
         // Auth
         const DEFAULT_PASSWORD = "admin123";
-        function verifyLogin() { let pass = document.getElementById('loginPassword').value; if(pass === DEFAULT_PASSWORD) { document.getElementById('loginPage').style.display='none'; document.getElementById('mainApp').style.display='block'; loadFromSheet(); if(document.getElementById('rememberPassword').checked) localStorage.setItem('tiles_auth','true'); } else { alert('ভুল পাসওয়ার্ড!'); } }
-        function showPasswordHint() { alert('পাসওয়ার্ড: admin123'); }
+        function verifyLogin() { let pass = document.getElementById('loginPassword').value; if(pass === DEFAULT_PASSWORD) { document.getElementById('loginPage').style.display='none'; document.getElementById('mainApp').style.display='block'; loadFromSheet(); if(document.getElementById('rememberPassword').checked) localStorage.setItem('tiles_auth','true'); } else { alert('❌ ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।'); } }
+        function showPasswordHint() { alert('🔑 ডিফল্ট পাসওয়ার্ড: admin123\n\nআপনি চাইলে এই পাসওয়ার্ড পরিবর্তন করতে পারেন।'); }
         function logout() { localStorage.removeItem('tiles_auth'); document.getElementById('mainApp').style.display='none'; document.getElementById('loginPage').style.display='flex'; }
+        
         if(localStorage.getItem('tiles_auth') === 'true') { document.getElementById('loginPage').style.display='none'; document.getElementById('mainApp').style.display='block'; loadFromSheet(); }
         document.getElementById('date-display').innerText = new Date().toLocaleDateString('bn-BD', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
     </script>
