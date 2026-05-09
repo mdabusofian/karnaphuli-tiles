@@ -14,20 +14,12 @@
             font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'Hind Siliguri', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
         }
         
-        /* Bengali Font Support */
-        @font-face {
-            font-family: 'Hind Siliguri';
-            src: local('Hind Siliguri'), local('Noto Sans Bengali');
-            font-display: swap;
-        }
-        
         body {
             background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
             min-height: 100vh;
             padding-bottom: 90px;
         }
         
-        /* Card Styles */
         .card-soft {
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(4px);
@@ -41,7 +33,6 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.08);
         }
         
-        /* Stats Cards */
         .stat-card {
             background: white;
             border-radius: 20px;
@@ -51,7 +42,6 @@
         }
         .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
         
-        /* Bottom Navigation */
         .bottom-nav-light {
             background: rgba(255,255,255,0.98);
             backdrop-filter: blur(16px);
@@ -73,7 +63,6 @@
         .nav-item-light i { font-size: 1.25rem; }
         .nav-item-light span { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
         
-        /* Form Input Styles */
         .form-input, .form-select {
             background: #fafcff;
             border: 1.5px solid #e2e8f0;
@@ -91,20 +80,14 @@
             box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
             background: white;
         }
-        .form-input::placeholder {
-            color: #94a3b8;
-            font-size: 13px;
-        }
         label {
             font-size: 12px;
             font-weight: 600;
             color: #475569;
             margin-bottom: 6px;
             display: block;
-            letter-spacing: 0.3px;
         }
         
-        /* Grid Form Layout */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -115,13 +98,10 @@
             .form-input, .form-select { padding: 10px 14px; font-size: 14px; }
         }
         
-        /* Button Styles */
         .btn-primary { background: linear-gradient(135deg, #10b981, #059669); transition: all 0.2s; }
         .btn-primary:hover { transform: scale(1.01); box-shadow: 0 6px 15px rgba(16,185,129,0.3); }
         .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .btn-warning:hover { transform: scale(1.01); box-shadow: 0 6px 15px rgba(245,158,11,0.3); }
         
-        /* Table Styles */
         .table-custom {
             background: white;
             border-radius: 20px;
@@ -131,7 +111,6 @@
         .table-custom th { padding: 14px 12px; font-size: 12px; font-weight: 700; color: #334155; }
         .table-custom td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
         
-        /* Scrollbar */
         .scrollbar-custom::-webkit-scrollbar { width: 5px; height: 5px; }
         .scrollbar-custom::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
         .scrollbar-custom::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
@@ -139,7 +118,6 @@
         .fade-in { animation: fadeSlide 0.25s ease-out; }
         @keyframes fadeSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Toast Notification */
         .toast-notification {
             position: fixed;
             bottom: 100px;
@@ -161,7 +139,6 @@
             100% { opacity: 0; bottom: 80px; }
         }
         
-        /* Login Page */
         .login-container {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
@@ -183,7 +160,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Refresh Button */
         .refresh-btn {
             background: #f1f5f9;
             padding: 6px 12px;
@@ -192,16 +168,9 @@
             transition: all 0.2s;
             cursor: pointer;
         }
-        .refresh-btn:hover {
-            background: #e2e8f0;
-        }
-        .refresh-btn.rotating i {
-            animation: rotate 0.5s ease;
-        }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+        .refresh-btn:hover { background: #e2e8f0; }
+        .refresh-btn.rotating i { animation: rotate 0.5s ease; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -236,7 +205,6 @@
 
     <!-- MAIN APP -->
     <div id="mainApp" style="display: none;">
-        <!-- Header -->
         <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-200">
             <div class="container mx-auto px-4 py-3 flex justify-between items-center">
                 <div class="flex items-center gap-3">
@@ -321,7 +289,7 @@
                     <div id="selectedMinusPreview" class="bg-emerald-50 p-3 rounded-xl mb-4 hidden text-slate-700 text-sm"></div>
                     <div class="flex gap-3"><input id="minusQty" type="number" value="1" class="form-input w-28 text-center"><button id="confirmMinusBtn" class="btn-warning text-white font-bold px-6 py-3 rounded-xl flex-1 transition-all"><i class="fas fa-trash-alt mr-2"></i> স্টক মাইনাস করুন</button></div>
                 </div>
-                <div class="mt-4 card-soft p-4"><h3 class="font-bold text-slate-700 text-sm mb-2">দ্রুত ভিউ: বর্তমান স্টক</h3><div class="overflow-x-auto max-h-52 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-slate-100"><tr class="text-slate-600"><th class="p-2 text-left">কোড</th><th class="p-2 text-left">ব্র্যান্ড</th><th class="p-2 text-left">সাইজ</th><th class="p-2 text-left">স্টক</th></table></thead><tbody id="quickStockTable"></tbody></table></div></div>
+                <div class="mt-4 card-soft p-4"><h3 class="font-bold text-slate-700 text-sm mb-2">দ্রুত ভিউ: বর্তমান স্টক</h3><div class="overflow-x-auto max-h-52 overflow-y-auto"><table class="w-full text-sm"><thead class="bg-slate-100"><tr class="text-slate-600"><th class="p-2 text-left">কোড</th><th class="p-2 text-left">ব্র্যান্ড</th><th class="p-2 text-left">সাইজ</th><th class="p-2 text-left">স্টক</th></tr></thead><tbody id="quickStockTable"></tbody></table></div></div>
             </div>
 
             <!-- ALERT SECTION -->
@@ -367,15 +335,14 @@
 
     <script>
         // ==================== GOOGLE SHEETS CONFIG ====================
-        // আপনার Google Apps Script Web App URL এখানে বসান
+        // ⚠️ গুরুত্বপূর্ণ: আপনার Google Apps Script Web App URL এখানে বসান
+        // Deploy করার পর যে URL পাবেন সেটি এখানে দিন
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1381qFXiRP03IxWtju0p3kyYkK23HWn7BtiE_aR4KHx7Oxho7grCkb3IukyLsAbCbBQ/exec";
         
         let inventory = [];
         let charts = {};
         let selectedMinusProduct = null;
-        let isLoading = false;
         
-        // Toast Notification
         function showToast(message, type = "info") {
             let toast = document.createElement('div');
             toast.className = 'toast-notification';
@@ -385,7 +352,6 @@
             setTimeout(() => toast.remove(), 2500);
         }
         
-        // Manual Refresh Function
         async function manualRefresh() {
             const refreshBtn = document.querySelector('.refresh-btn');
             refreshBtn.classList.add('rotating');
@@ -394,21 +360,25 @@
             setTimeout(() => refreshBtn.classList.remove('rotating'), 500);
         }
         
-        // Load from Google Sheet
+        // Google Sheet থেকে ডাটা লোড
         async function loadFromSheet() {
-            if(isLoading) return;
-            isLoading = true;
-            
             try {
+                showToast("গুগল শিট থেকে ডাটা আনছে...", "info");
+                
                 const response = await fetch(`${SCRIPT_URL}?action=getData&t=${Date.now()}`, {
                     method: 'GET',
-                    mode: 'cors',
-                    headers: { 'Accept': 'application/json' }
+                    mode: 'cors'
                 });
                 
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 
-                const data = await response.json();
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch(e) {
+                    throw new Error("Invalid JSON response");
+                }
                 
                 if(data && data.success && data.data && data.data.length > 0) {
                     inventory = data.data.map((row, idx) => ({
@@ -428,19 +398,15 @@
                 } else {
                     inventory = [];
                     refreshAllUI();
-                    showToast("📋 কোন পণ্য নেই। নতুন পণ্য যোগ করুন।", "info");
+                    showToast("📋 গুগল শিটে কোন ডাটা নেই। নতুন পণ্য যোগ করুন।", "info");
                 }
             } catch(e) { 
                 console.error("Load error:", e); 
-                showToast("⚠️ গুগল শিট সংযোগ ব্যর্থ! চেক করুন URL ঠিক আছে কিনা।", "error");
-                inventory = [];
-                refreshAllUI();
-            } finally {
-                isLoading = false;
+                showToast("⚠️ গুগল শিট সংযোগ ব্যর্থ! URL চেক করুন।", "error");
             }
         }
         
-        // Add Product to Sheet
+        // গুগল শিটে পণ্য যোগ করুন
         async function addProductToSheet() {
             let brand = document.getElementById('brandSelect').value;
             let code = document.getElementById('prodCode').value.trim();
@@ -448,6 +414,7 @@
             if(inventory.some(i=>i.code===code)) { alert("এই কোড আগে থেকেই আছে!"); return; }
             
             let product = {
+                action: 'addProduct',
                 code: code,
                 brand: brand,
                 size: document.getElementById('sizeSelect').value,
@@ -461,62 +428,60 @@
             showToast("পণ্য যোগ করা হচ্ছে...", "info");
             
             try {
-                // Try to save to Google Sheet via POST
+                // URL এনকোড করে ডাটা পাঠানো
+                const params = new URLSearchParams();
+                for(let key in product) {
+                    params.append(key, product[key]);
+                }
+                
                 const response = await fetch(SCRIPT_URL, { 
                     method: 'POST', 
-                    mode: 'cors',
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ action: 'addProduct', product: product }) 
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
                 });
                 
-                if(response.ok) {
-                    showToast("✅ পণ্য গুগল শিটে যোগ হয়েছে!", "success");
-                    // Reload data from sheet
-                    await loadFromSheet();
-                } else {
-                    throw new Error("Server error");
-                }
+                showToast("✅ পণ্য গুগল শিটে যোগ হয়েছে!", "success");
+                
+                // ফর্ম ক্লিয়ার
+                document.getElementById('prodCode').value = ''; 
+                document.getElementById('prodName').value = ''; 
+                document.getElementById('stockPcs').value = '0';
+                
+                // 1 সেকেন্ড পর ডাটা রিলোড
+                setTimeout(() => loadFromSheet(), 1000);
+                
             } catch(e) { 
                 console.error("Add error:", e);
                 showToast("⚠️ গুগল শিটে যোগ করতে ব্যর্থ! URL চেক করুন।", "error");
-                // Still add to local for demo
-                inventory.push({ id: Date.now(), ...product });
-                refreshAllUI();
-                updateMinusFilterOptions();
             }
-            
-            document.getElementById('prodCode').value = ''; 
-            document.getElementById('prodName').value = ''; 
-            document.getElementById('stockPcs').value = '0';
         }
         
-        // Update Stock
+        // স্টক আপডেট
         async function updateStockInSheet(code, newQty) {
             try {
-                const response = await fetch(SCRIPT_URL, { 
+                const params = new URLSearchParams();
+                params.append('action', 'updateStock');
+                params.append('code', code);
+                params.append('qty', newQty);
+                
+                await fetch(SCRIPT_URL, { 
                     method: 'POST', 
-                    mode: 'cors',
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ action: 'updateStock', code: code, qty: newQty }) 
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
                 });
                 
-                if(response.ok) {
-                    showToast("✅ স্টক আপডেট হয়েছে!", "success");
-                    await loadFromSheet(); // Reload fresh data
-                } else {
-                    throw new Error("Update failed");
-                }
+                showToast("✅ স্টক আপডেট হয়েছে!", "success");
+                setTimeout(() => loadFromSheet(), 500);
+                
             } catch(e) { 
                 console.error("Update error:", e);
                 showToast("⚠️ স্টক আপডেট ব্যর্থ!", "error");
-                // Update local as fallback
-                let product = inventory.find(p => p.code === code);
-                if(product) product.qty = newQty;
-                refreshAllUI();
             }
         }
         
-        // Update Minus Filter Options
+        // UI ফাংশনসমূহ
         function updateMinusFilterOptions() {
             let brands = [...new Set(inventory.map(i=>i.brand))];
             let sizes = [...new Set(inventory.map(i=>i.size))];
@@ -548,7 +513,6 @@
             }
         }
         
-        // Get filtered products for minus section
         function getFilteredForMinus() {
             let brand = document.getElementById('minusFilterBrand')?.value || "";
             let size = document.getElementById('minusFilterSize')?.value || "";
@@ -564,7 +528,6 @@
             });
         }
         
-        // UI Functions
         function refreshAllUI() {
             updateDashboardStats(); 
             updateDashboardChart(); 
@@ -587,7 +550,7 @@
             let counts = { Light:0, Deep:0, HL:0, General:0 };
             inventory.forEach(i=>{ if(counts[i.type]!==undefined) counts[i.type]++; });
             if(charts.dashboard) charts.dashboard.destroy();
-            charts.dashboard = new Chart(ctx, { type:'doughnut', data:{ labels:['Light ✨','Deep 🌊','HL 🔥','General'], datasets:[{ data:[counts.Light,counts.Deep,counts.HL,counts.General], backgroundColor:['#10b981','#3b82f6','#8b5cf6','#94a3b8'] }] }, options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{ size:11 } } } } } });
+            charts.dashboard = new Chart(ctx, { type:'doughnut', data:{ labels:['Light ✨','Deep 🌊','HL 🔥','General'], datasets:[{ data:[counts.Light,counts.Deep,counts.HL,counts.General], backgroundColor:['#10b981','#3b82f6','#8b5cf6','#94a3b8'] }] }, options:{ responsive:true } });
         }
         
         function updateDashboardAlerts() {
@@ -612,7 +575,7 @@
             let filtered = inventory.filter(i => (!search || i.code.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search) || i.name.toLowerCase().includes(search)) && (!brandF || i.brand===brandF) && (!sizeF || i.size===sizeF) && (!catF || i.category===catF));
             let tbody = document.getElementById('fullStockTableBody');
             if(!filtered.length) tbody.innerHTML='<tr><td colspan="5" class="text-center py-8 text-slate-400">🔍 কোন পণ্য পাওয়া যায়নি</td></tr>';
-            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b border-slate-100"><td class="p-3 font-mono text-xs font-bold text-emerald-600">${item.code}</td><td class="p-3"><span class="font-semibold text-slate-800">${item.brand}</span><div class="text-[10px] text-slate-400">${item.size}</div></td><td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">${item.type}</span></td><td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}</td><td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg transition"><i class="fas fa-cart-minus mr-1"></i> মাইনাস</button></table></tr>`).join('');
+            else tbody.innerHTML = filtered.map(item=>`<tr class="border-b border-slate-100"><td class="p-3 font-mono text-xs font-bold text-emerald-600">${item.code}</td><td class="p-3"><span class="font-semibold text-slate-800">${item.brand}</span><div class="text-[10px] text-slate-400">${item.size}</div></td><td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">${item.type}</span></td><td class="p-3 font-bold ${item.qty<5?'text-red-500':item.qty<15?'text-amber-500':'text-emerald-600'}">${item.qty}</td><td class="p-3 text-center"><button onclick="quickSellFromAnywhere('${item.code}')" class="bg-orange-100 hover:bg-orange-200 text-orange-600 text-[10px] px-3 py-1.5 rounded-lg transition"><i class="fas fa-cart-minus mr-1"></i> মাইনাস</button></td></tr>`).join('');
         }
         
         function updateChartSections() {
@@ -625,10 +588,10 @@
             
             charts.fullType = new Chart(document.getElementById('fullTypeChart'), { type:'pie', data:{ labels:['Light','Deep','HL','General'], datasets:[{ data:[typeMap.Light,typeMap.Deep,typeMap.HL,typeMap.General], backgroundColor:['#10b981','#3b82f6','#8b5cf6','#94a3b8'] }] }, options:{ responsive:true } });
             charts.brandStock = new Chart(document.getElementById('brandStockChart'), { type:'bar', data:{ labels:Object.keys(brandStock), datasets:[{ label:'মোট স্টক (পিস)', data:Object.values(brandStock), backgroundColor:'#10b981' }] }, options:{ responsive:true, indexAxis:'y' } });
-            charts.line = new Chart(document.getElementById('stockLineChart'), { type:'line', data:{ labels:inventory.slice(0,15).map(i=>i.code), datasets:[{ label:'স্টক পরিমাণ', data:inventory.slice(0,15).map(i=>i.qty), borderColor:'#10b981', tension:0.3, fill:true, backgroundColor:'rgba(16,185,129,0.1)' }] }, options:{ responsive:true } });
+            charts.line = new Chart(document.getElementById('stockLineChart'), { type:'line', data:{ labels:inventory.slice(0,15).map(i=>i.code), datasets:[{ label:'স্টক পরিমাণ', data:inventory.slice(0,15).map(i=>i.qty), borderColor:'#10b981', tension:0.3, fill:true }] }, options:{ responsive:true } });
         }
         
-        // Stock Minus with Filters
+        // স্টক মাইনাস ইভেন্ট
         const minusSearch = document.getElementById('stockMinusSearch');
         const minusResults = document.getElementById('minusSearchResults');
         const minusPreview = document.getElementById('selectedMinusPreview');
@@ -642,7 +605,7 @@
                 minusResults.classList.remove('hidden');
                 return;
             }
-            minusResults.innerHTML = filtered.map(i=> `<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b border-slate-100 flex justify-between items-center search-result-item" data-code="${i.code}"><span class="font-mono text-emerald-600 font-bold">${i.code}</span><span class="text-slate-500">${i.brand} | ${i.size} | স্টক: <strong>${i.qty}</strong></span></div>`).join('');
+            minusResults.innerHTML = filtered.map(i=> `<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b border-slate-100 flex justify-between items-center" data-code="${i.code}"><span class="font-mono text-emerald-600 font-bold">${i.code}</span><span class="text-slate-500">${i.brand} | ${i.size} | স্টক: <strong>${i.qty}</strong></span></div>`).join('');
             minusResults.classList.remove('hidden');
             document.querySelectorAll('#minusSearchResults div[data-code]').forEach(el=>{ 
                 el.addEventListener('click',()=>{ 
@@ -697,7 +660,7 @@
             updateFullStockTable(); 
         }
         
-        // Navigation
+        // নেভিগেশন
         function switchMenu(menuId) {
             ['dashboard','addProduct','stockMinus','alert','stockList','charts'].forEach(m => { 
                 let el = document.getElementById(`${m}Section`); 
@@ -713,7 +676,7 @@
         }
         document.querySelectorAll('.nav-item-light').forEach(nav=>nav.addEventListener('click',()=>switchMenu(nav.getAttribute('data-menu'))));
         
-        // Auth with Session Persistence
+        // অথেনটিকেশন
         const DEFAULT_PASSWORD = "admin123";
         const SESSION_KEY = "tiles_app_session";
         
@@ -732,7 +695,7 @@
             } 
         }
         
-        function showPasswordHint() { alert('🔑 ডিফল্ট পাসওয়ার্ড: admin123\n\nআপনি চাইলে এই পাসওয়ার্ড পরিবর্তন করতে পারেন।'); }
+        function showPasswordHint() { alert('🔑 ডিফল্ট পাসওয়ার্ড: admin123'); }
         
         function logout() { 
             localStorage.removeItem(SESSION_KEY);
@@ -753,13 +716,11 @@
         
         document.getElementById('date-display').innerText = new Date().toLocaleDateString('bn-BD', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
         
-        // Initialize
         if(!checkSession()) {
             document.getElementById('loginPage').style.display='flex';
             document.getElementById('mainApp').style.display='none';
         }
         
-        // Expose functions globally
         window.manualRefresh = manualRefresh;
         window.addProductToSheet = addProductToSheet;
         window.quickMinusFromAlert = quickMinusFromAlert;
