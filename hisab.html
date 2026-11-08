@@ -1,0 +1,1182 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.maateen.me"><link rel="stylesheet" href="https://fonts.maateen.me/solaiman-lipi/font.css">
+<title>হিসাব — আয়-ব্যয় ও পার্টনার</title>
+<style>
+:root{
+  --bg:#f3f5f7;--surface:#ffffff;--ink:#111827;--ink2:#374151;--muted:#6b7280;--line:#e5e7eb;--line2:#f1f2f4;
+  --accent:#0d5c63;--accent2:#093f44;--accent-soft:#e7f2f2;
+  --gold:#b45309;--gold-soft:#fdf5e6;
+  --bad:#b91c1c;--bad-soft:#fdecec;--good:#15803d;--good-soft:#e8f6ee;
+  --side:250px;--r:14px;
+  --shadow:0 1px 2px rgba(17,24,39,.04),0 6px 18px rgba(17,24,39,.05);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"SolaimanLipi","Noto Sans Bengali",system-ui,sans-serif;font-size:15px;line-height:1.55}
+button,input,select,textarea{font:inherit;color:inherit}
+
+/* ---------- সাইডবার ---------- */
+.sidebar{position:fixed;top:0;bottom:0;left:0;width:var(--side);background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40;transition:transform .25s ease}
+.sb-brand{display:flex;align-items:center;gap:12px;padding:20px 18px;border-bottom:1px solid var(--line)}
+.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;font-size:19px;font-weight:700;flex:none}
+.sb-brand b{display:block;font-size:14.5px;line-height:1.35}
+.sb-brand small{color:var(--muted);font-size:12px}
+.tabs{display:flex;flex-direction:column;gap:3px;padding:12px 10px;overflow-y:auto;flex:1}
+.tab{display:flex;align-items:center;gap:11px;border:0;background:none;text-align:left;padding:11px 12px;border-radius:10px;color:var(--ink2);cursor:pointer;font-size:14.5px;font-weight:600;width:100%}
+.tab:hover{background:#f3f4f6}
+.tab.on{background:var(--accent-soft);color:var(--accent)}
+.tab .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.45;flex:none}
+.tab.on .dot{opacity:1}
+.sb-foot{padding:14px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.6}
+.scrim{position:fixed;inset:0;background:rgba(17,24,39,.35);opacity:0;pointer-events:none;transition:opacity .25s;z-index:35}
+
+/* ---------- উপরের বার ---------- */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(243,245,247,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin-left:var(--side)}
+.topbar-in{display:flex;align-items:center;gap:12px;padding:12px 24px;min-height:62px}
+.burger{display:none;width:42px;height:42px;border-radius:11px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:19px;place-items:center;flex:none}
+.crumb{font-weight:700;font-size:17px;margin-right:auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sel{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:9px 12px;min-width:170px;max-width:100%}
+.savepill{font-size:12px;color:var(--good);background:var(--good-soft);padding:5px 11px;border-radius:999px;white-space:nowrap}
+.savepill.warn{color:var(--bad);background:var(--bad-soft)}
+
+/* ---------- মূল কন্টেন্ট ---------- */
+.content{margin-left:var(--side);padding:24px 24px 90px;max-width:1280px}
+.view.hidden{display:none}
+.ph{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:0 0 18px}
+.ph h2{font-size:23px;margin:0;font-weight:700;letter-spacing:-.2px}
+.ph p{margin:4px 0 0;color:var(--muted);font-size:13.5px}
+.grid{display:grid;gap:16px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.two{grid-template-columns:1.4fr 1fr}
+.split{grid-template-columns:1fr 1fr}
+.pgrid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:20px;border:1px solid var(--line)}
+.card>h3{margin:0 0 14px;font-size:15.5px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.kpi .lab{font-size:12.5px;color:var(--muted)}
+.kpi .val{font-size:23px;font-weight:700;margin-top:5px;font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+.kpi .sub{font-size:12px;color:var(--muted);margin-top:4px}
+.kpi.hero{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.kpi.hero .lab,.kpi.hero .sub{color:rgba(255,255,255,.8)}
+.kpi.gold{background:var(--gold-soft);border-color:#f2e2b8}
+.pos{color:var(--good)}.neg{color:var(--bad)}
+.muted{color:var(--muted)}
+
+/* ---------- ফর্ম ---------- */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 14px;align-items:end}
+.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fld label{font-size:13px;color:var(--ink2);font-weight:600}
+.fld.wide{grid-column:1/-1}
+.fld small{color:var(--muted);font-size:12px}
+.inp{background:#fafbfc;border:1px solid #d9dee5;border-radius:11px;padding:10px 12px;width:100%;min-width:0;transition:border .15s,box-shadow .15s,background .15s}
+.inp:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px var(--accent-soft)}
+.inp.num{text-align:right;font-variant-numeric:tabular-nums}
+.form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.btn{border:0;border-radius:11px;padding:10px 16px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;transition:filter .15s,transform .05s}
+.btn:hover{filter:brightness(1.07)}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:var(--surface);color:var(--ink2);border:1px solid #d9dee5}
+.btn.soft{background:var(--accent-soft);color:var(--accent)}
+.btn.danger{background:var(--bad-soft);color:var(--bad)}
+.btn.gold{background:var(--gold)}
+.btn.sm{padding:6px 10px;font-size:12.5px;border-radius:9px}
+.btn.icon{padding:6px 9px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2);cursor:pointer}
+.chk input{width:17px;height:17px;accent-color:var(--accent)}
+.badge-edit{font-size:12px;color:var(--gold);font-weight:700}
+.editing{box-shadow:0 0 0 2px var(--gold-soft),0 0 0 3px var(--gold)}
+
+/* ---------- টেবিল ---------- */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:600;text-align:left;padding:10px 12px;background:#f8f9fb;border-bottom:1px solid var(--line)}
+td{padding:11px 12px;border-bottom:1px solid var(--line2)}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#fbfcfd}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.total td{font-weight:700;background:#f5f7f9;border-top:1px solid var(--line)}
+tr.click{cursor:pointer}
+tr.cur td{background:var(--accent-soft)}
+tr.off td{color:var(--muted)}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.chip.gold{background:var(--gold-soft);color:var(--gold)}
+.chip.auto{background:#eef1f5;color:#475569}
+.note{background:var(--accent-soft);color:#1e4e53;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.7}
+.note.warn{background:var(--gold-soft);color:#6b4a0c}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+
+/* ---------- কার্ড/KPI ---------- */
+.card.pcard{cursor:pointer;transition:transform .15s,box-shadow .15s}
+.card.pcard:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(17,24,39,.08)}
+.pcard .nm{font-weight:700;font-size:16px}
+.pcard .bal{font-size:22px;font-weight:700;margin-top:12px;font-variant-numeric:tabular-nums}
+
+/* ---------- চার্ট ---------- */
+.chart{display:flex;align-items:flex-end;gap:10px;height:220px;padding-top:12px;border-bottom:1px solid var(--line)}
+.bar{flex:1;min-width:24px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;cursor:pointer}
+.bar i{display:block;width:100%;max-width:46px;border-radius:9px 9px 3px 3px;background:linear-gradient(180deg,var(--accent),var(--accent2));opacity:.88;transition:opacity .15s}
+.bar.neg i{background:var(--bad)}
+.bar.cur i{opacity:1;box-shadow:0 0 0 3px var(--accent-soft)}
+.bar:hover i{opacity:1}
+.bar span{font-size:11px;color:var(--muted);margin-top:6px;white-space:nowrap}
+.bar em{font-style:normal;font-size:10.5px;color:var(--ink2);margin-bottom:4px;white-space:nowrap}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:none;z-index:60;max-width:90vw;font-size:14px;text-align:center}
+
+/* ---------- ট্যাবলেট ও মোবাইল ---------- */
+@media(max-width:1100px){.two{grid-template-columns:1fr}}
+@media(max-width:960px){
+  .sidebar{transform:translateX(-102%);box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  .sidebar.open{transform:none}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .topbar{margin-left:0}
+  .content{margin-left:0;padding:18px 14px 90px}
+  .topbar-in{padding:10px 14px}
+  .burger{display:grid}
+  .split{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .savepill{display:none}
+  .sel{min-width:0;flex:0 1 150px}
+  .crumb{font-size:16px}
+  .form[style]{grid-template-columns:1fr!important}
+  .ph h2{font-size:20px}
+  .kpi .val{font-size:20px}
+  .card{padding:16px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .pgrid{grid-template-columns:1fr}
+  .btn{padding:11px 14px}
+}
+@media(max-width:420px){.kpis{grid-template-columns:1fr}}
+
+
+/* ===== মোবাইল লেআউট ফিক্স ===== */
+/* গ্রিডের আইটেম যেন নিজের চেয়ে বড় না হয় — আর ওভারফ্লো না করে */
+.grid>*,.two>*,.split>*,.kpis>*,.pgrid>*{min-width:0}
+.content,.card,.topbar{min-width:0}
+html,body{max-width:100%;overflow-x:hidden}
+
+.kpi .val{overflow-wrap:anywhere;word-break:break-word}
+
+@media(max-width:960px){
+  .content{padding:16px 14px 90px}
+  .ph{margin-bottom:14px;align-items:flex-start}
+  .ph .btnrow{width:100%}
+  .ph .btnrow .btn{flex:1 1 auto}
+  #bsPartner{min-width:0!important;width:100%}
+  .card>h3 .btn{flex:0 0 auto}
+}
+
+@media(max-width:640px){
+  /* টপবার: ছোট স্ক্রিনে দুই লাইনে সুন্দর করে সাজানো */
+  .topbar-in{gap:8px;padding:10px 12px}
+  .burger{width:40px;height:40px;flex:0 0 40px}
+  .crumb{font-size:16px;flex:1 1 auto}
+  #monthSel{flex:0 0 auto;width:auto;max-width:150px;min-width:0!important;padding:8px 10px;font-size:13px}
+
+  /* কার্ড ও প্যাডিং */
+  .card{padding:14px;border-radius:12px}
+  .card>h3{font-size:15px;margin-bottom:12px}
+  .ph h2{font-size:19px}
+  .ph p{font-size:12.5px}
+
+  /* KPI — এক কলাম, যাতে বড় সংখ্যা না ভাঙে */
+  .kpis{grid-template-columns:1fr!important;gap:10px}
+  .kpi .val{font-size:21px}
+
+  /* ফর্ম — সব ইনপুট ফুল-উইডথ, ল্যাবেল উপরে */
+  .form,.form[style]{grid-template-columns:1fr!important;gap:12px}
+  .fld label{font-size:12.5px}
+  .inp{padding:11px 12px;font-size:15px}
+  .form-actions,.btnrow{width:100%}
+  .form-actions .btn,.btnrow .btn{flex:1 1 auto}
+
+  /* টেবিল — কম প্যাডিং ও ছোট ফন্ট, তবু পড়া যাবে */
+  table{font-size:13px}
+  th{padding:8px 9px;font-size:11.5px}
+  td{padding:9px 9px}
+  .tw{margin:0 -4px;padding:0 4px}
+
+  /* চার্ট — স্ক্রল করা যাবে, বার ফিক্সড চওড়া */
+  .chart{overflow-x:auto;gap:8px;height:200px;padding-bottom:0;-webkit-overflow-scrolling:touch}
+  .chart .bar{flex:0 0 40px;min-width:40px}
+  .bar span{font-size:10.5px}
+  .bar em{font-size:10px}
+
+  /* পার্টনার কার্ড — পুরো সাইজ */
+  .pgrid{grid-template-columns:1fr!important}
+  .pcard .bal{font-size:20px}
+
+  /* বাটন গ্রুপ — স্ট্যাক */
+  .card .btnrow .btn.sm{flex:1 1 auto}
+
+  .grid{gap:12px}
+  .two,.split{gap:12px}
+  .sidebar{width:272px}
+  .sb-brand{padding:16px}
+}
+
+@media(max-width:400px){
+  .content{padding:12px 10px 90px}
+  .card{padding:12px}
+  .topbar-in{padding:8px 10px}
+  #monthSel{max-width:130px;font-size:12.5px}
+  .kpi .val{font-size:19px}
+  .ph h2{font-size:18px}
+}
+
+
+/* ===================== v7 · রেসপন্সিভ লেআউট ===================== */
+.content{margin-left:var(--side);padding:24px 26px 90px;max-width:none}
+
+@media (max-width:960px){
+  .content{margin-left:0;padding:16px 16px 100px}
+  .topbar{margin-left:0}
+  .topbar-in{padding:10px 16px}
+  .burger{display:grid}
+  .two,.split{grid-template-columns:1fr}
+}
+
+@media (max-width:640px){
+  .content{padding:14px 12px 104px}
+
+  /* টপবার */
+  .topbar-in{padding:8px 12px;min-height:56px;gap:8px}
+  .burger{width:42px;height:42px;flex:0 0 42px}
+  .crumb{font-size:16px}
+  #monthSel{min-width:0!important;max-width:140px;flex:0 0 auto;padding:9px 10px;font-size:14px;min-height:42px}
+  .savepill{display:none}
+
+  /* পেজ হেডার — উপরে-নিচে */
+  .ph{flex-direction:column;align-items:stretch;gap:10px;margin:0 0 14px}
+  .ph h2{font-size:19px;line-height:1.35}
+  .ph p{font-size:12.5px;margin-top:2px}
+  .ph .btnrow{width:100%}
+  .ph .btnrow .btn{flex:1 1 100%}
+
+  /* কার্ড ও গ্রিড */
+  .grid{gap:12px}
+  .card{padding:14px;border-radius:14px}
+  .card>h3{font-size:15px;margin:0 0 12px;gap:8px}
+  .card>h3 .btn{width:auto}
+  .kpis{grid-template-columns:1fr 1fr!important;gap:10px}
+  .kpi{padding:14px 13px}
+  .kpi .lab{font-size:12px}
+  .kpi .val{font-size:18px;line-height:1.3;margin-top:4px}
+  .kpi .sub{font-size:11.5px;margin-top:3px}
+  .two,.split,.pgrid{grid-template-columns:1fr!important}
+
+  /* ফর্ম — একটি কলাম, বড় ইনপুট */
+  .form,.form[style]{grid-template-columns:1fr!important;gap:12px}
+  .fld label{font-size:13px}
+  .inp{font-size:16px;min-height:46px;padding:10px 12px}
+  .form-actions{gap:8px}
+  .form-actions>*,.btnrow>.btn{flex:1 1 auto}
+  .btn{min-height:44px;font-size:15px;padding:10px 14px}
+  .btn.sm{min-height:36px;font-size:13px;padding:6px 10px}
+  .btn.icon{min-width:38px}
+
+  /* বার চার্ট — ভেতরে স্ক্রল */
+  .chart{height:190px;overflow-x:auto;gap:10px;-webkit-overflow-scrolling:touch}
+  .chart .bar{flex:0 0 44px;min-width:44px}
+
+  #bsPartner{min-width:0!important;width:100%}
+  .chk{font-size:14px}
+
+  /* সাইডবার */
+  .sidebar{width:280px;padding-top:env(safe-area-inset-top)}
+  .tabs .tab{min-height:46px}
+
+  /* ============ টেবিল → কার্ড (ফোনে) ============ */
+  table.rt{font-size:14px;white-space:normal}
+  table.rt thead{display:none}
+  table.rt,table.rt tbody{display:block;width:100%}
+  table.rt tr{display:block}
+  table.rt tbody tr{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 14px;margin:0 0 10px;box-shadow:var(--shadow)}
+  table.rt tbody tr.total{background:#f5f7f9;border-color:#dfe4ea}
+  table.rt tbody tr:hover td{background:none}
+  table.rt td{display:flex;justify-content:space-between;align-items:center;gap:12px;border:0;padding:8px 0;text-align:right;background:none!important;min-height:0}
+  table.rt td::before{content:attr(data-label);color:var(--muted);font-size:12.5px;font-weight:500;text-align:left;flex:0 0 auto;max-width:52%}
+  table.rt td:first-child{font-size:15px;font-weight:700;border-bottom:1px solid var(--line2);padding-bottom:10px;margin-bottom:2px}
+  table.rt td:first-child::before{display:none}
+  table.rt td:not([data-label]){justify-content:flex-end}
+  table.rt td:not([data-label])::before{display:none}
+  table.rt td:empty{display:none}
+  table.rt td.wide{justify-content:center;text-align:center;color:var(--muted);padding:18px 0}
+  table.rt td.wide::before{display:none}
+  table.rt td .btn{min-height:38px}
+  .tw{overflow:visible}
+}
+
+@media (max-width:370px){
+  .content{padding:12px 10px 104px}
+  .card{padding:12px}
+  .kpi .val{font-size:16px}
+  #monthSel{max-width:120px;font-size:13px}
+}
+
+
+/* ---- v7.1 ফিক্স ---- */
+@media (max-width:960px){
+  .sidebar{box-shadow:none}
+  .sidebar.open{box-shadow:0 20px 50px rgba(0,0,0,.25)}
+}
+@media (max-width:640px){
+  .kpi.hero{grid-column:1/-1}
+  .ph .btnrow select{width:100%;min-height:46px}
+}
+
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand"><div class="logo">ক</div><div style="min-width:0"><b id="shopTitle">দোকান</b><small>আয়-ব্যয় ও পার্টনার হিসাব</small></div></div>
+  <nav class="tabs" id="tabs">
+      <button class="tab on" data-t="overview"><span class="dot"></span>সারসংক্ষেপ</button>
+      <button class="tab" data-t="daily"><span class="dot"></span>দৈনিক হিসাব</button>
+      <button class="tab" data-t="monthly"><span class="dot"></span>মাসিক খরচ ও PDF</button>
+      <button class="tab" data-t="annual"><span class="dot"></span>বার্ষিক</button>
+      <button class="tab" data-t="balance"><span class="dot"></span>ব্যালেন্স শিট</button>
+      <button class="tab" data-t="partners"><span class="dot"></span>পার্টনার</button>
+      <button class="tab" data-t="settings"><span class="dot"></span>সেটিংস</button>
+  </nav>
+  <div class="sb-foot">তথ্য এই ব্রাউজারে সংরক্ষিত থাকে।<br>নিয়মিত ব্যাকআপ নিন।</div>
+</aside>
+<div class="scrim" id="scrim"></div>
+<header class="topbar"><div class="topbar-in">
+  <button class="burger" id="burger" aria-label="মেনু খুলুন">☰</button>
+  <div class="crumb" id="crumb">সারসংক্ষেপ</div>
+  <select id="monthSel" class="sel" aria-label="মাস নির্বাচন"></select>
+  <span id="saveState" class="savepill">✓ সংরক্ষিত</span>
+</div></header>
+
+<main class="content">
+
+<!-- ================= সারসংক্ষেপ ================= -->
+<section class="view" id="v-overview">
+  <div class="ph"><div><h2 id="ovTitle"></h2><p>নির্বাচিত মাসের মূল সংখ্যা ও গত ১২ মাসের গতি</p></div></div>
+  <div class="grid kpis" id="ovKpis"></div>
+  <div class="grid two" style="margin-top:14px">
+    <div class="card"><h3>মাসভিত্তিক প্রকৃত লাভ <span class="chip">বার ক্লিক করলে মাস খুলবে</span></h3><div class="chart" id="ovChart"></div></div>
+    <div class="card"><h3>পার্টনার ব্যালেন্স</h3><div id="ovPartners"></div></div>
+  </div>
+</section>
+
+<!-- ================= দৈনিক ================= -->
+<section class="view hidden" id="v-daily">
+  <div class="ph"><div><h2 id="dyTitle"></h2><p>ফর্মে তারিখ ও হিসাব লিখে “সংরক্ষণ” চাপুন। নিচের টেবিলে সেটি যুক্ত হবে।</p></div></div>
+  <div class="grid kpis" id="dyKpis"></div>
+
+  <div class="card" style="margin-top:14px" id="dyFormCard">
+    <h3><span>দৈনিক হিসাব এন্ট্রি</span><span class="badge-edit" id="dyMode"></span></h3>
+    <form id="dayForm" class="form">
+      <div class="fld"><label>তারিখ</label><input type="date" id="d_date" class="inp" required></div>
+      <div class="fld"><label>দৈনিক বিক্রয় (৳)</label><input type="number" step="0.01" id="d_s" class="inp num" placeholder="0"></div>
+      <div class="fld"><label>দৈনিক খরচ (৳)</label><input type="number" step="0.01" id="d_ex" class="inp num" placeholder="0"></div>
+      <div class="fld"><label>ক্যাশ (৳)</label><input type="number" step="0.01" id="d_c" class="inp num" placeholder="0"></div>
+      <div class="fld"><label>লেবার (৳)</label><input type="number" step="0.01" id="d_l" class="inp num" placeholder="0"></div>
+      <div class="fld"><label>দৈনিক লাভ (৳)</label><input type="number" step="0.01" id="d_p" class="inp num" placeholder="0"></div>
+      <div class="fld wide"><label>নোট</label><input type="text" id="d_n" class="inp" placeholder="যেমন: ইফতার মাহফিল, বন্ধ, ইত্যাদি"></div>
+      <div class="fld wide"><div class="form-actions" style="margin:0">
+        <button class="btn" type="submit">✓ সংরক্ষণ</button>
+        <button class="btn ghost" type="button" data-act="resetDay">নতুন এন্ট্রি</button>
+        <button class="btn danger" type="button" data-act="clearDayForm" style="margin-left:auto">দিনের হিসাব মুছুন</button>
+      </div></div>
+    </form>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3><span>মাসের দৈনিক তালিকা</span><label class="chk"><input type="checkbox" id="dyAll"> খালি দিনও দেখান</label></h3>
+    <div class="tw" id="dyTable"></div>
+  </div>
+</section>
+
+<!-- ================= মাসিক ================= -->
+<section class="view hidden" id="v-monthly">
+  <div class="ph">
+    <div><h2 id="moTitle"></h2><p>মাসিক খরচ যোগ করুন, লাভ ভাগ করুন, আর PDF রিপোর্ট নিন।</p></div>
+    <div class="btnrow"><button class="btn gold" data-act="pdfMonthly">📄 মাসিক আয়-ব্যয় PDF</button></div>
+  </div>
+  <div class="grid two">
+    <div class="card">
+      <h3><span>মাসিক খরচ</span><span class="badge-edit" id="itMode"></span></h3>
+      <form id="itemForm" class="form" style="grid-template-columns:2fr 1fr auto">
+        <div class="fld"><label>খরচের নাম</label><input id="i_name" class="inp" required placeholder="যেমন: দোকান ভাড়া"></div>
+        <div class="fld"><label>টাকা</label><input id="i_a" type="number" step="0.01" class="inp num" required placeholder="0"></div>
+        <div class="fld"><label>&nbsp;</label><button class="btn" type="submit" id="i_btn">+ যোগ</button></div>
+        <input type="hidden" id="i_id">
+      </form>
+      <div class="tw" style="margin-top:14px" id="moItems"></div>
+    </div>
+    <div class="card">
+      <h3>মাসের হিসাব</h3>
+      <div class="tw" id="moSum"></div>
+      <div class="form-actions"><button class="btn" data-act="applyProfit">লাভ পার্টনারদের ব্যালেন্সে বসান</button></div>
+      <div class="note" style="margin-top:14px" id="moRule"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>প্রতিজনের ভাগ — <span id="moShareMonth"></span></h3><div class="tw" id="moShare"></div></div>
+</section>
+
+<!-- ================= বার্ষিক ================= -->
+<section class="view hidden" id="v-annual">
+  <div class="ph">
+    <div><h2>বার্ষিক সারসংক্ষেপ</h2><p>সব মাসের তুলনা। সারিতে ক্লিক করলে মাস খুলবে।</p></div>
+    <div class="btnrow"><button class="btn gold" data-act="pdfAnnual">📄 বার্ষিক PDF</button><button class="btn ghost" data-act="csvAnnual">CSV</button></div>
+  </div>
+  <div class="card"><div class="tw" id="anWrap"></div></div>
+</section>
+
+<!-- ================= ব্যালেন্স শিট ================= -->
+<section class="view hidden" id="v-balance">
+  <div class="ph">
+    <div><h2>পার্টনার ব্যালেন্স শিট</h2><p>প্রতি মাসের মূলধন, লাভ ও উত্তোলন লিখুন। ব্যালেন্স নিজে হিসাব হবে।</p></div>
+    <div class="btnrow">
+      <select id="bsPartner" class="sel" style="min-width:220px"></select>
+      <button class="btn gold" data-act="pdfBalance">📄 এই ব্যালেন্স শিট PDF</button>
+      <button class="btn ghost" data-act="pdfAll">সবার PDF</button>
+    </div>
+  </div>
+  <div class="grid kpis" id="bsKpis"></div>
+
+  <div class="card" style="margin-top:14px">
+    <h3><span>লেনদেন এন্ট্রি</span><span class="badge-edit" id="enMode"></span></h3>
+    <form id="entryForm" class="form">
+      <div class="fld"><label>মাস</label><input type="month" id="e_mk" class="inp" required></div>
+      <div class="fld"><label>বিবরণ</label><input id="e_date" class="inp" placeholder="যেমন: জানুয়ারী ২০২৬"></div>
+      <div class="fld"><label>মূলধন সংযোজন (৳)</label><input type="number" step="0.01" id="e_add" class="inp num" placeholder="0"></div>
+      <div class="fld"><label>লাভ (৳)</label><input type="number" step="0.01" id="e_profit" class="inp num" placeholder="0"></div>
+      <div class="fld"><label>উত্তোলন (৳)</label><input type="number" step="0.01" id="e_wd" class="inp num" placeholder="0"></div>
+      <div class="fld"><label>&nbsp;</label><div class="btnrow"><button class="btn" type="submit">✓ সংরক্ষণ</button><button class="btn ghost" type="button" data-act="resetEntry">নতুন</button></div></div>
+      <input type="hidden" id="e_id">
+    </form>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3><span id="bsTableTitle">ব্যালেন্স শিট</span>
+      <button class="btn soft sm" data-act="applyToPartner">এই মাসের লাভ এই পার্টনারকে বসান</button></h3>
+    <div class="tw" id="bsTable"></div>
+  </div>
+</section>
+
+<!-- ================= পার্টনার ================= -->
+<section class="view hidden" id="v-partners">
+  <div class="ph"><div><h2>পার্টনার ও বিনিয়োগকারী</h2><p>কার্ডে ক্লিক করলে ব্যালেন্স শিট খুলবে।</p></div></div>
+  <div class="card">
+    <h3><span>পার্টনার যোগ / সম্পাদনা</span><span class="badge-edit" id="ptMode"></span></h3>
+    <form id="partnerForm" class="form" style="grid-template-columns:2fr 1.2fr 1fr auto">
+      <div class="fld"><label>নাম</label><input id="p_name" class="inp" required placeholder="পূর্ণ নাম"></div>
+      <div class="fld"><label>ধরন</label><select id="p_role" class="inp"><option value="partner">অংশীদার</option><option value="investor">বিনিয়োগকারী</option></select></div>
+      <div class="fld"><label>শুরুর মূলধন (৳)</label><input id="p_open" type="number" step="0.01" class="inp num" placeholder="0"></div>
+      <div class="fld"><label>&nbsp;</label><div class="btnrow"><button class="btn" type="submit">✓ সংরক্ষণ</button><button class="btn ghost" type="button" data-act="resetPartner">নতুন</button></div></div>
+      <input type="hidden" id="p_id">
+    </form>
+  </div>
+  <div class="grid pgrid" id="ptCards" style="margin-top:14px"></div>
+</section>
+
+<!-- ================= সেটিংস ================= -->
+<section class="view hidden" id="v-settings">
+  <div class="ph"><div><h2>সেটিংস ও ডেটা</h2><p>দোকানের নাম, লাভ ভাগের নিয়ম, মাস ও ব্যাকআপ।</p></div></div>
+  <div class="grid split">
+    <div class="card">
+      <h3>সাধারণ</h3>
+      <form id="setForm" class="form" style="grid-template-columns:1fr">
+        <div class="fld"><label>দোকানের নাম</label><input id="s_name" class="inp"></div>
+        <div class="fld"><label>বিনিয়োগকারীদের মোট অংশ (%)</label><input id="s_inv" type="number" step="0.01" class="inp num"><small>ডিফল্ট ৩৩.৩৩% — লাভের ১/৩ বিনিয়োগকারী পাবে, বাকি অংশীদারদের মধ্যে সমান ভাগ।</small></div>
+        <label class="chk"><input type="checkbox" id="s_auto"> লাভ বসালে উত্তোলনও ধরা হবে (ব্যালেন্স স্থির থাকবে)</label>
+        <div class="form-actions"><button class="btn" type="submit">সংরক্ষণ</button></div>
+      </form>
+    </div>
+    <div class="card">
+      <h3>মাস ব্যবস্থাপনা</h3>
+      <div class="form" style="grid-template-columns:1fr auto">
+        <div class="fld"><label>নতুন মাস</label><input type="month" id="newMonth" class="inp"></div>
+        <div class="fld"><label>&nbsp;</label><button class="btn soft" data-act="addMonth">+ মাস যোগ</button></div>
+      </div>
+      <div class="form-actions"><button class="btn danger sm" data-act="delMonth">নির্বাচিত মাসের সব হিসাব মুছুন</button></div>
+    </div>
+  </div>
+  <div class="grid split" style="margin-top:14px">
+    <div class="card">
+      <h3>ব্যাকআপ</h3>
+      <div class="note warn" style="margin-bottom:12px">সব ডেটা এই ব্রাউজারে থাকে। নিয়মিত ব্যাকআপ নিন।</div>
+      <div class="btnrow">
+        <button class="btn" data-act="exportBackup">ব্যাকআপ ডাউনলোড</button>
+        <label class="btn ghost" style="cursor:pointer">ব্যাকআপ আপলোড<input type="file" accept=".json" hidden id="backupFile"></label>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Excel থেকে আমদানি</h3>
+      <div class="btnrow">
+        <label class="btn ghost" style="cursor:pointer">Excel আপলোড (২ ফাইল)<input type="file" accept=".xlsx,.xls" multiple hidden id="excelFile"></label>
+        <button class="btn danger" data-act="resetToSeed">মূল Excel ডেটায় ফিরুন</button>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin:12px 0 0">যে মাস/পার্টনার ফাইলে আছে শুধু সেগুলো আপডেট হবে।</p>
+    </div>
+  </div>
+</section>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script id="seed" type="application/json">{"months": {"2026-01": {"days": {"2026-01-01": {"s": 10555.0, "ex": 1800.0, "c": 0, "l": 0, "p": 1190.0}, "2026-01-03": {"s": 142849.0, "ex": 575.0, "c": 258330, "l": 420.0, "p": 20675.0}, "2026-01-04": {"s": 50540.0, "ex": 284.0, "c": 0, "l": 0, "p": 4776.0}, "2026-01-05": {"s": 137520.0, "ex": 512.0, "c": 0, "l": 520.0, "p": 7088.0}, "2026-01-06": {"s": 48746.0, "ex": 528.0, "c": 0, "l": 2000.0, "p": 5132.0}, "2026-01-07": {"s": 22500.0, "ex": 600.0, "c": 4200.0, "l": 4800.0, "p": 4700.0}, "2026-01-08": {"s": 23075.0, "ex": 325.0, "c": 0, "l": 850.0, "p": 2425.0}, "2026-01-10": {"s": 29110.0, "ex": 380.0, "c": 101333.0, "l": 0, "p": 4707.0}, "2026-01-11": {"s": 174620.0, "ex": 280.0, "c": 151750.0, "l": 0, "p": 16630.0}, "2026-01-12": {"s": 4500.0, "ex": 270.0, "c": 0, "l": 670.0, "p": 460.0}, "2026-01-13": {"s": 102885.0, "ex": 340.0, "c": 21380.0, "l": 0, "p": 12655.0}, "2026-01-14": {"s": 27830.0, "ex": 250.0, "c": 133303.0, "l": 740.0, "p": 2810.0}, "2026-01-15": {"s": 23700.0, "ex": 370.0, "c": 0, "l": 0, "p": 2250.0}, "2026-01-17": {"s": 42310.0, "ex": 285.0, "c": 98000.0, "l": 0, "p": 5650.0}, "2026-01-18": {"s": 3840.0, "ex": 320.0, "c": 0, "l": 0, "p": 630.0}, "2026-01-19": {"s": 55550.0, "ex": 345.0, "c": 400.0, "l": 0, "p": 1625.0}, "2026-01-20": {"s": 98070.0, "ex": 429.0, "c": 0, "l": 620.0, "p": 6841.0}, "2026-01-21": {"s": 37360.0, "ex": 386.0, "c": 9600, "l": 0, "p": 4494.0}, "2026-01-22": {"s": 104950.0, "ex": 375.0, "c": 205600.0, "l": 820.0, "p": 11225.0}, "2026-01-24": {"s": 58065.0, "ex": 284.0, "c": 0, "l": 1000.0, "p": 4596.0}, "2026-01-25": {"s": 25320.0, "ex": 366.0, "c": 117000.0, "l": 0, "p": 7904.0}, "2026-01-26": {"s": 45510.0, "ex": 526.0, "c": 11200.0, "l": 630.0, "p": 4347.0}, "2026-01-27": {"s": 167835.0, "ex": 523.0, "c": 159010.0, "l": 550.0, "p": 20717.0}, "2026-01-28": {"s": 79600.0, "ex": 472.0, "c": 3360.0, "l": 0, "p": 11218.0}, "2026-01-29": {"s": 86070.0, "ex": 760.0, "c": 0, "l": 300.0, "p": 7979.0}, "2026-01-31": {"s": 202005.0, "ex": 582.0, "c": 0, "l": 2210.0, "p": 6518.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 12000.0}, {"name": "ম্যানেজার বেতন", "a": 8000.0}, {"name": "বিদ্যুৎ বিল", "a": 4991.0}, {"name": "ওয়াইফাই বিল", "a": 600.0}, {"name": "মাল ফেরত", "a": 1009.0}, {"name": "অন্যান্য খরচ", "a": 7650.0}]}, "2026-02": {"days": {"2026-02-01": {"s": 25100.0, "ex": 564.0, "c": 0, "l": 0, "p": 956.0}, "2026-02-02": {"s": 39050.0, "ex": 480.0, "c": 11560.0, "l": 0, "p": 4820.0}, "2026-02-03": {"s": 48080.0, "ex": 204.0, "c": 107643.0, "l": 10200.0, "p": 3586.0}, "2026-02-04": {"s": 36500.0, "ex": 250.0, "c": 0, "l": 1515.0, "p": 4959.0}, "2026-02-05": {"s": 4940.0, "ex": 295.0, "c": 115600.0, "l": 0, "p": 325.0}, "2026-02-07": {"s": 5170.0, "ex": 334.0, "c": 0, "l": 750.0, "p": 1306.0}, "2026-02-08": {"s": 186500.0, "ex": 556.0, "c": 63800.0, "l": 310.0, "p": 21674.0}, "2026-02-09": {"s": 27440.0, "ex": 250.0, "c": 0, "l": 85.0, "p": 6118.0}, "2026-02-10": {"s": 46600.0, "ex": 535.0, "c": 0, "l": 160.0, "p": 4479.0}, "2026-02-11": {"s": 54570.0, "ex": 310.0, "c": 16760.0, "l": 170.0, "p": 3550.0}, "2026-02-14": {"s": 47000.0, "ex": 335.0, "c": 9430.0, "l": 355.0, "p": 4285.0}, "2026-02-15": {"s": 53273.0, "ex": 255.0, "c": 2096700.0, "l": 1420.0, "p": 7060.0}, "2026-02-16": {"s": 62570.0, "ex": 380.0, "c": 94300.0, "l": 155.0, "p": 7520.0}, "2026-02-17": {"s": 258540.0, "ex": 550.0, "c": 72820.0, "l": 1345.0, "p": 25180.0}, "2026-02-18": {"s": 26080.0, "ex": 270.0, "c": 187700.0, "l": 225.0, "p": 7664.0}, "2026-02-19": {"s": 21480.0, "ex": 150.0, "c": 0, "l": 1550.0, "p": 3568.0}, "2026-02-21": {"s": 153650.0, "ex": 140.0, "c": 0, "l": 1610.0, "p": 6365.0}, "2026-02-22": {"s": 47220.0, "ex": 210.0, "c": 149400.0, "l": 630.0, "p": 2570.0}, "2026-02-23": {"s": 2475.0, "ex": 150.0, "c": 16890.0, "l": 740.0, "p": 360.0}, "2026-02-24": {"s": 4940.0, "ex": 240.0, "c": 0, "l": 700.0, "p": 420.0}, "2026-02-25": {"s": 213012.0, "ex": 482.0, "c": 0, "l": 490.0, "p": 42338.0}, "2026-02-26": {"s": 18600.0, "ex": 260.0, "c": 0, "l": 0, "p": 2530.0}, "2026-02-28": {"s": 118807.0, "ex": 418.0, "c": 163240.0, "l": 795.0, "p": 13292.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 15000.0}, {"name": "ম্যানেজার বেতন", "a": 8000.0}, {"name": "বিদ্যুৎ বিল", "a": 5495.0}, {"name": "ওয়াইফাই বিল", "a": 600.0}, {"name": "মাল ফেরত", "a": 1211.0}, {"name": "অন্যান্য খরচ", "a": 1130.0}]}, "2026-03": {"days": {"2026-03-01": {"s": 11460.0, "ex": 240.0, "c": 0, "l": 640.0, "p": 1392.0}, "2026-03-02": {"s": 51260.0, "ex": 240.0, "c": 0, "l": 75.0, "p": 7200.0}, "2026-03-03": {"s": 59520.0, "ex": 410.0, "c": 0, "l": 885.0, "p": 7240.0}, "2026-03-04": {"s": 44500.0, "ex": 260.0, "c": 12555.0, "l": 530.0, "p": 330.0}, "2026-03-05": {"s": 35520.0, "ex": 760.0, "c": 119200.0, "l": 715.0, "p": 4028.0}, "2026-03-07": {"s": 160790.0, "ex": 750.0, "c": 0, "l": 750.0, "p": 24430.0}, "2026-03-08": {"s": 9510.0, "ex": 290.0, "c": 140640.0, "l": 0, "p": 980.0}, "2026-03-09": {"s": 38660.0, "ex": 255.0, "c": 0, "l": 230.0, "p": 4849.0}, "2026-03-10": {"s": 23775.0, "ex": 345.0, "c": 0, "l": 960.0, "p": 23430.0}, "2026-03-11": {"s": 6675.0, "ex": 460.0, "c": 0, "l": 185.0, "p": 6215.0}, "2026-03-12": {"s": 97300.0, "ex": 330.0, "c": 163920.0, "l": 750.0, "p": 6270.0}, "2026-03-14": {"s": 224180.0, "ex": 365.0, "c": 175800.0, "l": 4365.0, "p": 21495.0}, "2026-03-15": {"s": 70080.0, "ex": 343.0, "c": 0, "l": 945.0, "p": 12887.0}, "2026-03-16": {"s": 0, "ex": 0, "c": 0, "l": 0, "p": 0, "n": "ইফতার মাহফিল"}, "2026-03-17": {"s": 59555.0, "ex": 995.0, "c": 108264.0, "l": 0, "p": 9390.0}, "2026-03-18": {"s": 46910.0, "ex": 340.0, "c": 0, "l": 950.0, "p": 2740.0}, "2026-03-19": {"s": 0, "ex": 0, "c": 0, "l": 0, "p": 0, "n": "ইদের বন্ধ"}, "2026-03-20": {"s": 0, "ex": 0, "c": 0, "l": 0, "p": 0, "n": "ইদের বন্ধ"}, "2026-03-21": {"s": 0, "ex": 0, "c": 0, "l": 0, "p": 0, "n": "ইদের বন্ধ"}, "2026-03-22": {"s": 0, "ex": 0, "c": 0, "l": 0, "p": 0, "n": "ইদের বন্ধ"}, "2026-03-23": {"s": 0, "ex": 0, "c": 0, "l": 0, "p": 0, "n": "ইদের বন্ধ"}, "2026-03-24": {"s": 0, "ex": 0, "c": 0, "l": 0, "p": 0, "n": "ইদের বন্ধ"}, "2026-03-25": {"s": 101630.0, "ex": 375.0, "c": 0, "l": 285.0, "p": 12105.0}, "2026-03-26": {"s": 12210.0, "ex": 530.0, "c": 0, "l": 845.0, "p": 1100.0}, "2026-03-28": {"s": 104250.0, "ex": 310.0, "c": 84475.0, "l": 1090.0, "p": 12570.0}, "2026-03-29": {"s": 111970.0, "ex": 590.0, "c": 152050, "l": 0, "p": 6438.0}, "2026-03-30": {"s": 32110.0, "ex": 485.0, "c": 0, "l": 340.0, "p": 7125.0}, "2026-03-31": {"s": 92170.0, "ex": 405.0, "c": 0, "l": 800.0, "p": 7295.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 15000.0}, {"name": "ম্যানেজার বেতন ও বোনাস", "a": 13000.0}, {"name": "দোকান ও গোডাউন বিদ্যুৎ বিল", "a": 5769}, {"name": "ওয়াইফাই বিল", "a": 600.0}, {"name": "মাল ফেরত", "a": 1375.0}, {"name": "মিস্ত্রী বোনাস", "a": 12000.0}, {"name": "মিস্ত্রী কমিশন", "a": 1500.0}, {"name": "অন্যান্য খরচ ও লেবার বোনাস", "a": 1000.0}]}, "2026-04": {"days": {"2026-04-01": {"s": 31820.0, "ex": 360.0, "c": 130161.0, "l": 1200.0, "p": 3190.0}, "2026-04-02": {"s": 162320.0, "ex": 365.0, "c": 192000.0, "l": 1065.0, "p": 6775.0}, "2026-04-04": {"s": 154060.0, "ex": 540.0, "c": 9100.0, "l": 1450.0, "p": 130.0}, "2026-04-05": {"s": 74790.0, "ex": 220.0, "c": 137600.0, "l": 50.0, "p": 10570.0}, "2026-04-06": {"s": 49880.0, "ex": 395.0, "c": 0, "l": 970.0, "p": 4335.0}, "2026-04-07": {"s": 63860.0, "ex": 220.0, "c": 143000.0, "l": 1300.0, "p": 9030.0}, "2026-04-08": {"s": 1240.0, "ex": 230.0, "c": 0, "l": 1100.0, "p": -65.0}, "2026-04-09": {"s": 17888.0, "ex": 260.0, "c": 0, "l": 35.0, "p": 5538.0}, "2026-04-11": {"s": 67980.0, "ex": 0, "c": 6870.0, "l": 410.0, "p": 20240.0}, "2026-04-12": {"s": 31930.0, "ex": 120.0, "c": 0, "l": 120.0, "p": 4390.0}, "2026-04-13": {"s": 2930.0, "ex": 215.0, "c": 0, "l": 0, "p": 303.0}, "2026-04-14": {"s": 12180.0, "ex": 120.0, "c": 0, "l": 0, "p": 6230.0}, "2026-04-15": {"s": 29038.0, "ex": 325.0, "c": 4587.0, "l": 105.0, "p": 3413.0}, "2026-04-16": {"s": 13610.0, "ex": 265.0, "c": 167000.0, "l": 0, "p": 2280.0}, "2026-04-18": {"s": 80250.0, "ex": 425.0, "c": 0, "l": 570.0, "p": 14315.0}, "2026-04-19": {"s": 50340.0, "ex": 390.0, "c": 111035.0, "l": 280.0, "p": 2010.0}, "2026-04-20": {"s": 28740.0, "ex": 250.0, "c": 5200.0, "l": 120.0, "p": 5340.0}, "2026-04-21": {"s": 730.0, "ex": 420.0, "c": 0, "l": 1175.0, "p": -130.0}, "2026-04-22": {"s": 259740.0, "ex": 375.0, "c": 247900, "l": 150.0, "p": 49495.0}, "2026-04-23": {"s": 70573.0, "ex": 280.0, "c": 17350.0, "l": 525.0, "p": 8183.0}, "2026-04-25": {"s": 4900.0, "ex": 190.0, "c": 96800.0, "l": 1615.0, "p": 5310.0}, "2026-04-26": {"s": 4370.0, "ex": 260.0, "c": 0, "l": 0, "p": 2748.0}, "2026-04-27": {"s": 167840.0, "ex": 345.0, "c": 169000.0, "l": 340.0, "p": 8015.0}, "2026-04-28": {"s": 71090.0, "ex": 310.0, "c": 0, "l": 500.0, "p": 5290.0}, "2026-04-29": {"s": 2440.0, "ex": 250.0, "c": 0, "l": 0, "p": 1350.0}, "2026-04-30": {"s": 118880.0, "ex": 270.0, "c": 0, "l": 0, "p": -18.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 15000.0}, {"name": "ম্যানেজার বেতন ও বোনাস", "a": 8000.0}, {"name": "দোকান ও গোডাউন বিদ্যুৎ বিল", "a": 6179.0}, {"name": "ওয়াইফাই বিল", "a": 600.0}, {"name": "মাল ফেরত", "a": 841.0}, {"name": "অন্যান্য খরচ ও লেবার বোনাস", "a": 4850.0}]}, "2026-05": {"days": {"2026-05-02": {"s": 32930.0, "ex": 197.0, "c": 21470.0, "l": 1115.0, "p": 6896.0}, "2026-05-03": {"s": 20020.0, "ex": 300.0, "c": 108820.0, "l": 0, "p": 3240.0}, "2026-05-04": {"s": 47910.0, "ex": 275.0, "c": 0, "l": 235.0, "p": 4850.0}, "2026-05-05": {"s": 20570.0, "ex": 318.0, "c": 0, "l": 595.0, "p": 2962.0}, "2026-05-06": {"s": 0.0, "ex": 260.0, "c": 0, "l": 0, "p": -260.0}, "2026-05-07": {"s": 7740.0, "ex": 310.0, "c": 0, "l": 0, "p": 5740.0}, "2026-05-09": {"s": 42000.0, "ex": 280.0, "c": 0, "l": 915.0, "p": 1248.0}, "2026-05-10": {"s": 36700.0, "ex": 260.0, "c": 0, "l": 135.0, "p": 7020.0}, "2026-05-11": {"s": 16800.0, "ex": 430.0, "c": 0, "l": 0, "p": 1410.0}, "2026-05-12": {"s": 44910.0, "ex": 250.0, "c": 0, "l": 90.0, "p": 12100.0}, "2026-05-13": {"s": 61730.0, "ex": 475.0, "c": 0, "l": 110.0, "p": 9015.0}, "2026-05-14": {"s": 119885.0, "ex": 335.0, "c": 297000.0, "l": 0, "p": 9685.0}, "2026-05-16": {"s": 82320.0, "ex": 505.0, "c": 123200.0, "l": 300.0, "p": 7334.0}, "2026-05-17": {"s": 50350.0, "ex": 290.0, "c": 0, "l": 55.0, "p": 4115.0}, "2026-05-18": {"s": 97160.0, "ex": 500.0, "c": 204380.0, "l": 190.0, "p": 6440.0}, "2026-05-19": {"s": 14850.0, "ex": 255.0, "c": 0, "l": 1080.0, "p": 3459.0}, "2026-05-20": {"s": 10700.0, "ex": 250.0, "c": 0, "l": 95.0, "p": 790.0}, "2026-05-21": {"s": 22850.0, "ex": 200.0, "c": 0, "l": 0, "p": 9490.0}, "2026-05-23": {"s": 39640.0, "ex": 230.0, "c": 0, "l": 1100.0, "p": 9065.0}, "2026-05-24": {"s": 22320.0, "ex": 450.0, "c": 0, "l": 0, "p": 2470.0}, "2026-05-25": {"s": 29300.0, "ex": 240.0, "c": 15616.0, "l": 255.0, "p": 3345.0}, "2026-05-26": {"s": 30140.0, "ex": 300.0, "c": 8030.0, "l": 105.0, "p": 3980.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 15000.0}, {"name": "ম্যানেজার বেতন ও বোনাস", "a": 11000.0}, {"name": "দোকান ও গোডাউন বিদ্যুৎ বিল", "a": 3463}, {"name": "ওয়াইফাই বিল", "a": 600.0}, {"name": "মাল ফেরত", "a": 665.0}, {"name": "অন্যান্য খরচ", "a": 7060.0}]}, "2026-06": {"days": {"2026-06-01": {"s": 136700.0, "ex": 330.0, "c": 16800.0, "l": 1545.0, "p": 13621.0}, "2026-06-02": {"s": 14030.0, "ex": 315.0, "c": 0, "l": 0, "p": 1240.0}, "2026-06-03": {"s": 83290.0, "ex": 350.0, "c": 138690.0, "l": 0, "p": 6190.0}, "2026-06-04": {"s": 30055.0, "ex": 410.0, "c": 26500.0, "l": 205.0, "p": 4735.0}, "2026-06-06": {"s": 29428.0, "ex": 200.0, "c": 0, "l": 3230.0, "p": 5010.0}, "2026-06-07": {"s": 92920.0, "ex": 225.0, "c": 0, "l": 285.0, "p": 7105.0}, "2026-06-08": {"s": 22500.0, "ex": 250.0, "c": 183200.0, "l": 215.0, "p": 5650.0}, "2026-06-09": {"s": 37750.0, "ex": 260.0, "c": 0, "l": 0, "p": 6940.0}, "2026-06-10": {"s": 32046.0, "ex": 455.0, "c": 13155.0, "l": 90.0, "p": 4674.0}, "2026-06-11": {"s": 99490.0, "ex": 510.0, "c": 0, "l": 1540.0, "p": 7520.0}, "2026-06-13": {"s": 205295.0, "ex": 590.0, "c": 0, "l": 970.0, "p": 19950.0}, "2026-06-14": {"s": 37920.0, "ex": 310.0, "c": 128040.0, "l": 0, "p": 2720.0}, "2026-06-15": {"s": 75760.0, "ex": 330.0, "c": 17300.0, "l": 2545.0, "p": 4860.0}, "2026-06-16": {"s": 21310.0, "ex": 375.0, "c": 0, "l": 140.0, "p": 1805.0}, "2026-06-17": {"s": 185925.0, "ex": 410.0, "c": 4800.0, "l": 90.0, "p": 5470.0}, "2026-06-18": {"s": 54470.0, "ex": 313.0, "c": 216626.0, "l": 1345.0, "p": 14270.0}, "2026-06-20": {"s": 69590.0, "ex": 265.0, "c": 0, "l": 680.0, "p": 4075.0}, "2026-06-21": {"s": 16750.0, "ex": 260.0, "c": 42500.0, "l": 0, "p": 2400.0}, "2026-06-22": {"s": 175710.0, "ex": 250.0, "c": 176000.0, "l": 5480.0, "p": 20460.0}, "2026-06-23": {"s": 21299.0, "ex": 280.0, "c": 0, "l": 120.0, "p": 4340.0}, "2026-06-24": {"s": 169180.0, "ex": 281.0, "c": 0, "l": 365.0, "p": 2769.0}, "2026-06-25": {"s": 1395.0, "ex": 355.0, "c": 0, "l": 1580.0, "p": 5675.0}, "2026-06-27": {"s": 114502.0, "ex": 320.0, "c": 145640.0, "l": 1670.0, "p": 19867.0}, "2026-06-28": {"s": 20950.0, "ex": 220.0, "c": 0, "l": 100.0, "p": 1760.0}, "2026-06-29": {"s": 10150.0, "ex": 279.0, "c": 110400.0, "l": 570.0, "p": 1131.0}, "2026-06-30": {"s": 21824.0, "ex": 560.0, "c": 0, "l": 115.0, "p": 3470.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 15000.0}, {"name": "ম্যানেজার বেতন", "a": 6000.0}, {"name": "দোকান ও গোডাউন বিদ্যুৎ বিল", "a": 4788}, {"name": "ওয়াইফাই বিল", "a": 600.0}, {"name": "মাল ফেরত", "a": 478.0}, {"name": "কমিশন", "a": 1500.0}, {"name": "অন্যান্য খরচ", "a": 5705}]}, "2026-07": {"days": {"2026-07-01": {"s": 3780.0, "ex": 220.0, "c": 0, "l": 310.0, "p": 3750.0}, "2026-07-02": {"s": 127180.0, "ex": 250.0, "c": 0, "l": 360.0, "p": 14220.0}, "2026-07-04": {"s": 63664.0, "ex": 407.0, "c": 149270.0, "l": 570.0, "p": 5693.0}, "2026-07-05": {"s": 66338.0, "ex": 300.0, "c": 0, "l": 375.0, "p": 7700.0}, "2026-07-06": {"s": 30120.0, "ex": 315.0, "c": 0, "l": 2070.0, "p": 2985.0}, "2026-07-09": {"s": 29100.0, "ex": 250.0, "c": 0, "l": 2025.0, "p": 3910.0}, "2026-07-11": {"s": 3060.0, "ex": 352.0, "c": 0, "l": 200.0, "p": 408.0}, "2026-07-12": {"s": 2000.0, "ex": 180.0, "c": 0, "l": 200.0, "p": -180.0}, "2026-07-13": {"s": 25200.0, "ex": 170.0, "c": 6230.0, "l": 310.0, "p": 3310.0}, "2026-07-14": {"s": 43955.0, "ex": 275.0, "c": 14090.0, "l": 350.0, "p": 3595.0}, "2026-07-15": {"s": 43630.0, "ex": 425.0, "c": 0, "l": 335.0, "p": 3565.0}, "2026-07-16": {"s": 44160.0, "ex": 355.0, "c": 0, "l": 415.0, "p": 5028.0}, "2026-07-18": {"s": 113840.0, "ex": 310.0, "c": 10300.0, "l": 1295.0, "p": 15750.0}, "2026-07-19": {"s": 76485.0, "ex": 220.0, "c": 137800.0, "l": 220.0, "p": 9830.0}, "2026-07-20": {"s": 58307.0, "ex": 180.0, "c": 0, "l": 200.0, "p": 9320.0}, "2026-07-21": {"s": 14405.0, "ex": 205.0, "c": 115500.0, "l": 970.0, "p": 1677.0}, "2026-07-22": {"s": 15420.0, "ex": 285.0, "c": 0, "l": 525.0, "p": 1725.0}, "2026-07-23": {"s": 49688.0, "ex": 255.0, "c": 0, "l": 1065.0, "p": 2635.0}, "2026-07-25": {"s": 64305.0, "ex": 190.0, "c": 0, "l": 370.0, "p": 11620.0}, "2026-07-26": {"s": 21667.0, "ex": 260.0, "c": 0, "l": 755.0, "p": 2130.0}, "2026-07-27": {"s": 47490.0, "ex": 276.0, "c": 0, "l": 330.0, "p": 4484.0}, "2026-07-28": {"s": 43930.0, "ex": 200.0, "c": 125400.0, "l": 200.0, "p": 2690.0}, "2026-07-29": {"s": 14855.0, "ex": 225.0, "c": 0, "l": 500.0, "p": 1337.0}, "2026-07-30": {"s": 29310.0, "ex": 240.0, "c": 0, "l": 500.0, "p": 4290.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 15000.0}, {"name": "দোকান ও গোডাউন বিদ্যুৎ বিল", "a": 4545.0}, {"name": "কমিশন", "a": 1940.0}, {"name": "ট্রেড লাইসেন্স", "a": 1270.0}, {"name": "অন্যান্য খরচ", "a": 780.0}]}, "2026-08": {"days": {"2026-08-01": {"s": 140718.0, "ex": 395.0, "c": 0, "l": 500.0, "p": 17405.0}, "2026-08-02": {"s": 42075.0, "ex": 220.0, "c": 160700.0, "l": 760.0, "p": 4660.0}, "2026-08-03": {"s": 49315.0, "ex": 280.0, "c": 0, "l": 540.0, "p": 4980.0}, "2026-08-04": {"s": 19545.0, "ex": 275.0, "c": 146459.0, "l": 1140.0, "p": 1025.0}, "2026-08-05": {"s": 183960.0, "ex": 226.0, "c": 0, "l": 390.0, "p": 18649.0}, "2026-08-06": {"s": 13386.0, "ex": 160.0, "c": 97500.0, "l": 540.0, "p": 2650.0}, "2026-08-08": {"s": 166662.0, "ex": 565.0, "c": 493602.0, "l": 540.0, "p": 16525.0}, "2026-08-09": {"s": 16475.0, "ex": 180.0, "c": 0, "l": 1500.0, "p": 915.0}, "2026-08-10": {"s": 13970.0, "ex": 160.0, "c": 0, "l": 490.0, "p": 980.0}, "2026-08-11": {"s": 12435.0, "ex": 190.0, "c": 133600.0, "l": 540.0, "p": -127.0}, "2026-08-12": {"s": 25380.0, "ex": 190.0, "c": 106520.0, "l": 540.0, "p": 2160.0}, "2026-08-13": {"s": 122590.0, "ex": 160.0, "c": 126300.0, "l": 770.0, "p": 12120.0}, "2026-08-15": {"s": 46385.0, "ex": 530.0, "c": 0, "l": 540.0, "p": 5460.0}, "2026-08-16": {"s": 154955.0, "ex": 590.0, "c": 4500.0, "l": 0, "p": 15310.0}, "2026-08-17": {"s": 59200.0, "ex": 340.0, "c": 148350, "l": 540.0, "p": 8460.0}, "2026-08-18": {"s": 6350.0, "ex": 315.0, "c": 0, "l": 540.0, "p": 2210.0}, "2026-08-19": {"s": 80020.0, "ex": 210.0, "c": 0, "l": 790.0, "p": 2990.0}, "2026-08-20": {"s": 52850.0, "ex": 280.0, "c": 183740.0, "l": 540.0, "p": 5075.0}, "2026-08-22": {"s": 110035.0, "ex": 330.0, "c": 2240.0, "l": 550.0, "p": 11370.0}, "2026-08-23": {"s": 103650.0, "ex": 210.0, "c": 0, "l": 540.0, "p": 7140.0}, "2026-08-24": {"s": 6260.0, "ex": 210.0, "c": 0, "l": 540.0, "p": 880.0}, "2026-08-25": {"s": 51620.0, "ex": 225.0, "c": 170000.0, "l": 540.0, "p": 422.0}, "2026-08-26": {"s": 8825.0, "ex": 160.0, "c": 0, "l": 840.0, "p": 860.0}, "2026-08-27": {"s": 32630.0, "ex": 325.0, "c": 129000.0, "l": 540.0, "p": 7775.0}, "2026-08-29": {"s": 3810.0, "ex": 390.0, "c": 0, "l": 1540.0, "p": -288.0}, "2026-08-30": {"s": 147025.0, "ex": 210.0, "c": 29560.0, "l": 940.0, "p": 12240.0}, "2026-08-31": {"s": 140460.0, "ex": 305.0, "c": 124000.0, "l": 540.0, "p": 7525.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 15000.0}, {"name": "ম্যানেজার বেতন", "a": 4000.0}, {"name": "দোকান ও গোডাউন বিদ্যুৎ বিল", "a": 4778.0}, {"name": "ওয়াইফাই বিল", "a": 2400.0}, {"name": "মাল ফেরত", "a": 1149.0}, {"name": "কমিশন", "a": 2250.0}, {"name": "ঘাসের কার্পেট", "a": 8960.0}, {"name": "অন্যান্য খরচ", "a": 1070}]}, "2026-09": {"days": {"2026-09-01": {"s": 31430.0, "ex": 300.0, "c": 150900.0, "l": 540.0, "p": 4350.0}, "2026-09-02": {"s": 49540.0, "ex": 180.0, "c": 41776.0, "l": 540.0, "p": 7660.0}, "2026-09-03": {"s": 28775.0, "ex": 180.0, "c": 0, "l": 1240.0, "p": 4780.0}, "2026-09-05": {"s": 138945.0, "ex": 160.0, "c": 5720.0, "l": 540.0, "p": 250.0}, "2026-09-06": {"s": 53930.0, "ex": 180.0, "c": 99840.0, "l": 540.0, "p": 7870.0}, "2026-09-07": {"s": 75790.0, "ex": 231.0, "c": 1790.0, "l": 540.0, "p": 11739.0}, "2026-09-08": {"s": 74280.0, "ex": 180.0, "c": 142000.0, "l": 840.0, "p": 10283.0}, "2026-09-09": {"s": 113390.0, "ex": 170.0, "c": 41275.0, "l": 940.0, "p": 21510.0}, "2026-09-10": {"s": 57500.0, "ex": 370.0, "c": 0, "l": 540.0, "p": 2250.0}, "2026-09-12": {"s": 219740.0, "ex": 330.0, "c": 135189.0, "l": 3435.0, "p": 13310.0}, "2026-09-13": {"s": 45275.0, "ex": 478.0, "c": 127900.0, "l": 550.0, "p": 4192.0}, "2026-09-14": {"s": 10030.0, "ex": 160.0, "c": 23760.0, "l": 540.0, "p": 538.0}, "2026-09-15": {"s": 68970.0, "ex": 280.0, "c": 0, "l": 1810.0, "p": 2450.0}, "2026-09-16": {"s": 116625.0, "ex": 250.0, "c": 160150.0, "l": 1765.0, "p": 13890.0}, "2026-09-17": {"s": 37510.0, "ex": 160.0, "c": 1250.0, "l": 1340.0, "p": 4330.0}, "2026-09-19": {"s": 33290.0, "ex": 190.0, "c": 10840.0, "l": 1600.0, "p": 5700.0}, "2026-09-20": {"s": 170730.0, "ex": 635.0, "c": 295166.0, "l": 540.0, "p": 21765.0}, "2026-09-21": {"s": 54595.0, "ex": 190.0, "c": 21612.0, "l": 540.0, "p": 18350.0}, "2026-09-22": {"s": 21960.0, "ex": 160.0, "c": 0, "l": 540.0, "p": 4700.0}, "2026-09-23": {"s": 63079.0, "ex": 180.0, "c": 0, "l": 540.0, "p": 7054.0}, "2026-09-24": {"s": 38125.0, "ex": 320.0, "c": 183510.0, "l": 940.0, "p": 4250.0}, "2026-09-26": {"s": 97430.0, "ex": 625.0, "c": 585.0, "l": 640.0, "p": 11225.0}, "2026-09-27": {"s": 95210.0, "ex": 230.0, "c": 176450.0, "l": 540.0, "p": 8550.0}, "2026-09-28": {"s": 152880.0, "ex": 605.0, "c": 0, "l": 740.0, "p": 16345.0}, "2026-09-29": {"s": 53064.0, "ex": 310.0, "c": 185453.0, "l": 1200.0, "p": 25345.0}, "2026-09-30": {"s": 14260.0, "ex": 230.0, "c": 1960.0, "l": 1600.0, "p": 2720.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 15000.0}, {"name": "ম্যানেজার বেতন", "a": 3000.0}, {"name": "দোকান ও গোডাউন বিদ্যুৎ বিল", "a": 6750}, {"name": "ওয়াইফাই বিল", "a": 1200.0}, {"name": "মাল ফেরত", "a": 930.0}, {"name": "অন্যান্য খরচ ও মিস্ত্রী কমিশন", "a": 6665.0}, {"name": "টিন", "a": 5000.0}]}, "2026-10": {"days": {"2026-10-01": {"s": 12660.0, "ex": 220.0, "c": 0, "l": 0, "p": 1570.0}, "2026-10-03": {"s": 42375.0, "ex": 230.0, "c": 0, "l": 900.0, "p": 7830.0}, "2026-10-04": {"s": 131218.0, "ex": 370.0, "c": 0, "l": 0, "p": 3850.0}, "2026-10-05": {"s": 162100.0, "ex": 345.0, "c": 0, "l": 0, "p": 8850.0}, "2026-10-06": {"s": 70756.0, "ex": 340.0, "c": 140110.0, "l": 540.0, "p": 2990.0}, "2026-10-07": {"s": 6450.0, "ex": 490.0, "c": 216230, "l": 540.0, "p": 665.0}, "2026-10-08": {"s": 7400.0, "ex": 390.0, "c": 0, "l": 540.0, "p": 1540.0}, "2026-10-10": {"s": 60100.0, "ex": 400.0, "c": 0, "l": 520.0, "p": 5470.0}, "2026-10-11": {"s": 40690.0, "ex": 554.0, "c": 0, "l": 540.0, "p": 4936.0}, "2026-10-12": {"s": 43798.0, "ex": 360.0, "c": 0, "l": 880.0, "p": 6113.0}, "2026-10-13": {"s": 43540.0, "ex": 270.0, "c": 127416.0, "l": 0, "p": 2765.0}, "2026-10-14": {"s": 3615.0, "ex": 240.0, "c": 9600.0, "l": 940.0, "p": 115.0}, "2026-10-15": {"s": 36660.0, "ex": 543.0, "c": 24400.0, "l": 640.0, "p": 5433.0}, "2026-10-17": {"s": 114410.0, "ex": 245.0, "c": 0, "l": 540.0, "p": 21205.0}, "2026-10-18": {"s": 86510.0, "ex": 577.0, "c": 94147.0, "l": 540.0, "p": 9693.0}, "2026-10-19": {"s": 35290.0, "ex": 210.0, "c": 3405.0, "l": 540.0, "p": 1675.0}, "2026-10-20": {"s": 18840.0, "ex": 460.0, "c": 0, "l": 990.0, "p": 2077.0}, "2026-10-21": {"s": 3880.0, "ex": 325.0, "c": 0, "l": 540.0, "p": 1205.0}, "2026-10-22": {"s": 27160.0, "ex": 380.0, "c": 0, "l": 1000.0, "p": 2386.0}, "2026-10-24": {"s": 49155.0, "ex": 350.0, "c": 0, "l": 1120.0, "p": 7520.0}, "2026-10-25": {"s": 13800.0, "ex": 250.0, "c": 3850.0, "l": 540.0, "p": 820.0}, "2026-10-26": {"s": 34278.0, "ex": 240.0, "c": 0, "l": 450.0, "p": 2650.0}, "2026-10-27": {"s": 27460.0, "ex": 230.0, "c": 7800.0, "l": 550.0, "p": 4500.0}, "2026-10-28": {"s": 53410.0, "ex": 270.0, "c": 0, "l": 550.0, "p": 7324.0}, "2026-10-29": {"s": 115200.0, "ex": 240.0, "c": 121600.0, "l": 550.0, "p": 27475.0}, "2026-10-31": {"s": 101270.0, "ex": 580.0, "c": 0, "l": 550.0, "p": 8678.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 15000.0}, {"name": "ম্যানেজার বেতন", "a": 11000.0}, {"name": "দোকান ও গোডাউন বিদ্যুৎ বিল", "a": 5660.0}, {"name": "ওয়াইফাই বিল", "a": 1200.0}, {"name": "মাল ফেরত", "a": 1990.0}, {"name": "অন্যান্য খরচ", "a": 3485}, {"name": "মিস্ত্রী কমিশন", "a": 1000.0}, {"name": "ইলেক্ট্রিক মিস্ত্রী", "a": 6050.0}]}, "2025-11": {"days": {"2025-11-01": {"s": 26900.0, "ex": 250.0, "c": 0, "l": 0, "p": 2155.0}, "2025-11-02": {"s": 17485.0, "ex": 210.0, "c": 0, "l": 0, "p": 2270.0}, "2025-11-03": {"s": 18450.0, "ex": 195.0, "c": 0, "l": 0, "p": 2135.0}, "2025-11-04": {"s": 64680.0, "ex": 150.0, "c": 0, "l": 0, "p": 7110.0}, "2025-11-05": {"s": 17610.0, "ex": 170.0, "c": 0, "l": 0, "p": 1990.0}, "2025-11-06": {"s": 4490.0, "ex": 190.0, "c": 0, "l": 0, "p": 900.0}, "2025-11-08": {"s": 24080.0, "ex": 210.0, "c": 0, "l": 300.0, "p": 3580.0}, "2025-11-09": {"s": 11700.0, "ex": 310.0, "c": 0, "l": 0, "p": 730.0}, "2025-11-10": {"s": 32760.0, "ex": 210.0, "c": 0, "l": 0, "p": 3860.0}, "2025-11-11": {"s": 130830.0, "ex": 290.0, "c": 0, "l": 0.0, "p": 15180.0}, "2025-11-12": {"s": 25260.0, "ex": 280.0, "c": 0, "l": 0, "p": 2850.0}, "2025-11-13": {"s": 3200.0, "ex": 210.0, "c": 0, "l": 0, "p": 435.0}, "2025-11-15": {"s": 59774.0, "ex": 270.0, "c": 0, "l": 0, "p": 6980.0}, "2025-11-16": {"s": 24770.0, "ex": 495.0, "c": 0, "l": 0, "p": 3025.0}, "2025-11-17": {"s": 0.0, "ex": 374.0, "c": 0, "l": 0, "p": -250.0}, "2025-11-18": {"s": 34920.0, "ex": 250.0, "c": 0, "l": 0, "p": 3920.0}, "2025-11-19": {"s": 5275.0, "ex": 290.0, "c": 0, "l": 960.0, "p": 160.0}, "2025-11-20": {"s": 61380.0, "ex": 310.0, "c": 0, "l": 950.0, "p": 8340.0}, "2025-11-22": {"s": 21040.0, "ex": 520.0, "c": 0, "l": 0, "p": 770.0}, "2025-11-23": {"s": 45630.0, "ex": 271.0, "c": 0, "l": 0, "p": 3739.0}, "2025-11-24": {"s": 13585.0, "ex": 370.0, "c": 0, "l": 0, "p": 650.0}, "2025-11-25": {"s": 17450.0, "ex": 210.0, "c": 0, "l": 1115.0, "p": 2585.0}, "2025-11-26": {"s": 11610.0, "ex": 330.0, "c": 0, "l": 0, "p": 1595.0}, "2025-11-27": {"s": 95950.0, "ex": 300.0, "c": 0, "l": 0, "p": 8210.0}, "2025-11-29": {"s": 32660.0, "ex": 270.0, "c": 0, "l": 1240.0, "p": 5130.0}, "2025-11-30": {"s": 44610.0, "ex": 455.0, "c": 0, "l": 0, "p": 4860.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 8200.0}, {"name": "ম্যানেজার বেতন", "a": 8000.0}, {"name": "বিদ্যুৎ বিল", "a": 3572.0}, {"name": "ওয়াইফাই বিল", "a": 600.0}, {"name": "মাল ফেরত", "a": 842.0}]}, "2025-12": {"days": {"2025-12-01": {"s": 35826.0, "ex": 260.0, "c": 0, "l": 0, "p": 4120.0}, "2025-12-02": {"s": 19100.0, "ex": 280.0, "c": 0, "l": 0, "p": 1260.0}, "2025-12-03": {"s": 21040.0, "ex": 464.0, "c": 0, "l": 0, "p": 2356.0}, "2025-12-04": {"s": 2400.0, "ex": 330.0, "c": 0, "l": 750.0, "p": 60.0}, "2025-12-06": {"s": 4610.0, "ex": 210.0, "c": 0, "l": 0, "p": 120.0}, "2025-12-07": {"s": 55300.0, "ex": 480.0, "c": 0, "l": 0, "p": 6220.0}, "2025-12-08": {"s": 44620.0, "ex": 290.0, "c": 0, "l": 3130.0, "p": 4510.0}, "2025-12-09": {"s": 89270.0, "ex": 300.0, "c": 0, "l": 0, "p": 10720.0}, "2025-12-10": {"s": 65856.0, "ex": 332.0, "c": 0, "l": 0, "p": 1308.0}, "2025-12-11": {"s": 80010.0, "ex": 780.0, "c": 0, "l": 0, "p": 6120.0}, "2025-12-13": {"s": 36810.0, "ex": 320.0, "c": 0, "l": 990.0, "p": 4365.0}, "2025-12-14": {"s": 31580.0, "ex": 325.0, "c": 0, "l": 680.0, "p": 1115.0}, "2025-12-15": {"s": 6170.0, "ex": 255.0, "c": 0, "l": 1100.0, "p": 345.0}, "2025-12-16": {"s": 66600.0, "ex": 440.0, "c": 0, "l": 0, "p": 540.0}, "2025-12-17": {"s": 41200.0, "ex": 230.0, "c": 0, "l": 0, "p": 5250.0}, "2025-12-18": {"s": 92150.0, "ex": 960.0, "c": 0, "l": 0, "p": 10380.0}, "2025-12-20": {"s": 75670.0, "ex": 250.0, "c": 0, "l": 1300.0, "p": 7385.0}, "2025-12-21": {"s": 55700.0, "ex": 338.0, "c": 0, "l": 460.0, "p": 1042.0}, "2025-12-22": {"s": 5500.0, "ex": 220.0, "c": 0, "l": 0, "p": 650.0}, "2025-12-23": {"s": 15494.0, "ex": 260.0, "c": 0, "l": 1830.0, "p": 700.0}, "2025-12-24": {"s": 14260.0, "ex": 239.0, "c": 0, "l": 0, "p": 1231.0}, "2025-12-25": {"s": 9830.0, "ex": 230.0, "c": 0, "l": 0, "p": 970.0}, "2025-12-27": {"s": 38200.0, "ex": 240.0, "c": 0, "l": 622.0, "p": 4275.0}, "2025-12-28": {"s": 20050.0, "ex": 220.0, "c": 0, "l": 0, "p": 360.0}, "2025-12-29": {"s": 6110.0, "ex": 240.0, "c": 0, "l": 0, "p": 240.0}, "2025-12-30": {"s": 24650.0, "ex": 200.0, "c": 0, "l": 540.0, "p": 3025.0}, "2025-12-31": {"s": 0, "ex": 288.0, "c": 0, "l": 0, "p": 730.0}}, "items": [{"name": "দোকান ভাড়া", "a": 8000.0}, {"name": "গোডাউন ভাড়া", "a": 8000.0}, {"name": "ম্যানেজার বেতন", "a": 8000.0}, {"name": "বিদ্যুৎ বিল", "a": 3367.0}, {"name": "ওয়াইফাই বিল", "a": 600.0}, {"name": "অন্যান্য খরচ", "a": 680.0}, {"name": "মাল ফেরত", "a": 322.0}]}}, "partners": [{"name": "ইমরান হোসেন", "role": "partner", "opening": 400000.0, "entries": [{"mk": "", "date": "", "add": 50000.0, "profit": 0, "wd": 0}, {"mk": "2024-11", "date": "31/11/2024", "add": 0, "profit": 33458.0, "wd": 0}, {"mk": "2024-12", "date": "31/12/2024", "add": 0, "profit": 2439.0, "wd": 0}, {"mk": "2025-01", "date": "31/01/2025", "add": 0, "profit": 22609.0, "wd": 0}, {"mk": "2025-02", "date": "28/02/2025", "add": 0, "profit": 26527.0, "wd": 0}, {"mk": "2025-03", "date": "30/03/2025", "add": 0, "profit": 16073.0, "wd": 0}, {"mk": "2025-04", "date": "30/04/2025", "add": 0, "profit": 5939.0, "wd": 0}, {"mk": "2025-05", "date": "31/05/2025", "add": 0, "profit": 13520.0, "wd": 0}, {"mk": "2025-06", "date": "31/06/2025", "add": 0, "profit": 25389.0, "wd": 0}, {"mk": "2025-07", "date": "31/07/2025", "add": 0, "profit": 11158.0, "wd": 0}, {"mk": "2025-08", "date": "31/08/2025", "add": 0, "profit": 30218.0, "wd": 0}, {"mk": "2025-09", "date": "30/09/2025", "add": 0, "profit": 12091.0, "wd": 0}, {"mk": "2025-10", "date": "31/10/2025", "add": 0, "profit": 15329.0, "wd": 0}, {"mk": "2025-11", "date": "30/11/2025", "add": 0, "profit": 19710.0, "wd": 0}, {"mk": "2025-12", "date": "31/12/2025", "add": 0, "profit": 8794.67, "wd": 0}, {"mk": "2026-01", "date": "31/01/2026", "add": 0, "profit": 26858.22, "wd": 26858.22}, {"mk": "2026-02", "date": "28/02/2026", "add": 0, "profit": 24952.0, "wd": 24952.0}, {"mk": "2026-03", "date": "31/03/2026", "add": 0, "profit": 23538.0, "wd": 23538.0}, {"mk": "2026-04", "date": "30/04/2026", "add": 0, "profit": 27048.0, "wd": 27048.0}, {"mk": "2026-05", "date": "30/05/2026", "add": 0, "profit": 13829.11, "wd": 13829.11}, {"mk": "2026-06", "date": "30/06/2026", "add": 0, "profit": 25056.89, "wd": 25056.89}, {"mk": "2026-07", "date": "31/07/2026", "add": 0, "profit": 16775.0, "wd": 16775.0}, {"mk": "2026-08", "date": "31/08/2026", "add": 0, "profit": 23110.0, "wd": 23110.0}, {"mk": "2026-09", "date": "30/09/2026", "add": 0, "profit": 36387.0, "wd": 0}]}, {"name": "মোঃ সাইফুদ্দীন", "role": "partner", "opening": 382880.0, "entries": [{"mk": "", "date": "", "add": 50000.0, "profit": 0, "wd": 0}, {"mk": "2024-11", "date": "31/11/2024", "add": 0, "profit": 33458.0, "wd": 0}, {"mk": "2024-12", "date": "31/12/2024", "add": 0, "profit": 2439.0, "wd": 0}, {"mk": "2025-01", "date": "31/01/2025", "add": 0, "profit": 22609.0, "wd": 0}, {"mk": "2025-02", "date": "28/02/2025", "add": 0, "profit": 26527.0, "wd": 0}, {"mk": "2025-03", "date": "30/03/2025", "add": 0, "profit": 16073.0, "wd": 0}, {"mk": "2025-04", "date": "30/04/2025", "add": 0, "profit": 5939.0, "wd": 0}, {"mk": "2025-05", "date": "31/05/2025", "add": 0, "profit": 13520.0, "wd": 0}, {"mk": "2025-06", "date": "31/06/2025", "add": 0, "profit": 25389.0, "wd": 0}, {"mk": "2025-07", "date": "31/07/2025", "add": 0, "profit": 11158.0, "wd": 0}, {"mk": "2025-08", "date": "31/08/2025", "add": 0, "profit": 30218.0, "wd": 0}, {"mk": "2025-09", "date": "30/09/2025", "add": 0, "profit": 12091.0, "wd": 0}, {"mk": "2025-10", "date": "31/10/2025", "add": 0, "profit": 15329.0, "wd": 0}, {"mk": "2025-11", "date": "30/11/2025", "add": 0, "profit": 19710.0, "wd": 0}, {"mk": "2025-12", "date": "31/12/2025", "add": 0, "profit": 8794.67, "wd": 0}, {"mk": "2026-01", "date": "31/01/2026", "add": 0, "profit": 26858.22, "wd": 26858.22}, {"mk": "2026-02", "date": "28/02/2026", "add": 0, "profit": 24952.0, "wd": 24952.0}, {"mk": "2026-03", "date": "31/03/2026", "add": 0, "profit": 23538.0, "wd": 23538.0}, {"mk": "2026-04", "date": "30/04/2026", "add": 0, "profit": 27048.0, "wd": 27048.0}, {"mk": "2026-05", "date": "30/05/2026", "add": 0, "profit": 13829.11, "wd": 13829.11}, {"mk": "2026-06", "date": "30/06/2026", "add": 0, "profit": 25056.89, "wd": 25056.89}, {"mk": "2026-07", "date": "31/07/2026", "add": 0, "profit": 16775.0, "wd": 16775.0}, {"mk": "2026-08", "date": "31/08/2026", "add": 0, "profit": 23110.0, "wd": 23110.0}, {"mk": "2026-09", "date": "30/09/2026", "add": 0, "profit": 36387.0, "wd": 0}]}, {"name": "মোঃ সাদ্দাম", "role": "partner", "opening": 650000.0, "entries": [{"mk": "", "date": "", "add": 50000.0, "profit": 0, "wd": 0}, {"mk": "2024-11", "date": "31/11/2024", "add": 0, "profit": 33458.0, "wd": 0}, {"mk": "2024-12", "date": "31/12/2024", "add": 0, "profit": 2439.0, "wd": 0}, {"mk": "2025-01", "date": "31/01/2025", "add": 0, "profit": 22609.0, "wd": 0}, {"mk": "2025-02", "date": "28/02/2025", "add": 0, "profit": 26527.0, "wd": 0}, {"mk": "2025-03", "date": "30/03/2025", "add": 0, "profit": 16073.0, "wd": 0}, {"mk": "2025-04", "date": "30/04/2025", "add": 0, "profit": 5939.0, "wd": 0}, {"mk": "2025-05", "date": "31/05/2025", "add": 0, "profit": 13520.0, "wd": 0}, {"mk": "2025-06", "date": "31/06/2025", "add": 0, "profit": 25389.0, "wd": 0}, {"mk": "2025-07", "date": "31/07/2025", "add": 0, "profit": 11158.0, "wd": 0}, {"mk": "2025-08", "date": "31/08/2025", "add": 0, "profit": 30218.0, "wd": 0}, {"mk": "2025-09", "date": "31/09/2025", "add": 0, "profit": 12091.0, "wd": 0}, {"mk": "2025-10", "date": "31/10/2025", "add": 0, "profit": 15329.0, "wd": 0}, {"mk": "2025-11", "date": "30/11/2025", "add": 0, "profit": 19710.0, "wd": 0}, {"mk": "2025-12", "date": "31/12/2025", "add": 0, "profit": 8794.67, "wd": 0}, {"mk": "2026-01", "date": "31/01/2026", "add": 0, "profit": 26858.22, "wd": 26858.22}, {"mk": "2026-02", "date": "28/02/2026", "add": 0, "profit": 24952.0, "wd": 24952.0}, {"mk": "2026-03", "date": "31/03/2026", "add": 0, "profit": 23538.0, "wd": 23538.0}, {"mk": "2026-04", "date": "30/04/2026", "add": 0, "profit": 27048.0, "wd": 27048.0}, {"mk": "2026-05", "date": "30/05/2026", "add": 0, "profit": 13829.11, "wd": 13829.11}, {"mk": "2026-06", "date": "30/06/2026", "add": 0, "profit": 25056.89, "wd": 25056.89}, {"mk": "2026-07", "date": "31/07/2026", "add": 0, "profit": 16775.0, "wd": 16775.0}, {"mk": "2026-08", "date": "31/08/2026", "add": 0, "profit": 23110.0, "wd": 23110.0}, {"mk": "2026-09", "date": "30/09/2026", "add": 0, "profit": 36387.0, "wd": 0}]}, {"name": "মোঃ ফোরকান", "role": "investor", "opening": 1100000.0, "entries": [{"mk": "2025-12", "date": "31/12/2025", "add": 0, "profit": 13192.0, "wd": 13192.0}, {"mk": "2026-01", "date": "31/01/2026", "add": 0, "profit": 40623.67, "wd": 40623.67}, {"mk": "2026-02", "date": "28/02/2026", "add": 0, "profit": 37428.0, "wd": 37428.0}, {"mk": "2026-03", "date": "31/03/2026", "add": 0, "profit": 35308.33, "wd": 35308.33}, {"mk": "2026-04", "date": "30/04/2026", "add": 0, "profit": 40572.33, "wd": 40572.33}, {"mk": "2026-05", "date": "30/05/2026", "add": 0, "profit": 20743.67, "wd": 20743.67}, {"mk": "2026-06", "date": "30/06/2026", "add": 0, "profit": 37585.33, "wd": 37585.33}, {"mk": "2026-07", "date": "31/07/2026", "add": 0, "profit": 25162.33, "wd": 25162.33}, {"mk": "2026-08", "date": "31/08/2026", "add": 0, "profit": 34664.67, "wd": 34664.67}, {"mk": "2026-09", "date": "30/09/2026", "add": 0, "profit": 54580.33, "wd": 0}]}]}</script>
+<script>
+/* ============================================================
+   ডেটা মডেল
+   DB = { settings, months:{'YYYY-MM':{days:{iso:{s,ex,c,l,p,n}},items:[{id,name,a}]}},
+          partners:[{id,name,role,opening,entries:[{id,mk,date,add,profit,wd}]}] }
+   ============================================================ */
+const KEY='nk_hisab_v4';
+const SEED=JSON.parse(document.getElementById('seed').textContent);
+const MON=['জানুয়ারী','ফেব্রুয়ারী','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+const WD=['রবি','সোম','মঙ্গল','বুধ','বৃহস্পতি','শুক্র','শনি'];
+const SKIP=/সর্বমোট|মোট মাসিক|দৈনিক মোট|প্রকৃত লাভ|পাবে|লেবার খরচ/;
+const DEFAULT_SETTINGS={shopName:'নিউ কর্ণফুলী টাইলস্ এন্ড সেনিটারী',invPct:100/3,autoWithdraw:true};
+let DB={settings:{...DEFAULT_SETTINGS},months:{},partners:[]};
+let CUR='',VIEW='overview',BS_PID='',DAY_EDIT=null;
+
+const $=id=>document.getElementById(id);
+const N=v=>{const n=Number(v);return isFinite(n)?n:0};
+const R2=n=>Math.round(N(n)*100)/100;
+const F=n=>R2(n).toLocaleString('bn-BD',{maximumFractionDigits:2});
+const money=n=>'৳ '+F(n);
+const uid=()=>'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mLabel=k=>{const [y,m]=k.split('-');return MON[+m-1]+' '+y};
+const shortLabel=k=>MON[+k.split('-')[1]-1].slice(0,4)+' '+k.slice(2,4);
+const daysOf=k=>{const [y,m]=k.split('-').map(Number);const n=new Date(y,m,0).getDate();return Array.from({length:n},(_,i)=>k+'-'+String(i+1).padStart(2,'0'))};
+const wdOf=iso=>WD[new Date(iso+'T00:00:00').getDay()];
+const dmy=iso=>iso.slice(8)+'/'+iso.slice(5,7)+'/'+iso.slice(0,4);
+const keys=()=>Object.keys(DB.months).sort();
+const sgn=n=>N(n)<0?'neg':'pos';
+const todayIso=()=>new Date().toISOString().slice(0,10);
+function mObj(k){const m=DB.months[k]||(DB.months[k]={});m.days=m.days||{};m.items=m.items||[];return m}
+function dayObj(k,iso){const m=mObj(k);return m.days[iso]||(m.days[iso]={s:0,ex:0,c:0,l:0,p:0,n:''})}
+function hasData(d){return d&&(N(d.s)||N(d.ex)||N(d.c)||N(d.l)||N(d.p)||(d.n&&d.n.trim()))}
+
+/* ---------- হিসাব (Excel-এর সূত্রের সাথে মিল) ---------- */
+function totals(k){
+  const m=DB.months[k]||{days:{},items:[]};
+  const t={s:0,ex:0,c:0,l:0,p:0,items:0,monthCost:0,actual:0,invPool:0,invEach:0,partEach:0,nInv:0,nPart:0,selling:0};
+  daysOf(k).forEach(iso=>{const d=(m.days||{})[iso];if(!d)return;t.s+=N(d.s);t.ex+=N(d.ex);t.c+=N(d.c);t.l+=N(d.l);t.p+=N(d.p)});
+  (m.items||[]).forEach(it=>{t.items+=N(it.a)});
+  t.monthCost=t.items+t.l;
+  t.actual=t.p-t.monthCost;
+  t.nInv=DB.partners.filter(p=>p.role==='investor').length;
+  t.nPart=DB.partners.filter(p=>p.role!=='investor').length;
+  t.invPool=t.nInv?t.actual*N(DB.settings.invPct)/100:0;
+  t.invEach=t.nInv?t.invPool/t.nInv:0;
+  t.partEach=t.nPart?(t.actual-t.invPool)/t.nPart:0;
+  return t;
+}
+function shareOf(p,t){return p.role==='investor'?t.invEach:t.partEach}
+function balances(p){let b=N(p.opening);return p.entries.map(e=>{b+=N(e.add)+N(e.profit)-N(e.wd);return b})}
+function curBalance(p){const b=balances(p);return b.length?b[b.length-1]:N(p.opening)}
+function sortEntries(p){p.entries.sort((a,b)=>(a.mk||'').localeCompare(b.mk||''))}
+
+/* ---------- সংরক্ষণ ---------- */
+function seedCopy(){
+  const s=JSON.parse(JSON.stringify(SEED));
+  Object.values(s.months).forEach(m=>(m.items||[]).forEach(it=>it.id=uid()));
+  s.partners.forEach(p=>{p.id=uid();p.entries.forEach(e=>e.id=uid())});
+  return normalize({settings:{...DEFAULT_SETTINGS},months:s.months,partners:s.partners});
+}
+function normalize(d){
+  d.settings={...DEFAULT_SETTINGS,...(d.settings||{})};
+  d.months=d.months||{};d.partners=d.partners||[];
+  Object.values(d.months).forEach(m=>{m.days=m.days||{};m.items=(m.items||[]).map(it=>({id:it.id||uid(),name:it.name||'',a:N(it.a)}))});
+  d.partners.forEach(p=>{p.id=p.id||uid();p.role=p.role||'partner';p.opening=N(p.opening);p.entries=(p.entries||[]).map(e=>({id:e.id||uid(),mk:e.mk||'',date:e.date||'',add:N(e.add),profit:N(e.profit),wd:N(e.wd)}))});
+  return d;
+}
+function load(){
+  try{const raw=localStorage.getItem(KEY);DB=raw?normalize(JSON.parse(raw)):seedCopy()}catch(e){DB=seedCopy()}
+  save();
+  CUR=keys().slice(-1)[0]||new Date().toISOString().slice(0,7);
+}
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(DB));setSave(true)}catch(e){setSave(false)}
+}
+function setSave(ok){const el=$('saveState');el.textContent=ok?'✓ সংরক্ষিত':'⚠ সেভ হয়নি';el.className='savepill'+(ok?'':' warn')}
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(toast._t);toast._t=setTimeout(()=>t.style.display='none',2800)}
+
+/* ---------- নেভিগেশন ---------- */
+function setTab(v){
+  VIEW=v;
+  closeNav();
+  {const b=document.querySelector(`#tabs .tab[data-t="${v}"]`);if(b)$('crumb').textContent=b.textContent.trim();}
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('hidden',s.id!=='v-'+v));
+  document.querySelectorAll('#tabs .tab').forEach(b=>b.classList.toggle('on',b.dataset.t===v));
+  render();
+}
+function setMonth(k){CUR=k;render()}
+function render(){
+  const ks=keys();if(CUR&&!ks.includes(CUR))ks.push(CUR);
+  $('monthSel').innerHTML=[...new Set(ks)].sort().map(k=>`<option value="${k}"${k===CUR?' selected':''}>${mLabel(k)}</option>`).join('');
+  $('shopTitle').textContent=DB.settings.shopName||'দোকান';
+  ({overview:rOverview,daily:rDaily,monthly:rMonthly,annual:rAnnual,balance:rBalance,partners:rPartners,settings:rSettings})[VIEW]();
+}
+function kpi(lab,val,sub='',cls=''){return `<div class="card kpi ${cls}"><div class="lab">${lab}</div><div class="val">${val}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`}
+
+/* ================= সারসংক্ষেপ ================= */
+function rOverview(){
+  const t=totals(CUR);
+  $('ovTitle').textContent=mLabel(CUR)+' — সারসংক্ষেপ';
+  const selDays=daysOf(CUR).filter(d=>N(mObj(CUR).days[d]&&mObj(CUR).days[d].s)>0).length;
+  $('ovKpis').innerHTML=
+    kpi('মোট বিক্রয়',money(t.s),`${selDays} দিন বিক্রি`)+
+    kpi('মোট দৈনিক লাভ',money(t.p),'দৈনিক লাভের যোগফল')+
+    kpi('মাসিক খরচ',money(t.monthCost),`খরচ ${F(t.items)} + লেবার ${F(t.l)}`)+
+    kpi('প্রকৃত লাভ',money(t.actual),'মাসিক খরচ বাদে','hero')+
+    kpi('বিনিয়োগকারী ভাগ',money(t.invPool),`${t.nInv} জন · প্রতিজন ${money(t.invEach)}`,'gold')+
+    kpi('প্রতি অংশীদার',money(t.partEach),`${t.nPart} জন অংশীদার`);
+  const ks=keys().slice(-12);
+  const vals=ks.map(k=>totals(k).actual);
+  const max=Math.max(1,...vals.map(v=>Math.abs(v)));
+  $('ovChart').innerHTML=ks.length?ks.map((k,i)=>{const v=vals[i];const h=Math.max(2,Math.abs(v)/max*100);
+    return `<div class="bar ${v<0?'neg':''} ${k===CUR?'cur':''}" data-act="goMonth" data-k="${k}" title="${mLabel(k)}"><em>${F(v)}</em><i style="height:${h}%"></i><span>${shortLabel(k)}</span></div>`}).join(''):'<div class="empty">কোনো মাস নেই</div>';
+  $('ovPartners').innerHTML=DB.partners.length?`<table><tbody>${DB.partners.map(p=>`<tr><td>${esc(p.name)} ${p.role==='investor'?'<span class="chip gold">বিনিয়োগকারী</span>':''}</td><td class="num"><b>${money(curBalance(p))}</b></td></tr>`).join('')}</tbody></table>`:'<div class="empty">কোনো পার্টনার নেই</div>';
+}
+
+/* ================= দৈনিক ================= */
+function defaultDayIso(){const t=todayIso();return t.slice(0,7)===CUR?t:CUR+'-01'}
+function resetDayForm(){
+  DAY_EDIT=null;
+  $('dayForm').reset();
+  $('d_date').value=defaultDayIso();
+  $('dyMode').textContent='';
+  $('dyFormCard').classList.remove('editing');
+  $('dayForm').querySelector('button[type=submit]').textContent='✓ সংরক্ষণ';
+}
+function loadDayForm(iso){
+  const d=dayObj(iso.slice(0,7),iso);
+  DAY_EDIT=iso;
+  $('d_date').value=iso;
+  $('d_s').value=d.s||'';$('d_ex').value=d.ex||'';$('d_c').value=d.c||'';$('d_l').value=d.l||'';$('d_p').value=d.p||'';$('d_n').value=d.n||'';
+  $('dyMode').textContent='সম্পাদনা: '+dmy(iso);
+  $('dyFormCard').classList.add('editing');
+  $('dayForm').querySelector('button[type=submit]').textContent='✓ আপডেট করুন';
+  $('dyFormCard').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function saveDay(e){
+  e.preventDefault();
+  const iso=$('d_date').value;if(!iso)return toast('তারিখ দিন');
+  const k=iso.slice(0,7);
+  mObj(k).days[iso]={s:N($('d_s').value),ex:N($('d_ex').value),c:N($('d_c').value),l:N($('d_l').value),p:N($('d_p').value),n:$('d_n').value.trim()};
+  const wasEdit=!!DAY_EDIT;
+  CUR=k;save();resetDayForm();render();
+  toast(wasEdit?'হিসাব আপডেট হয়েছে':'হিসাব যোগ হয়েছে: '+dmy(iso));
+}
+function clearDay(iso){
+  const m=mObj(iso.slice(0,7));delete m.days[iso];save();
+  if(DAY_EDIT===iso)resetDayForm();
+  render();toast('দিনের হিসাব মুছে গেছে');
+}
+function rDaily(){
+  mObj(CUR);
+  $('dyTitle').textContent=mLabel(CUR)+' — দৈনিক হিসাব';
+  if(!$('d_date').value)resetDayForm();
+  const t=totals(CUR);
+  $('dyKpis').innerHTML=kpi('বিক্রয়',money(t.s))+kpi('দৈনিক খরচ',money(t.ex))+kpi('ক্যাশ',money(t.c))+kpi('লেবার',money(t.l))+kpi('দৈনিক লাভ',money(t.p),'','hero');
+  const showAll=$('dyAll').checked;
+  const rows=daysOf(CUR).filter(iso=>showAll||hasData(mObj(CUR).days[iso])).map(iso=>{
+    const d=dayObj(CUR,iso);
+    return `<tr class="${hasData(d)?'':'off'}">
+      <td><b>${bd(iso.slice(8))}</b> <span class="muted" style="font-size:12px">${wdOf(iso)}</span></td>
+      <td class="num">${F(d.s)}</td><td class="num">${F(d.ex)}</td><td class="num">${F(d.c)}</td><td class="num">${F(d.l)}</td>
+      <td class="num ${sgn(d.p)}"><b>${F(d.p)}</b></td><td class="muted">${esc(d.n||'')}</td>
+      <td style="white-space:nowrap"><button class="btn soft sm" data-act="editDay" data-iso="${iso}">সম্পাদনা</button> <button class="btn danger sm icon" data-act="delDay" data-iso="${iso}" title="মুছুন">✕</button></td></tr>`}).join('');
+  const sum=`<tr class="total"><td>মোট</td><td class="num">${F(t.s)}</td><td class="num">${F(t.ex)}</td><td class="num">${F(t.c)}</td><td class="num">${F(t.l)}</td><td class="num ${sgn(t.p)}">${F(t.p)}</td><td></td><td></td></tr>`;
+  $('dyTable').innerHTML=rows?`<table><thead><tr><th>তারিখ</th><th class="num">বিক্রয়</th><th class="num">খরচ</th><th class="num">ক্যাশ</th><th class="num">লেবার</th><th class="num">লাভ</th><th>নোট</th><th></th></tr></thead><tbody>${rows}${sum}</tbody></table>`:'<div class="empty">এই মাসে এখনো কোনো হিসাব নেই—উপরের ফর্ম দিয়ে শুরু করুন</div>';
+}
+
+/* ================= মাসিক ================= */
+function resetItemForm(){$('itemForm').reset();$('i_id').value='';$('itMode').textContent='';$('i_btn').textContent='+ যোগ'}
+function editItem(id){
+  const it=mObj(CUR).items.find(x=>x.id===id);if(!it)return;
+  $('i_id').value=id;$('i_name').value=it.name;$('i_a').value=it.a||'';
+  $('itMode').textContent='সম্পাদনা';$('i_btn').textContent='✓ আপডেট';$('i_name').focus();
+}
+function saveItem(e){
+  e.preventDefault();
+  const name=$('i_name').value.trim();if(!name)return;
+  const a=N($('i_a').value),id=$('i_id').value;
+  const m=mObj(CUR);
+  if(id){const it=m.items.find(x=>x.id===id);if(it){it.name=name;it.a=a}}
+  else m.items.push({id:uid(),name,a});
+  save();resetItemForm();rMonthly();toast('খরচ সংরক্ষিত');
+}
+function delItem(id){const m=mObj(CUR);m.items=m.items.filter(x=>x.id!==id);save();rMonthly()}
+function rMonthly(){
+  const m=mObj(CUR),t=totals(CUR);
+  $('moTitle').textContent=mLabel(CUR)+' — মাসিক খরচ ও বণ্টন';
+  $('moItems').innerHTML=`<table><thead><tr><th>খরচের নাম</th><th class="num">টাকা</th><th></th></tr></thead><tbody>`+
+    `<tr><td class="muted">লেবার খরচ <span class="chip auto">দৈনিক থেকে স্বয়ংক্রিয়</span></td><td class="num">${F(t.l)}</td><td></td></tr>`+
+    (m.items.length?m.items.map(it=>`<tr><td>${esc(it.name)}</td><td class="num">${F(it.a)}</td><td style="white-space:nowrap"><button class="btn soft sm" data-act="editItem" data-id="${it.id}">সম্পাদনা</button> <button class="btn danger sm icon" data-act="delItem" data-id="${it.id}">✕</button></td></tr>`).join(''):'<tr><td colspan="3" class="empty">এই মাসে কোনো খরচ যোগ হয়নি</td></tr>')+
+    `<tr class="total"><td>মোট খরচ (লেবারসহ)</td><td class="num">${F(t.monthCost)}</td><td></td></tr></tbody></table>`;
+  $('moSum').innerHTML=`<table><tbody>`+
+    [['সর্বমোট বিক্রয়',t.s],['সর্বমোট দৈনিক লাভ',t.p],['দৈনিক মোট খরচ',t.ex],['মোট মাসিক খরচ (খরচ + লেবার)',t.monthCost]].map(r=>`<tr><td class="muted">${r[0]}</td><td class="num">${F(r[1])}</td></tr>`).join('')+
+    `<tr class="total"><td>প্রকৃত লাভ</td><td class="num ${sgn(t.actual)}">${money(t.actual)}</td></tr>`+
+    `<tr><td class="muted">বিনিয়োগকারীদের ভাগ</td><td class="num">${money(t.invPool)}</td></tr>`+
+    `<tr><td class="muted">অংশীদারদের ভাগ</td><td class="num">${money(t.actual-t.invPool)}</td></tr></tbody></table>`;
+  $('moRule').innerHTML=`নিয়ম: প্রকৃত লাভ = দৈনিক লাভ − (মাসিক খরচ + লেবার)। বিনিয়োগকারীরা মোট <b>${R2(N(DB.settings.invPct))}%</b> পায়, বাকিটা <b>${t.nPart}</b> জন অংশীদারের মধ্যে সমান ভাগে যায়।`;
+  $('moShareMonth').textContent=mLabel(CUR);
+  $('moShare').innerHTML=DB.partners.length?`<table><thead><tr><th>নাম</th><th>ধরন</th><th class="num">এই মাসের ভাগ</th><th class="num">ব্যালেন্সে বসানো</th></tr></thead><tbody>`+
+    DB.partners.map(p=>{const e=p.entries.find(x=>x.mk===CUR);return `<tr><td><b>${esc(p.name)}</b></td><td>${p.role==='investor'?'<span class="chip gold">বিনিয়োগকারী</span>':'<span class="chip">অংশীদার</span>'}</td><td class="num">${money(shareOf(p,t))}</td><td class="num">${e?money(e.profit):'<span class="muted">এখনো বসানো হয়নি</span>'}</td></tr>`}).join('')+`</tbody></table>`:'<div class="empty">কোনো পার্টনার নেই</div>';
+}
+function applyProfit(){
+  if(!DB.partners.length)return toast('আগে পার্টনার যোগ করুন');
+  const t=totals(CUR);
+  if(!confirm(`${mLabel(CUR)} মাসের লাভ ${money(t.actual)} পার্টনারদের ব্যালেন্স শিটে বসাবেন?\n${DB.settings.autoWithdraw?'(লাভ = উত্তোলন ধরা হবে)':'(শুধু লাভ যোগ হবে)'}\nওই মাসের সারি থাকলে তা বদলে যাবে।`))return;
+  DB.partners.forEach(p=>applyToOne(p,t));
+  save();setTab('balance');toast('সবার ব্যালেন্স আপডেট হয়েছে');
+}
+function applyToOne(p,t){
+  const share=R2(shareOf(p,t));
+  let e=p.entries.find(x=>x.mk===CUR);
+  if(!e){e={id:uid(),mk:CUR,date:mLabel(CUR),add:0,profit:0,wd:0};p.entries.push(e)}
+  e.profit=share;e.wd=DB.settings.autoWithdraw?share:0;
+  sortEntries(p);
+}
+
+/* ================= বার্ষিক ================= */
+function rAnnual(){
+  const ks=keys();
+  if(!ks.length){$('anWrap').innerHTML='<div class="empty">কোনো মাস নেই</div>';return}
+  const T={s:0,p:0,ex:0,mc:0,a:0,inv:0,part:0};
+  const rows=ks.map(k=>{const t=totals(k);
+    T.s+=t.s;T.p+=t.p;T.ex+=t.ex;T.mc+=t.monthCost;T.a+=t.actual;T.inv+=t.invPool;T.part+=t.actual-t.invPool;
+    return `<tr class="click ${k===CUR?'cur':''}" data-act="goMonth" data-k="${k}"><td><b>${mLabel(k)}</b></td><td class="num">${F(t.s)}</td><td class="num">${F(t.p)}</td><td class="num">${F(t.ex)}</td><td class="num">${F(t.monthCost)}</td><td class="num ${sgn(t.actual)}"><b>${F(t.actual)}</b></td><td class="num">${F(t.invPool)}</td><td class="num">${F(t.actual-t.invPool)}</td></tr>`}).join('');
+  $('anWrap').innerHTML=`<table><thead><tr><th>মাস</th><th class="num">বিক্রয়</th><th class="num">দৈনিক লাভ</th><th class="num">দৈনিক খরচ</th><th class="num">মাসিক খরচ</th><th class="num">প্রকৃত লাভ</th><th class="num">বিনিয়োগকারী</th><th class="num">অংশীদার</th></tr></thead><tbody>${rows}`+
+    `<tr class="total"><td>মোট</td><td class="num">${F(T.s)}</td><td class="num">${F(T.p)}</td><td class="num">${F(T.ex)}</td><td class="num">${F(T.mc)}</td><td class="num ${sgn(T.a)}">${F(T.a)}</td><td class="num">${F(T.inv)}</td><td class="num">${F(T.part)}</td></tr></tbody></table>`;
+}
+
+/* ================= ব্যালেন্স শিট ================= */
+function selPartner(){return DB.partners.find(p=>p.id===BS_PID)||DB.partners[0]||null}
+function resetEntryForm(){
+  $('entryForm').reset();$('e_id').value='';$('enMode').textContent='';
+  $('e_mk').value=CUR;$('e_date').value=mLabel(CUR);
+}
+function editEntry(eid){
+  const p=selPartner();const e=p&&p.entries.find(x=>x.id===eid);if(!e)return;
+  $('e_id').value=eid;$('e_mk').value=e.mk||CUR;$('e_date').value=e.date||'';
+  $('e_add').value=e.add||'';$('e_profit').value=e.profit||'';$('e_wd').value=e.wd||'';
+  $('enMode').textContent='সম্পাদনা';
+  $('entryForm').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function saveEntry(e){
+  e.preventDefault();
+  const p=selPartner();if(!p)return toast('আগে পার্টনার যোগ করুন');
+  const mk=$('e_mk').value;if(!mk)return toast('মাস দিন');
+  const data={mk,date:$('e_date').value.trim()||mLabel(mk),add:N($('e_add').value),profit:N($('e_profit').value),wd:N($('e_wd').value)};
+  const id=$('e_id').value;
+  if(id){const en=p.entries.find(x=>x.id===id);if(en)Object.assign(en,data)}
+  else p.entries.push({id:uid(),...data});
+  sortEntries(p);save();resetEntryForm();rBalance();toast('এন্ট্রি সংরক্ষিত');
+}
+function delEntry(eid){const p=selPartner();if(!p)return;if(!confirm('এই সারি মুছবেন?'))return;p.entries=p.entries.filter(x=>x.id!==eid);save();rBalance()}
+function applyToPartner(){
+  const p=selPartner();if(!p)return toast('পার্টনার নেই');
+  const t=totals(CUR);
+  if(!confirm(`${p.name}-এর ${mLabel(CUR)} মাসের ভাগ ${money(shareOf(p,t))} বসাবেন?`))return;
+  applyToOne(p,t);save();rBalance();toast('ব্যালেন্স আপডেট হয়েছে');
+}
+function rBalance(){
+  const sel=$('bsPartner');
+  sel.innerHTML=DB.partners.length?DB.partners.map(p=>`<option value="${p.id}"${p.id===BS_PID||(!BS_PID&&p===DB.partners[0])?' selected':''}>${esc(p.name)}</option>`).join(''):'<option value="">কোনো পার্টনার নেই</option>';
+  if(!$('e_mk').value)resetEntryForm();
+  const p=selPartner();
+  if(!p){$('bsKpis').innerHTML='';$('bsTable').innerHTML='<div class="empty">প্রথমে “পার্টনার” ট্যাবে কাউকে যোগ করুন</div>';$('bsTableTitle').textContent='ব্যালেন্স শিট';return}
+  BS_PID=p.id;
+  const b=balances(p);
+  const add=p.entries.reduce((a,e)=>a+N(e.add),0),pr=p.entries.reduce((a,e)=>a+N(e.profit),0),wd=p.entries.reduce((a,e)=>a+N(e.wd),0);
+  const cur=b.length?b[b.length-1]:N(p.opening);
+  $('bsKpis').innerHTML=kpi('শুরুর মূলধন',money(p.opening),p.role==='investor'?'বিনিয়োগকারী':'অংশীদার')+kpi('মূলধন যোগ',money(add))+kpi('মোট লাভ',money(pr))+kpi('মোট উত্তোলন',money(wd))+kpi('বর্তমান ব্যালেন্স',money(cur),'','hero');
+  $('bsTableTitle').textContent=`${p.name} — ব্যালেন্স শিট`;
+  $('bsTable').innerHTML=p.entries.length?`<table><thead><tr><th>মাস / বিবরণ</th><th class="num">মূলধন যোগ</th><th class="num">লাভ</th><th class="num">উত্তোলন</th><th class="num">ব্যালেন্স</th><th></th></tr></thead><tbody>`+
+    `<tr class="muted"><td>শুরুর মূলধন</td><td colspan="3"></td><td class="num">${F(p.opening)}</td><td></td></tr>`+
+    p.entries.map((e,i)=>`<tr class="${e.mk===CUR?'cur':''}"><td>${esc(e.date||mLabel(e.mk))} ${e.mk?`<span class="muted" style="font-size:12px">${e.mk}</span>`:''}</td><td class="num">${F(e.add)}</td><td class="num">${F(e.profit)}</td><td class="num">${F(e.wd)}</td><td class="num ${sgn(b[i])}"><b>${F(b[i])}</b></td><td style="white-space:nowrap"><button class="btn soft sm" data-act="editEntry" data-id="${e.id}">সম্পাদনা</button> <button class="btn danger sm icon" data-act="delEntry" data-id="${e.id}">✕</button></td></tr>`).join('')+
+    `<tr class="total"><td>বর্তমান ব্যালেন্স</td><td class="num">${F(add)}</td><td class="num">${F(pr)}</td><td class="num">${F(wd)}</td><td class="num">${F(cur)}</td><td></td></tr></tbody></table>`:'<div class="empty">এখনো কোনো লেনদেন নেই। উপরের ফর্মে যোগ করুন।</div>';
+}
+$('bsPartner').addEventListener('change',e=>{BS_PID=e.target.value;rBalance()});
+
+/* ================= পার্টনার ================= */
+function resetPartner(){$('partnerForm').reset();$('p_id').value='';$('ptMode').textContent='';$('p_role').value='partner'}
+function editPartner(id){
+  const p=DB.partners.find(x=>x.id===id);if(!p)return;
+  $('p_id').value=id;$('p_name').value=p.name;$('p_role').value=p.role;$('p_open').value=p.opening||'';
+  $('ptMode').textContent='সম্পাদনা: '+p.name;$('p_name').focus();
+}
+function savePartner(e){
+  e.preventDefault();
+  const name=$('p_name').value.trim();if(!name)return;
+  const data={name,role:$('p_role').value,opening:N($('p_open').value)};
+  const id=$('p_id').value;
+  if(id){const p=DB.partners.find(x=>x.id===id);if(p)Object.assign(p,data)}
+  else DB.partners.push({id:uid(),...data,entries:[]});
+  save();resetPartner();rPartners();toast('পার্টনার সংরক্ষিত');
+}
+function delPartner(id){
+  const p=DB.partners.find(x=>x.id===id);if(!p||!confirm(p.name+' কে মুছবেন? তার সব ব্যালেন্স শিট চলে যাবে।'))return;
+  DB.partners=DB.partners.filter(x=>x.id!==id);if(BS_PID===id)BS_PID='';save();rPartners();
+}
+function openBalance(id){BS_PID=id;setTab('balance')}
+function rPartners(){
+  if(!DB.partners.length){$('ptCards').innerHTML='<div class="card empty" style="grid-column:1/-1">কোনো পার্টনার নেই। উপরের ফর্ম দিয়ে যোগ করুন।</div>';return}
+  $('ptCards').innerHTML=DB.partners.map(p=>`
+    <div class="card pcard" data-act="openBalance" data-id="${p.id}">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:start">
+        <div><div class="nm">${esc(p.name)}</div><div style="margin-top:6px">${p.role==='investor'?'<span class="chip gold">বিনিয়োগকারী</span>':'<span class="chip">অংশীদার</span>'}</div></div>
+        <button class="btn soft sm" data-act="editPartner" data-id="${p.id}" onclick="event.stopPropagation()">সম্পাদনা</button>
+      </div>
+      <div class="bal ${sgn(curBalance(p))}">${money(curBalance(p))}</div>
+      <div class="muted" style="font-size:12.5px;margin-top:4px">${p.entries.length} টি লেনদেন · ব্যালেন্স শিট খুলুন →</div>
+    </div>`).join('');
+}
+
+/* ================= সেটিংস ================= */
+function rSettings(){
+  $('s_name').value=DB.settings.shopName;$('s_inv').value=R2(DB.settings.invPct);$('s_auto').checked=!!DB.settings.autoWithdraw;
+}
+function saveSettings(e){
+  e.preventDefault();
+  DB.settings.shopName=$('s_name').value.trim()||DB.settings.shopName;
+  DB.settings.invPct=Math.min(100,Math.max(0,N($('s_inv').value)));
+  DB.settings.autoWithdraw=$('s_auto').checked;
+  save();render();toast('সেটিংস সংরক্ষিত');
+}
+function addMonth(){const k=$('newMonth').value;if(!k)return toast('মাস বাছাই করুন');mObj(k);CUR=k;save();render();toast(mLabel(k)+' যোগ হয়েছে')}
+function delMonth(){
+  if(!confirm(mLabel(CUR)+' মাসের সব হিসাব মুছবেন?'))return;
+  delete DB.months[CUR];CUR=keys().slice(-1)[0]||new Date().toISOString().slice(0,7);save();render();
+}
+
+/* ================= PDF (ব্রাউজারের Print → Save as PDF) ================= */
+const PRINT_CSS=`
+@page{size:A4;margin:14mm 13mm 18mm}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:"SolaimanLipi","Noto Sans Bengali",Arial,sans-serif;color:#111827;font-size:12.5px;line-height:1.55;padding-bottom:10mm}
+.lh{display:flex;align-items:center;gap:14px;border-bottom:2.5px solid #0d5c63;padding-bottom:12px;margin-bottom:6px}
+.lh-logo{width:54px;height:54px;border-radius:13px;background:#0d5c63;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;flex:none}
+.lh-shop{font-size:19px;font-weight:700;color:#0d5c63;line-height:1.3}
+.lh-addr{font-size:11.5px;color:#6b7280;margin-top:2px}
+.lh-doc{margin-left:auto;text-align:right}
+.lh-kind{font-size:15px;font-weight:700}
+.lh-sub{font-size:12.5px;color:#374151;margin-top:3px;font-weight:600}
+.sec{font-size:13px;font-weight:700;color:#0d5c63;margin:16px 0 7px;padding-bottom:4px;border-bottom:1px solid #d1d5db}
+table{width:100%;border-collapse:collapse;margin-bottom:4px}
+th{background:#0d5c63;color:#fff;font-weight:600;text-align:left;padding:7px 8px;font-size:11.5px}
+td{padding:6px 8px;border-bottom:1px solid #e5e7eb;font-size:11.5px;vertical-align:top}
+tbody tr:nth-child(even) td{background:#f9fafb}
+.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.t td{font-weight:700;background:#e9f3f3;border-top:1.5px solid #0d5c63}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:6px 0 10px}
+.kbox{border:1px solid #d1d5db;border-radius:9px;padding:9px 11px;background:#fff}
+.kbox .l{font-size:10.5px;color:#6b7280}
+.kbox .v{font-size:14px;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums}
+.kbox.hi{background:#0d5c63;border-color:#0d5c63;color:#fff}
+.kbox.hi .l{color:#cfe9ea}
+.info{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;border:1px solid #e5e7eb;border-radius:9px;padding:10px 12px;margin:6px 0 10px;background:#fafbfc}
+.info span{color:#6b7280;font-size:10.5px;display:block}
+.info b{font-size:12.5px}
+.closebox{display:flex;justify-content:space-between;align-items:center;background:#0d5c63;color:#fff;border-radius:9px;padding:12px 15px;margin-top:12px;font-size:14px;font-weight:700}
+.sign{display:flex;justify-content:space-between;margin-top:46px;gap:18px;page-break-inside:avoid}
+.sign div{border-top:1px solid #111827;width:28%;text-align:center;padding-top:5px;font-size:11px}
+.pfoot{position:fixed;bottom:0;left:0;right:0;font-size:9.5px;color:#6b7280;border-top:1px solid #d1d5db;padding-top:5px;display:flex;justify-content:space-between;background:#fff}
+.pb{page-break-before:always}
+.avoid{page-break-inside:avoid}
+`;
+const printDate=()=>new Date().toLocaleDateString('bn-BD',{day:'numeric',month:'long',year:'numeric'});
+const bd=s=>String(s).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[d]);
+function openPrint(title,body){
+  const w=window.open('','_blank');
+  if(!w)return toast('পপ-আপ ব্লক হয়েছে—অনুমতি দিয়ে আবার চেষ্টা করুন');
+  w.document.open();
+  w.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>${esc(title)}</title>`+
+    `<link rel="stylesheet" href="https://fonts.maateen.me/solaiman-lipi/font.css"><style>${PRINT_CSS}</style></head><body>${body}`+
+    `<div class="pfoot"><span>${esc(DB.settings.shopName)}</span><span>${esc(title)} · ${printDate()}</span></div>`+
+    `<script>window.onload=function(){setTimeout(function(){window.print()},600)}<\/script></body></html>`);
+  w.document.close();
+}
+function lh(kind,sub){
+  return `<div class="lh"><div class="lh-logo">ক</div><div><div class="lh-shop">${esc(DB.settings.shopName)}</div><div class="lh-addr">আয়-ব্যয় ও পার্টনার হিসাব</div></div>`+
+    `<div class="lh-doc"><div class="lh-kind">${esc(kind)}</div><div class="lh-sub">${esc(sub||'')}</div></div></div>`;
+}
+const kbox=(l,v,hi)=>`<div class="kbox${hi?' hi':''}"><div class="l">${l}</div><div class="v">${v}</div></div>`;
+const signs=arr=>`<div class="sign">${arr.map(x=>`<div>${x}</div>`).join('')}</div>`;
+const pmoney=n=>'৳ '+F(n);
+
+function pdfMonthly(){
+  const k=CUR,t=totals(k),m=mObj(k);
+  const days=daysOf(k).filter(iso=>hasData(m.days[iso]));
+  const dayRows=days.map((iso,i)=>{const d=m.days[iso];
+    return `<tr><td>${F(i+1)}</td><td>${bd(dmy(iso))}</td><td>${wdOf(iso)}</td><td class="n">${F(d.s)}</td><td class="n">${F(d.ex)}</td><td class="n">${F(d.c)}</td><td class="n">${F(d.l)}</td><td class="n">${F(d.p)}</td><td>${esc(d.n||'')}</td></tr>`}).join('');
+  const itemRows=m.items.map((it,i)=>`<tr><td>${F(i+2)}</td><td>${esc(it.name)}</td><td class="n">${F(it.a)}</td></tr>`).join('');
+  const shares=DB.partners.map((p,i)=>`<tr><td>${F(i+1)}</td><td>${esc(p.name)}</td><td>${p.role==='investor'?'বিনিয়োগকারী':'অংশীদার'}</td><td class="n">${F(shareOf(p,t))}</td></tr>`).join('');
+  const body=`${lh('মাসিক আয়-ব্যয়ের প্রতিবেদন',mLabel(k))}
+  <div class="sec">১. সারসংক্ষেপ</div>
+  <div class="kpis">${kbox('মোট বিক্রয়',pmoney(t.s))}${kbox('মোট দৈনিক লাভ',pmoney(t.p))}${kbox('মাসিক খরচ (লেবারসহ)',pmoney(t.monthCost))}${kbox('প্রকৃত লাভ',pmoney(t.actual),true)}</div>
+  <table class="avoid"><tbody>
+    <tr><td>দৈনিক মোট খরচ</td><td class="n">${pmoney(t.ex)}</td><td>মোট ক্যাশ</td><td class="n">${pmoney(t.c)}</td></tr>
+    <tr><td>লেবার খরচ</td><td class="n">${pmoney(t.l)}</td><td>অন্যান্য মাসিক খরচ</td><td class="n">${pmoney(t.items)}</td></tr>
+  </tbody></table>
+
+  <div class="sec">২. মাসিক খরচের বিবরণ</div>
+  <table class="avoid"><thead><tr><th style="width:44px">ক্র.</th><th>খরচের খাত</th><th class="n">টাকা</th></tr></thead><tbody>
+    <tr><td>${F(1)}</td><td>লেবার খরচ (দৈনিক হিসাব থেকে)</td><td class="n">${F(t.l)}</td></tr>${itemRows}
+    <tr class="t"><td></td><td>মোট মাসিক খরচ</td><td class="n">${F(t.monthCost)}</td></tr>
+  </tbody></table>
+
+  <div class="sec">৩. লাভ বণ্টন</div>
+  <table class="avoid"><thead><tr><th style="width:44px">ক্র.</th><th>নাম</th><th>ধরন</th><th class="n">ভাগ (৳)</th></tr></thead><tbody>
+    ${shares||'<tr><td colspan="4">কোনো পার্টনার নেই</td></tr>'}
+    <tr class="t"><td></td><td colspan="2">বিনিয়োগকারীদের মোট (${R2(N(DB.settings.invPct))}%)</td><td class="n">${F(t.invPool)}</td></tr>
+    <tr class="t"><td></td><td colspan="2">অংশীদারদের মোট</td><td class="n">${F(t.actual-t.invPool)}</td></tr>
+  </tbody></table>
+
+  <div class="sec">৪. দৈনিক হিসাব</div>
+  <table><thead><tr><th style="width:44px">ক্র.</th><th>তারিখ</th><th>বার</th><th class="n">বিক্রয়</th><th class="n">খরচ</th><th class="n">ক্যাশ</th><th class="n">লেবার</th><th class="n">লাভ</th><th>নোট</th></tr></thead><tbody>
+    ${dayRows||'<tr><td colspan="9">এই মাসে কোনো দৈনিক হিসাব নেই</td></tr>'}
+    <tr class="t"><td colspan="3">মোট</td><td class="n">${F(t.s)}</td><td class="n">${F(t.ex)}</td><td class="n">${F(t.c)}</td><td class="n">${F(t.l)}</td><td class="n">${F(t.p)}</td><td></td></tr>
+  </tbody></table>
+  ${signs(['হিসাবরক্ষক','ব্যবস্থাপক','অনুমোদন'])}`;
+  openPrint(`মাসিক হিসাব - ${mLabel(k)}`,body);
+}
+
+function pdfAnnual(){
+  const ks=keys();
+  const T={s:0,p:0,ex:0,mc:0,a:0,inv:0,part:0};
+  const rows=ks.map((k,i)=>{const t=totals(k);T.s+=t.s;T.p+=t.p;T.ex+=t.ex;T.mc+=t.monthCost;T.a+=t.actual;T.inv+=t.invPool;T.part+=t.actual-t.invPool;
+    return `<tr><td>${F(i+1)}</td><td>${mLabel(k)}</td><td class="n">${F(t.s)}</td><td class="n">${F(t.p)}</td><td class="n">${F(t.ex)}</td><td class="n">${F(t.monthCost)}</td><td class="n"><b>${F(t.actual)}</b></td><td class="n">${F(t.invPool)}</td><td class="n">${F(t.actual-t.invPool)}</td></tr>`}).join('');
+  const period=ks.length?`${mLabel(ks[0])} — ${mLabel(ks[ks.length-1])}`:'';
+  const body=`${lh('বার্ষিক আয়-ব্যয়ের সারসংক্ষেপ',period)}
+  <div class="kpis">${kbox('মোট বিক্রয়',pmoney(T.s))}${kbox('মোট দৈনিক লাভ',pmoney(T.p))}${kbox('মোট মাসিক খরচ',pmoney(T.mc))}${kbox('মোট প্রকৃত লাভ',pmoney(T.a),true)}</div>
+  <div class="sec">মাসভিত্তিক বিবরণ</div>
+  <table><thead><tr><th style="width:36px">ক্র.</th><th>মাস</th><th class="n">বিক্রয়</th><th class="n">দৈনিক লাভ</th><th class="n">দৈনিক খরচ</th><th class="n">মাসিক খরচ</th><th class="n">প্রকৃত লাভ</th><th class="n">বিনিয়োগকারী</th><th class="n">অংশীদার</th></tr></thead>
+  <tbody>${rows||'<tr><td colspan="9">কোনো মাস নেই</td></tr>'}
+    <tr class="t"><td></td><td>মোট</td><td class="n">${F(T.s)}</td><td class="n">${F(T.p)}</td><td class="n">${F(T.ex)}</td><td class="n">${F(T.mc)}</td><td class="n">${F(T.a)}</td><td class="n">${F(T.inv)}</td><td class="n">${F(T.part)}</td></tr>
+  </tbody></table>
+  ${signs(['হিসাবরক্ষক','ব্যবস্থাপক','অনুমোদন'])}`;
+  openPrint('বার্ষিক হিসাব',body);
+}
+
+function ledgerBlock(p,newPage){
+  const b=balances(p);
+  const add=p.entries.reduce((a,e)=>a+N(e.add),0),pr=p.entries.reduce((a,e)=>a+N(e.profit),0),wd=p.entries.reduce((a,e)=>a+N(e.wd),0);
+  const cur=b.length?b[b.length-1]:N(p.opening);
+  const rows=p.entries.map((e,i)=>`<tr><td>${F(i+1)}</td><td>${esc(e.date||mLabel(e.mk))}</td><td class="n">${F(e.add)}</td><td class="n">${F(e.profit)}</td><td class="n">${F(e.wd)}</td><td class="n"><b>${F(b[i])}</b></td></tr>`).join('');
+  return `<section class="${newPage?'pb':''}">${lh('পার্টনার ব্যালেন্স শিট',p.role==='investor'?'বিনিয়োগকারী':'অংশীদার')}
+  <div class="info">
+    <div><span>পার্টনারের নাম</span><b>${esc(p.name)}</b></div>
+    <div><span>ধরন</span><b>${p.role==='investor'?'বিনিয়োগকারী':'অংশীদার'}</b></div>
+    <div><span>শুরুর মূলধন</span><b>${pmoney(p.opening)}</b></div>
+    <div><span>লেনদেনের সংখ্যা</span><b>${F(p.entries.length)} টি</b></div>
+  </div>
+  <div class="kpis">${kbox('মূলধন সংযোজন',pmoney(add))}${kbox('মোট লাভ',pmoney(pr))}${kbox('মোট উত্তোলন',pmoney(wd))}${kbox('বর্তমান ব্যালেন্স',pmoney(cur),true)}</div>
+  <div class="sec">লেনদেনের বিবরণ</div>
+  <table><thead><tr><th style="width:44px">ক্র.</th><th>মাস / বিবরণ</th><th class="n">মূলধন যোগ</th><th class="n">লাভ</th><th class="n">উত্তোলন</th><th class="n">ব্যালেন্স</th></tr></thead><tbody>
+    <tr><td></td><td><b>শুরুর মূলধন</b></td><td></td><td></td><td></td><td class="n"><b>${F(p.opening)}</b></td></tr>
+    ${rows||'<tr><td colspan="6">কোনো লেনদেন নেই</td></tr>'}
+    <tr class="t"><td></td><td>মোট</td><td class="n">${F(add)}</td><td class="n">${F(pr)}</td><td class="n">${F(wd)}</td><td></td></tr>
+  </tbody></table>
+  <div class="closebox"><span>সমাপনী ব্যালেন্স (${printDate()} পর্যন্ত)</span><span>${pmoney(cur)}</span></div>
+  ${signs(['পার্টনারের স্বাক্ষর','হিসাবরক্ষক','ব্যবস্থাপক'])}
+  </section>`;
+}
+function pdfBalance(){
+  const p=selPartner();if(!p)return toast('পার্টনার নির্বাচন করুন');
+  openPrint(`ব্যালেন্স শিট - ${p.name}`,ledgerBlock(p,false));
+}
+function pdfAllBalances(){
+  if(!DB.partners.length)return toast('কোনো পার্টনার নেই');
+  openPrint('পার্টনার ব্যালেন্স শিট',DB.partners.map((p,i)=>ledgerBlock(p,i>0)).join(''));
+}
+
+/* ================= CSV ও ব্যাকআপ ================= */
+function downloadFile(name,content,type){
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();
+}
+function csvAnnual(){
+  const rows=[['মাস','বিক্রয়','দৈনিক লাভ','দৈনিক খরচ','মাসিক খরচ','প্রকৃত লাভ','বিনিয়োগকারী','অংশীদার']];
+  keys().forEach(k=>{const t=totals(k);rows.push([mLabel(k),t.s,t.p,t.ex,t.monthCost,t.actual,t.invPool,t.actual-t.invPool])});
+  downloadFile('bArshik.csv','\uFEFF'+rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n'),'text/csv;charset=utf-8');
+}
+function exportBackup(){downloadFile('hisab_backup.json',JSON.stringify(DB,null,2),'application/json')}
+function importBackup(file){
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{try{const d=JSON.parse(e.target.result);if(!d.months||!d.partners)throw new Error('ফাইলটি ঠিক নয়');DB=normalize(d);save();CUR=keys().slice(-1)[0]||CUR;render();toast('ব্যাকআপ লোড হয়েছে')}catch(err){toast('ব্যাকআপ পড়া যায়নি: '+err.message)}};
+  r.readAsText(file);
+}
+function resetToSeed(){
+  if(!confirm('সব বর্তমান ডেটা মুছে মূল Excel ডেটায় ফিরবেন? আগে ব্যাকআপ নিন।'))return;
+  DB=seedCopy();CUR=keys().slice(-1)[0];save();render();toast('মূল ডেটায় ফেরত গেছে');
+}
+
+/* ================= Excel আমদানি ================= */
+let IMP=null;
+function cell(ws,r,c){const x=ws[XLSX.utils.encode_cell({r,c})];return x?x.v:undefined}
+function isoOf(v){
+  if(typeof v==='number'&&v>20000&&v<80000)return new Date(Math.round((v-25569)*86400000)).toISOString().slice(0,10);
+  if(v instanceof Date&&!isNaN(v))return v.toISOString().slice(0,10);
+  return null;
+}
+function mkOf(v){
+  if(typeof v==='string'){const m=v.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);if(m)return m[3]+'-'+m[2].padStart(2,'0')}
+  const iso=isoOf(v);return iso?iso.slice(0,7):'';
+}
+function parseWorkbook(buf){
+  const wb=XLSX.read(buf,{type:'array'});
+  wb.SheetNames.forEach(name=>{
+    const ws=wb.Sheets[name];if(!ws||!ws['!ref'])return;
+    const end=XLSX.utils.decode_range(ws['!ref']).e.r;
+    const h1=String(cell(ws,6,2)||''),h2=String(cell(ws,3,2)||'');
+    if(/বিক্র/.test(h1)){
+      const cnt={};
+      for(let r=7;r<=Math.min(end,60);r++){
+        const iso=isoOf(cell(ws,r,1));if(!iso)continue;
+        const sv=cell(ws,r,2),ev=cell(ws,r,3),cv=cell(ws,r,4),lv=cell(ws,r,5),pv=cell(ws,r,6);
+        const d={s:N(sv),ex:N(ev),c:N(cv),l:N(lv),p:N(pv),n:[sv,ev,cv].filter(x=>typeof x==='string').map(x=>x.trim()).filter(Boolean).join(' ')};
+        if(!hasData(d))continue;
+        const k=iso.slice(0,7);mObj(k).days[iso]=d;cnt[k]=(cnt[k]||0)+1;IMP.d++;
+      }
+      const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
+      if(top){
+        const items=[];
+        for(let r=7;r<=Math.min(end,40);r++){
+          const lab=cell(ws,r,8),val=cell(ws,r,9);
+          if(typeof lab!=='string'||typeof val!=='number')continue;
+          const nm=lab.replace(/\s+/g,' ').trim();
+          if(!nm||SKIP.test(nm)||!val)continue;
+          items.push({id:uid(),name:nm,a:val});
+        }
+        if(items.length){mObj(top[0]).items=items;IMP.m++}
+      }
+    }else if(/মূলধন|বিনিয়োগ/.test(h2)){
+      const pname=name.trim();
+      const role=/ফোরকান/.test(pname)?'investor':'partner';
+      const opening=N(cell(ws,4,2));
+      const entries=[];
+      for(let r=4;r<=Math.min(end,300);r++){
+        const dv=cell(ws,r,1),add=N(cell(ws,r,3)),pr=N(cell(ws,r,4)),wd=N(cell(ws,r,5));
+        if(!add&&!pr&&!wd)continue;
+        const mk=mkOf(dv);
+        entries.push({id:uid(),mk,date:typeof dv==='string'?dv.trim():(mk?mLabel(mk):''),add,profit:pr,wd});
+      }
+      let p=DB.partners.find(x=>x.name===pname);
+      if(!p){p={id:uid(),name:pname};DB.partners.push(p)}
+      Object.assign(p,{role,opening,entries});
+      IMP.p++;
+    }
+  });
+}
+function importExcel(files){
+  const list=[...files];if(!list.length)return;
+  IMP={d:0,m:0,p:0};
+  const finish=()=>{save();const ks=keys();if(ks.length)CUR=ks[ks.length-1];render();toast(`আমদানি: ${IMP.d} দিন · ${IMP.m} মাসের খরচ · ${IMP.p} জন পার্টনার`)};
+  const next=()=>{
+    const f=list.shift();if(!f)return finish();
+    const r=new FileReader();
+    r.onload=e=>{try{parseWorkbook(new Uint8Array(e.target.result))}catch(err){toast(f.name+' পড়া যায়নি: '+err.message)}next()};
+    r.readAsArrayBuffer(f);
+  };
+  if(window.XLSX)return next();
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  s.onload=next;
+  s.onerror=()=>toast('Excel লাইব্রেরি লোড হয়নি—ইন্টারনেট চেক করুন');
+  document.head.appendChild(s);
+}
+
+/* ================= ইভেন্ট ================= */
+const ACT={
+  goMonth:d=>{CUR=d.k;setTab('monthly')},
+  editDay:d=>loadDayForm(d.iso),
+  delDay:d=>{if(confirm('এই দিনের হিসাব মুছবেন?'))clearDay(d.iso)},
+  resetDay:()=>{resetDayForm();$('d_date').focus()},
+  clearDayForm:()=>{const iso=$('d_date').value;if(iso&&confirm(iso+' তারিখের হিসাব মুছবেন?'))clearDay(iso)},
+  editItem:d=>editItem(d.id),
+  delItem:d=>{if(confirm('এই খরচ মুছবেন?'))delItem(d.id)},
+  applyProfit:()=>applyProfit(),
+  pdfMonthly:()=>pdfMonthly(),
+  pdfAnnual:()=>pdfAnnual(),
+  csvAnnual:()=>csvAnnual(),
+  pdfBalance:()=>pdfBalance(),
+  pdfAll:()=>pdfAllBalances(),
+  applyToPartner:()=>applyToPartner(),
+  editEntry:d=>editEntry(d.id),
+  delEntry:d=>delEntry(d.id),
+  resetEntry:()=>resetEntryForm(),
+  resetPartner:()=>resetPartner(),
+  editPartner:d=>editPartner(d.id),
+  openBalance:d=>openBalance(d.id),
+  exportBackup:()=>exportBackup(),
+  resetToSeed:()=>resetToSeed(),
+  addMonth:()=>addMonth(),
+  delMonth:()=>delMonth(),
+};
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');if(!el)return;
+  const fn=ACT[el.dataset.act];if(!fn)return;
+  if(el.tagName==='BUTTON'||el.dataset.act)e.preventDefault();
+  if(el.dataset.act==='openBalance'&&e.target.closest('button'))return;
+  fn(el.dataset,el);
+});
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(b)setTab(b.dataset.t)});
+$('monthSel').addEventListener('change',e=>setMonth(e.target.value));
+$('dayForm').addEventListener('submit',saveDay);
+$('itemForm').addEventListener('submit',saveItem);
+$('entryForm').addEventListener('submit',saveEntry);
+$('partnerForm').addEventListener('submit',savePartner);
+$('setForm').addEventListener('submit',saveSettings);
+$('dyAll').addEventListener('change',rDaily);
+$('backupFile').addEventListener('change',e=>{importBackup(e.target.files[0]);e.target.value=''});
+$('excelFile').addEventListener('change',e=>{importExcel(e.target.files);e.target.value=''});
+
+/* ============ টেবিল → মোবাইল কার্ড ============
+   প্রতিটি টেবিলের <th> থেকে প্রতিটি <td>-তে data-label বসায়।
+   ফোনে CSS ওই label দেখিয়ে সারিটিকে একটি কার্ড বানায়। */
+function labelTables(root){
+  (root||document).querySelectorAll('table').forEach(t=>{
+    const heads=[...t.querySelectorAll('thead th')].map(th=>th.textContent.trim());
+    if(!heads.length)return;
+    t.classList.add('rt');
+    t.querySelectorAll('tbody tr').forEach(tr=>{
+      const cells=[...tr.children];
+      if(cells.length===1){cells[0].classList.add('wide');return}
+      let col=0;
+      cells.forEach(td=>{
+        const h=heads[col]||'';
+        if(h){if(td.dataset.label!==h)td.dataset.label=h}
+        else if(td.hasAttribute('data-label'))td.removeAttribute('data-label');
+        col+=td.colSpan||1;
+      });
+    });
+  });
+}
+if(typeof MutationObserver!=='undefined'){
+  const __mainEl=document.querySelector('main');
+  if(__mainEl)new MutationObserver(()=>labelTables(__mainEl)).observe(__mainEl,{childList:true,subtree:true});
+}
+labelTables();
+
+/* ================= মেনু (মোবাইল ও ডেস্কটপ) ================= */
+function openNav(){$('sidebar').classList.add('open');$('scrim').classList.add('show')}
+function closeNav(){$('sidebar').classList.remove('open');$('scrim').classList.remove('show')}
+$('burger').addEventListener('click',openNav);
+$('scrim').addEventListener('click',closeNav);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNav()});
+
+/* ================= শুরু ================= */
+load();
+resetDayForm();
+render();
+</script>
+</body>
+</html>
